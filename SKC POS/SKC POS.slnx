@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="../SKC Bakery Supplies/SKC Bakery Supplies.csproj" Id="12e5a5e3-a326-4734-8db7-2490ecf9329e" />
+  <Project Path="../SKC.DataEngine/SKC.DataEngine.csproj" Id="b3546ed5-9c88-4a81-929b-691989b158ae" />
+  <Project Path="SKC POS.csproj" />
+</Solution>

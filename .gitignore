@@ -1,0 +1,17 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+[Rr]elease/
+[Dd]ebug/
+x64/
+x86/
+
+# Visual Studio settings
+.vs/
+*.user
+
+# SQLite Databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
