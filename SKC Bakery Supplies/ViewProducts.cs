@@ -96,12 +96,12 @@ namespace SKC_Bakery_Supplies
         {
             string brandPart = FormatBrand(txtNewBrand.Text);
             string namePart = FormatBaseName(txtNewBaseName.Text);
-            string uomPart = FormatUOM(txtNewUOM.Text);
+            //string uomPart = FormatUOM(txtNewUOM.Text);
 
             List<string> parts = new List<string>();
             if (!string.IsNullOrWhiteSpace(brandPart)) parts.Add(brandPart);
             if (!string.IsNullOrWhiteSpace(namePart)) parts.Add(namePart);
-            if (!string.IsNullOrWhiteSpace(uomPart)) parts.Add(uomPart);
+            // if (!string.IsNullOrWhiteSpace(uomPart)) parts.Add(uomPart);
 
             txtNewSKU.Text = string.Join("-", parts);
         }
@@ -125,11 +125,13 @@ namespace SKC_Bakery_Supplies
             return initials.ToLower();
         }
 
+        /*
         private string FormatUOM(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return "";
             return input.Replace(" ", "").ToLower();
         }
+        */
 
         // --- 3. THE SAVE EXECUTION ---
         private void btnSaveNew_Click(object sender, EventArgs e)
@@ -145,8 +147,8 @@ namespace SKC_Bakery_Supplies
                 SKU = txtNewSKU.Text.ToLower().Trim(),
                 Brand = ToProperCase(txtNewBrand.Text),
                 BaseName = ToProperCase(txtNewBaseName.Text),
-                UOM = txtNewUOM.Text.ToLower().Trim(),
-                PackMultiplier = numNewMultiplier.Value,
+                //UOM = txtNewUOM.Text.ToLower().Trim(),
+                //PackMultiplier = numNewMultiplier.Value,
                 Price = numNewPrice.Value,
                 IsActive = true
             };
@@ -155,7 +157,7 @@ namespace SKC_Bakery_Supplies
             {
                 using (var connection = new SqliteConnection("Data Source=bakery_inventory.db"))
                 {
-                    string sql = "INSERT INTO Inventory (SKU, Brand, BaseName, UOM, PackMultiplier, Price, IsActive) VALUES (@SKU, @Brand, @BaseName, @UOM, @PackMultiplier, @Price, @IsActive)";
+                    string sql = "INSERT INTO Inventory (SKU, Brand, BaseName, Price, IsActive) VALUES (@SKU, @Brand, @BaseName, @Price, @IsActive)";
                     connection.Execute(sql, newProduct);
                 }
 
@@ -165,9 +167,9 @@ namespace SKC_Bakery_Supplies
                 // 2. Wipe the Quick Add board clean for the next item
                 txtNewBrand.Clear();
                 txtNewBaseName.Clear();
-                txtNewUOM.Clear();
+                // txtNewUOM.Clear();
                 txtNewSKU.Clear();
-                numNewMultiplier.Value = 0;
+                // numNewMultiplier.Value = 0;
                 numNewPrice.Value = 0;
 
                 txtNewBrand.Focus();
@@ -184,11 +186,6 @@ namespace SKC_Bakery_Supplies
         }
 
         private void txtNewBaseName_TextChanged(object sender, EventArgs e)
-        {
-            GenerateSKU();
-        }
-
-        private void txtNewUOM_TextChanged(object sender, EventArgs e)
         {
             GenerateSKU();
         }

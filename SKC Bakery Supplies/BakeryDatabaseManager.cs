@@ -16,25 +16,13 @@ namespace SKC_Bakery_Supplies
             using (var connection = new SqliteConnection(connectionString))
             {
                 connection.Open();
+                connection.Execute(@"CREATE TABLE IF NOT EXISTS Inventory (SKU TEXT PRIMARY KEY, Brand TEXT, BaseName TEXT, Price REAL)");
+                connection.Execute(@"CREATE TABLE IF NOT EXISTS PurchaseLogs (Id INTEGER PRIMARY KEY AUTOINCREMENT, TransactionId TEXT, Date TEXT, SKU TEXT, Qty INTEGER, UnitCost REAL, Supplier TEXT)");
+                connection.Execute(@"CREATE TABLE IF NOT EXISTS DeliveryLogs (Id INTEGER PRIMARY KEY AUTOINCREMENT, TransactionId TEXT, Date TEXT, SKU TEXT, Qty INTEGER, ToBranch TEXT, TotalLineCost REAL DEFAULT 0)");
 
-                // Inventory
-                connection.Execute(@"CREATE TABLE IF NOT EXISTS Inventory (
-                            SKU TEXT PRIMARY KEY, Brand TEXT, BaseName TEXT, UOM TEXT, PackMultiplier REAL, Price REAL)");
+                // The FIFO Ledger
+                connection.Execute(@"CREATE TABLE IF NOT EXISTS InventoryLots (LotId INTEGER PRIMARY KEY AUTOINCREMENT, SKU TEXT NOT NULL, DateReceived TEXT NOT NULL, OriginalQty INTEGER NOT NULL, RemainingQty INTEGER NOT NULL, UnitCost REAL NOT NULL)");
 
-                // Purchases
-                connection.Execute(@"CREATE TABLE IF NOT EXISTS PurchaseLogs (
-                            Id INTEGER PRIMARY KEY AUTOINCREMENT, TransactionId TEXT, Date TEXT, SKU TEXT, Qty INTEGER, UnitCost REAL, Supplier TEXT)");
-
-                // Delivery
-                connection.Execute(@"CREATE TABLE IF NOT EXISTS DeliveryLogs (
-                            Id INTEGER PRIMARY KEY AUTOINCREMENT, TransactionId TEXT, Date TEXT, SKU TEXT, Qty INTEGER, ToBranch TEXT, TotalLineCost REAL DEFAULT 0)");
-
-                // NEW: Inventory Lots for FIFO Costing
-                connection.Execute(@"CREATE TABLE IF NOT EXISTS InventoryLots (
-                            LotId INTEGER PRIMARY KEY AUTOINCREMENT, SKU TEXT NOT NULL, DateReceived TEXT NOT NULL, 
-                            OriginalQty INTEGER NOT NULL, RemainingQty INTEGER NOT NULL, UnitCost REAL NOT NULL)");
-
-                // Add new columns safely
                 try { connection.Execute("ALTER TABLE PurchaseLogs ADD COLUMN TransactionId TEXT"); } catch { }
                 try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN TransactionId TEXT"); } catch { }
                 try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN TotalLineCost REAL DEFAULT 0"); } catch { }
@@ -55,7 +43,12 @@ namespace SKC_Bakery_Supplies
         {
             using (var connection = new SqliteConnection(connectionString))
             {
-                return connection.Query<BakeryProduct>("SELECT * FROM Inventory WHERE IsActive = 1").ToList();
+                string sql = @"
+            SELECT i.*, 
+                   COALESCE((SELECT SUM(RemainingQty) FROM InventoryLots WHERE SKU = i.SKU), 0) AS CurrentStock
+            FROM Inventory i 
+            WHERE i.IsActive = 1";
+                return connection.Query<BakeryProduct>(sql).ToList();
             }
         }
 
@@ -92,16 +85,10 @@ namespace SKC_Bakery_Supplies
                 connection.Open();
                 using (var transaction = connection.BeginTransaction())
                 {
-                    // 1. Log the Purchase
-                    string sqlPurchase = @"
-                        INSERT INTO PurchaseLogs (TransactionId, Date, SKU, Qty, UnitCost, Supplier) 
-                        VALUES (@TransactionId, @Date, @SKU, @Qty, @UnitCost, @Supplier)";
+                    string sqlPurchase = @"INSERT INTO PurchaseLogs (TransactionId, Date, SKU, Qty, UnitCost, Supplier) VALUES (@TransactionId, @Date, @SKU, @Qty, @UnitCost, @Supplier)";
                     connection.Execute(sqlPurchase, purchases, transaction: transaction);
 
-                    // 2. Create the Inventory Lot for FIFO tracking
-                    string sqlLot = @"
-                        INSERT INTO InventoryLots (SKU, DateReceived, OriginalQty, RemainingQty, UnitCost) 
-                        VALUES (@SKU, @Date, @Qty, @Qty, @UnitCost)";
+                    string sqlLot = @"INSERT INTO InventoryLots (SKU, DateReceived, OriginalQty, RemainingQty, UnitCost) VALUES (@SKU, @Date, @Qty, @Qty, @UnitCost)";
                     connection.Execute(sqlLot, purchases, transaction: transaction);
 
                     transaction.Commit();
@@ -138,9 +125,41 @@ namespace SKC_Bakery_Supplies
         {
             using (var connection = new SqliteConnection(connectionString))
             {
-                connection.Execute("DELETE FROM PurchaseLogs WHERE TransactionId = @Id", new { Id = transactionId });
-                // Note: If you delete a purchase, you would technically need complex logic to reverse FIFO lots. 
-                // For now, this just removes the log. Let me know if you need full lot reversal logic.
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // 1. Fetch the original purchase lines
+                        var originalLines = connection.Query<PurchaseLog>("SELECT * FROM PurchaseLogs WHERE TransactionId = @Id", new { Id = transactionId }, transaction).AsList();
+
+                        foreach (var line in originalLines)
+                        {
+                            // 2. Check if we have enough inventory in the specific lot to remove it.
+                            // If we try to delete a purchase that has already been "consumed" by deliveries, we abort.
+                            int consumedQty = connection.ExecuteScalar<int>(
+                                @"SELECT (OriginalQty - RemainingQty) FROM InventoryLots 
+                          WHERE SKU = @SKU AND OriginalQty = @Qty AND UnitCost = @Cost",
+                                new { SKU = line.SKU, Qty = line.Qty, Cost = line.UnitCost }, transaction);
+
+                            if (consumedQty > 0)
+                                throw new Exception($"Cannot delete purchase: {line.SKU} has already been used in deliveries.");
+
+                            // 3. Remove the lot
+                            connection.Execute("DELETE FROM InventoryLots WHERE SKU = @SKU AND OriginalQty = @Qty AND UnitCost = @Cost",
+                                new { SKU = line.SKU, Qty = line.Qty, Cost = line.UnitCost }, transaction);
+                        }
+
+                        // 4. Remove the log
+                        connection.Execute("DELETE FROM PurchaseLogs WHERE TransactionId = @Id", new { Id = transactionId }, transaction);
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception($"Deletion blocked: {ex.Message}");
+                    }
+                }
             }
         }
 
@@ -167,7 +186,6 @@ namespace SKC_Bakery_Supplies
                             int qtyNeeded = item.Qty;
                             double totalCostForThisLine = 0;
 
-                            // Fetch lots oldest first
                             string lotSql = "SELECT * FROM InventoryLots WHERE SKU = @SKU AND RemainingQty > 0 ORDER BY DateReceived ASC";
                             var availableLots = connection.Query<InventoryLot>(lotSql, new { SKU = item.SKU }, transaction).AsList();
 
@@ -185,16 +203,11 @@ namespace SKC_Bakery_Supplies
                                     new { RemainingQty = lot.RemainingQty, LotId = lot.LotId }, transaction);
                             }
 
-                            if (qtyNeeded > 0)
-                            {
-                                throw new Exception($"Insufficient inventory for SKU: {item.SKU}. Short by {qtyNeeded} units.");
-                            }
+                            if (qtyNeeded > 0) throw new Exception($"Insufficient inventory for SKU: {item.SKU}. Short by {qtyNeeded} units.");
 
                             item.TotalLineCost = totalCostForThisLine;
 
-                            string insertSql = @"
-                                INSERT INTO DeliveryLogs (TransactionId, Date, SKU, Qty, ToBranch, TotalLineCost) 
-                                VALUES (@TransactionId, @Date, @SKU, @Qty, @ToBranch, @TotalLineCost)";
+                            string insertSql = @"INSERT INTO DeliveryLogs (TransactionId, Date, SKU, Qty, ToBranch, TotalLineCost) VALUES (@TransactionId, @Date, @SKU, @Qty, @ToBranch, @TotalLineCost)";
                             connection.Execute(insertSql, item, transaction);
                         }
                         transaction.Commit();
@@ -237,8 +250,42 @@ namespace SKC_Bakery_Supplies
         {
             using (var connection = new SqliteConnection(connectionString))
             {
-                connection.Execute("DELETE FROM DeliveryLogs WHERE TransactionId = @Id", new { Id = transactionId });
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // 1. Fetch the items we are about to delete
+                        var itemsToReturn = connection.Query<DeliveryLog>("SELECT * FROM DeliveryLogs WHERE TransactionId = @Id", new { Id = transactionId }, transaction).AsList();
+
+                        // 2. Restock them as new inventory lots to preserve FIFO math
+                        foreach (var item in itemsToReturn)
+                        {
+                            if (item.Qty > 0)
+                            {
+                                double returnUnitCost = item.TotalLineCost / item.Qty; // Retrieve the blended cost
+
+                                string restockSql = @"INSERT INTO InventoryLots (SKU, DateReceived, OriginalQty, RemainingQty, UnitCost) 
+                                              VALUES (@SKU, @Date, @Qty, @Qty, @UnitCost)";
+                                connection.Execute(restockSql, new { SKU = item.SKU, Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Qty = item.Qty, UnitCost = returnUnitCost }, transaction);
+                            }
+                        }
+
+                        // 3. Delete the ticket
+                        connection.Execute("DELETE FROM DeliveryLogs WHERE TransactionId = @Id", new { Id = transactionId }, transaction);
+
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
             }
         }
-    }
+
+
+
+    } //end
 }

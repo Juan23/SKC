@@ -31,7 +31,6 @@ namespace SKC_Bakery_Supplies
         public int TotalItems { get; set; }
     }
 
-    // --- DATA CLASSES ---
     public class InventoryLot
     {
         public int LotId { get; set; }

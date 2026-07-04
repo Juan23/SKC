@@ -20,8 +20,8 @@ namespace SKC_Bakery_Supplies
             // Map the data into the form
             targetSKU = itemToEdit.SKU;
             txtSKU.Text = itemToEdit.SKU;
-            txtUOM.Text = itemToEdit.UOM;
-            txtMultiplier.Text = itemToEdit.PackMultiplier.ToString();
+            //txtUOM.Text = itemToEdit.UOM;
+            //txtMultiplier.Text = itemToEdit.PackMultiplier.ToString();
 
             txtBrand.Text = itemToEdit.Brand;
             txtBaseName.Text = itemToEdit.BaseName;

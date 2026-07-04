@@ -59,14 +59,18 @@ namespace SKC_Bakery_Supplies
         {
             if (dgvTickets.CurrentRow == null) return;
 
-            if (dgvTickets.CurrentRow.DataBoundItem is PurchaseTicketSummary selectedTicket)
-            {
-                DialogResult confirm = MessageBox.Show($"Are you sure you want to completely delete Ticket '{selectedTicket.TransactionId}' from {selectedTicket.Supplier}?\n\nThis will permanently remove all line items in this transaction from the ledger.", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            var selectedTicket = (PurchaseTicketSummary)dgvTickets.CurrentRow.DataBoundItem;
 
-                if (confirm == DialogResult.Yes)
+            if (MessageBox.Show("Delete this ticket?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                try
                 {
                     BakeryDatabaseManager.DeletePurchaseTicket(selectedTicket.TransactionId);
-                    LoadTickets(); // Refresh the grid
+                    LoadTickets();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error");
                 }
             }
         }

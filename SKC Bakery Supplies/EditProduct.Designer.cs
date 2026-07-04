@@ -29,18 +29,14 @@
         private void InitializeComponent()
         {
             label6 = new Label();
-            label5 = new Label();
-            label4 = new Label();
             label3 = new Label();
             label2 = new Label();
             label7 = new Label();
             numPrice = new NumericUpDown();
             btnSave = new Button();
-            txtUOM = new TextBox();
             txtBaseName = new TextBox();
             txtBrand = new TextBox();
             txtSKU = new TextBox();
-            txtMultiplier = new TextBox();
             ((System.ComponentModel.ISupportInitialize)numPrice).BeginInit();
             SuspendLayout();
             // 
@@ -52,24 +48,6 @@
             label6.Size = new Size(71, 15);
             label6.TabIndex = 25;
             label6.Text = "Selling Price";
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new Point(424, 8);
-            label5.Name = "label5";
-            label5.Size = new Size(58, 15);
-            label5.TabIndex = 24;
-            label5.Text = "Multiplier";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(360, 8);
-            label4.Name = "label4";
-            label4.Size = new Size(29, 15);
-            label4.TabIndex = 23;
-            label4.Text = "Unit";
             // 
             // label3
             // 
@@ -115,15 +93,6 @@
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
             // 
-            // txtUOM
-            // 
-            txtUOM.AcceptsReturn = true;
-            txtUOM.Location = new Point(360, 24);
-            txtUOM.Name = "txtUOM";
-            txtUOM.ReadOnly = true;
-            txtUOM.Size = new Size(60, 23);
-            txtUOM.TabIndex = 16;
-            // 
             // txtBaseName
             // 
             txtBaseName.Location = new Point(216, 24);
@@ -146,29 +115,17 @@
             txtSKU.Size = new Size(100, 23);
             txtSKU.TabIndex = 13;
             // 
-            // txtMultiplier
-            // 
-            txtMultiplier.Location = new Point(424, 24);
-            txtMultiplier.Name = "txtMultiplier";
-            txtMultiplier.ReadOnly = true;
-            txtMultiplier.Size = new Size(64, 23);
-            txtMultiplier.TabIndex = 26;
-            // 
             // frmEditProduct
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(593, 94);
-            Controls.Add(txtMultiplier);
             Controls.Add(label6);
-            Controls.Add(label5);
-            Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label7);
             Controls.Add(numPrice);
             Controls.Add(btnSave);
-            Controls.Add(txtUOM);
             Controls.Add(txtBaseName);
             Controls.Add(txtBrand);
             Controls.Add(txtSKU);
@@ -182,17 +139,13 @@
         #endregion
 
         private Label label6;
-        private Label label5;
-        private Label label4;
         private Label label3;
         private Label label2;
         private Label label7;
         private NumericUpDown numPrice;
         private Button btnSave;
-        private TextBox txtUOM;
         private TextBox txtBaseName;
         private TextBox txtBrand;
         private TextBox txtSKU;
-        private TextBox txtMultiplier;
     }
 }

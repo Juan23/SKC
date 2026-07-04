@@ -114,7 +114,7 @@ namespace SKC_Bakery_Supplies
                 MessageBox.Show("Item not found in catalog.", "Unknown Item");
                 return;
             }
-
+             
             // Zero inventory checks. Instantly adds to draft.
             draftItems.Add(new DraftDeliveryItem
             {
@@ -156,26 +156,46 @@ namespace SKC_Bakery_Supplies
                 });
             }
 
-            BakeryDatabaseManager.AddDeliveryBulk(finalLogs);
-
-            // --- THE PRINT ENGINE TRIGGER ---
-            PrintDocument pDoc = new PrintDocument();
-            pDoc.PrintPage += RenderDeliverySlip;
-
-            PrintPreviewDialog preview = new PrintPreviewDialog
+            // Replace the existing BakeryDatabaseManager.AddDeliveryBulk(finalLogs); and print logic with this:
+            try
             {
-                Document = pDoc,
-                Width = 800,
-                Height = 1000,
-                ShowIcon = false,
-                Text = "Delivery Sheet Preview"
-            };
+                BakeryDatabaseManager.AddDeliveryBulk(finalLogs);
 
-            preview.ShowDialog();
+                // --- THE PRINT ENGINE TRIGGER ---
+                PrintDocument pDoc = new PrintDocument();
+                pDoc.PrintPage += RenderDeliverySlip;
 
-            draftItems.Clear();
-            cmbBranch.SelectedIndex = 0;
-            currentTransactionId = "";
+                // 1. Create a clean, silent preview window
+                Form previewForm = new Form { Text = "Delivery Sheet Preview", Width = 800, Height = 1000, ShowIcon = false };
+
+                // 2. Create our own Print Button (Moved to Top)
+                Button btnPrint = new Button { Text = "Print Report", Dock = DockStyle.Top, Height = 45, Cursor = Cursors.Hand };
+                btnPrint.Click += (s, ev) =>
+                {
+                    PrintDialog pd = new PrintDialog { Document = pDoc, UseEXDialog = true };
+                    if (pd.ShowDialog() == DialogResult.OK)
+                    {
+                        try { pDoc.Print(); }
+                        catch (System.ComponentModel.Win32Exception) { /* catch cancel */ }
+                        catch (Exception ex) { MessageBox.Show($"Print failed: {ex.Message}", "Error"); }
+                    }
+                };
+
+                PrintPreviewControl ppc = new PrintPreviewControl { Dock = DockStyle.Fill, Document = pDoc };
+                previewForm.Controls.Add(btnPrint);
+                previewForm.Controls.Add(ppc);
+                previewForm.ShowDialog();
+
+                // 3. Cleanup & Reset
+                pDoc.PrintPage -= RenderDeliverySlip;
+                draftItems.Clear();
+                cmbBranch.SelectedIndex = 0;
+                currentTransactionId = "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Delivery Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // --- THE DOCUMENT RENDERER ---

@@ -36,10 +36,6 @@
             btnSaveNew = new Button();
             Price = new Label();
             numNewPrice = new NumericUpDown();
-            label5 = new Label();
-            numNewMultiplier = new NumericUpDown();
-            label4 = new Label();
-            txtNewUOM = new TextBox();
             label3 = new Label();
             txtNewBaseName = new TextBox();
             label2 = new Label();
@@ -49,7 +45,6 @@
             ((System.ComponentModel.ISupportInitialize)dgvProducts).BeginInit();
             grpQuickAddProduct.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numNewPrice).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numNewMultiplier).BeginInit();
             SuspendLayout();
             // 
             // txtSearch
@@ -98,10 +93,6 @@
             grpQuickAddProduct.Controls.Add(btnSaveNew);
             grpQuickAddProduct.Controls.Add(Price);
             grpQuickAddProduct.Controls.Add(numNewPrice);
-            grpQuickAddProduct.Controls.Add(label5);
-            grpQuickAddProduct.Controls.Add(numNewMultiplier);
-            grpQuickAddProduct.Controls.Add(label4);
-            grpQuickAddProduct.Controls.Add(txtNewUOM);
             grpQuickAddProduct.Controls.Add(label3);
             grpQuickAddProduct.Controls.Add(txtNewBaseName);
             grpQuickAddProduct.Controls.Add(label2);
@@ -141,41 +132,6 @@
             numNewPrice.Size = new Size(64, 23);
             numNewPrice.TabIndex = 10;
             numNewPrice.Enter += HighlightNumericText;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new Point(96, 128);
-            label5.Name = "label5";
-            label5.Size = new Size(58, 15);
-            label5.TabIndex = 9;
-            label5.Text = "Multiplier";
-            // 
-            // numNewMultiplier
-            // 
-            numNewMultiplier.DecimalPlaces = 2;
-            numNewMultiplier.Location = new Point(96, 144);
-            numNewMultiplier.Name = "numNewMultiplier";
-            numNewMultiplier.Size = new Size(64, 23);
-            numNewMultiplier.TabIndex = 8;
-            numNewMultiplier.Enter += HighlightNumericText;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(8, 128);
-            label4.Name = "label4";
-            label4.Size = new Size(35, 15);
-            label4.TabIndex = 7;
-            label4.Text = "UOM";
-            // 
-            // txtNewUOM
-            // 
-            txtNewUOM.Location = new Point(8, 144);
-            txtNewUOM.Name = "txtNewUOM";
-            txtNewUOM.Size = new Size(80, 23);
-            txtNewUOM.TabIndex = 6;
-            txtNewUOM.TextChanged += txtNewUOM_TextChanged;
             // 
             // label3
             // 
@@ -243,7 +199,6 @@
             grpQuickAddProduct.ResumeLayout(false);
             grpQuickAddProduct.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numNewPrice).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numNewMultiplier).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -260,10 +215,6 @@
         private Button btnSaveNew;
         private Label Price;
         private NumericUpDown numNewPrice;
-        private Label label5;
-        private NumericUpDown numNewMultiplier;
-        private Label label4;
-        private TextBox txtNewUOM;
         private Label label3;
         private TextBox txtNewBaseName;
         private Label label2;

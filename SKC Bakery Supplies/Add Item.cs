@@ -28,12 +28,12 @@ namespace SKC_Bakery_Supplies
         {
             string brandPart = FormatBrand(txtBrand.Text);
             string namePart = FormatBaseName(txtBaseName.Text);
-            string uomPart = FormatUOM(txtUOM.Text);
+            // string uomPart = FormatUOM(txtUOM.Text);
 
             List<string> parts = new List<string>();
             if (!string.IsNullOrWhiteSpace(brandPart)) parts.Add(brandPart);
             if (!string.IsNullOrWhiteSpace(namePart)) parts.Add(namePart);
-            if (!string.IsNullOrWhiteSpace(uomPart)) parts.Add(uomPart);
+            // if (!string.IsNullOrWhiteSpace(uomPart)) parts.Add(uomPart);
 
             // Combine with hyphens (e.g., ber-dc-1kg)
             txtSKU.Text = string.Join("-", parts);
@@ -61,11 +61,13 @@ namespace SKC_Bakery_Supplies
         }
 
         // Cleans the UOM (e.g., " 1 kg " -> "1kg")
+        /*
         private string FormatUOM(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return "";
             return input.Replace(" ", "").ToLower();
         }
+        */
 
         // --- BUTTON LOGIC ---
         private void btnSave_Click(object sender, EventArgs e)
@@ -81,8 +83,8 @@ namespace SKC_Bakery_Supplies
                 SKU = txtSKU.Text.ToLower().Trim(),
                 Brand = ToProperCase(txtBrand.Text),
                 BaseName = ToProperCase(txtBaseName.Text),
-                UOM = txtUOM.Text.ToLower().Trim(),
-                PackMultiplier = numMultiplier.Value,
+                // UOM = txtUOM.Text.ToLower().Trim(),
+                // PackMultiplier = numMultiplier.Value,
                 Price = numPrice.Value
             };
 
@@ -90,7 +92,7 @@ namespace SKC_Bakery_Supplies
             {
                 using (var connection = new SqliteConnection("Data Source=bakery_inventory.db"))
                 {
-                    string sql = "INSERT INTO Inventory (SKU, Brand, BaseName, UOM, PackMultiplier, Price) VALUES (@SKU, @Brand, @BaseName, @UOM, @PackMultiplier, @Price)";
+                    string sql = "INSERT INTO Inventory (SKU, Brand, BaseName, Price) VALUES (@SKU, @Brand, @BaseName, @Price)";
                     connection.Execute(sql, NewProduct);
                 }
 
@@ -115,11 +117,6 @@ namespace SKC_Bakery_Supplies
         }
 
         private void txtBaseName_TextChanged(object sender, EventArgs e)
-        {
-            GenerateSKU();
-        }
-
-        private void txtUOM_TextChanged(object sender, EventArgs e)
         {
             GenerateSKU();
         }

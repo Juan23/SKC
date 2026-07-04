@@ -31,17 +31,12 @@
             txtSKU = new TextBox();
             txtBrand = new TextBox();
             txtBaseName = new TextBox();
-            txtUOM = new TextBox();
-            numMultiplier = new NumericUpDown();
             btnSave = new Button();
             numPrice = new NumericUpDown();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
-            label4 = new Label();
-            label5 = new Label();
             label6 = new Label();
-            ((System.ComponentModel.ISupportInitialize)numMultiplier).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numPrice).BeginInit();
             SuspendLayout();
             // 
@@ -68,24 +63,6 @@
             txtBaseName.Size = new Size(100, 23);
             txtBaseName.TabIndex = 2;
             txtBaseName.TextChanged += txtBaseName_TextChanged;
-            // 
-            // txtUOM
-            // 
-            txtUOM.AcceptsReturn = true;
-            txtUOM.Location = new Point(344, 32);
-            txtUOM.Name = "txtUOM";
-            txtUOM.Size = new Size(100, 23);
-            txtUOM.TabIndex = 3;
-            txtUOM.TextChanged += txtUOM_TextChanged;
-            // 
-            // numMultiplier
-            // 
-            numMultiplier.DecimalPlaces = 2;
-            numMultiplier.Location = new Point(448, 32);
-            numMultiplier.Name = "numMultiplier";
-            numMultiplier.Size = new Size(64, 23);
-            numMultiplier.TabIndex = 4;
-            numMultiplier.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // btnSave
             // 
@@ -131,24 +108,6 @@
             label3.TabIndex = 9;
             label3.Text = "Base Name";
             // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(344, 16);
-            label4.Name = "label4";
-            label4.Size = new Size(29, 15);
-            label4.TabIndex = 10;
-            label4.Text = "Unit";
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new Point(448, 16);
-            label5.Name = "label5";
-            label5.Size = new Size(58, 15);
-            label5.TabIndex = 11;
-            label5.Text = "Multiplier";
-            // 
             // label6
             // 
             label6.AutoSize = true;
@@ -164,21 +123,16 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(626, 110);
             Controls.Add(label6);
-            Controls.Add(label5);
-            Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(numPrice);
             Controls.Add(btnSave);
-            Controls.Add(numMultiplier);
-            Controls.Add(txtUOM);
             Controls.Add(txtBaseName);
             Controls.Add(txtBrand);
             Controls.Add(txtSKU);
             Name = "frmAddMasterItem";
             Text = "Add Master Item";
-            ((System.ComponentModel.ISupportInitialize)numMultiplier).EndInit();
             ((System.ComponentModel.ISupportInitialize)numPrice).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -189,15 +143,11 @@
         private TextBox txtSKU;
         private TextBox txtBrand;
         private TextBox txtBaseName;
-        private TextBox txtUOM;
-        private NumericUpDown numMultiplier;
         private Button btnSave;
         private NumericUpDown numPrice;
         private Label label1;
         private Label label2;
         private Label label3;
-        private Label label4;
-        private Label label5;
         private Label label6;
     }
 }
