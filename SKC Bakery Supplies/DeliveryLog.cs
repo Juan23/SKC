@@ -20,7 +20,9 @@ namespace SKC_Bakery_Supplies
         public string SKU { get; set; }
         public int Qty { get; set; }
         public string ToBranch { get; set; }
-        public double TotalLineCost { get; set; } // NEW
+        public double TotalLineCost { get; set; }
+        public string Requester { get; set; }
+        public string Reason { get; set; }
     }
 
     public class DeliveryTicketSummary

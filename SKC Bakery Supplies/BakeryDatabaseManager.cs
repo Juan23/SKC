@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using Dapper;
 using Microsoft.Data.Sqlite;
@@ -27,6 +28,8 @@ namespace SKC_Bakery_Supplies
                 try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN TransactionId TEXT"); } catch { }
                 try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN TotalLineCost REAL DEFAULT 0"); } catch { }
                 try { connection.Execute("ALTER TABLE Inventory ADD COLUMN IsActive INTEGER DEFAULT 1"); } catch { }
+                try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN Requester TEXT"); } catch { }
+                try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN Reason TEXT"); } catch { }
             }
         }
 
@@ -207,7 +210,8 @@ namespace SKC_Bakery_Supplies
 
                             item.TotalLineCost = totalCostForThisLine;
 
-                            string insertSql = @"INSERT INTO DeliveryLogs (TransactionId, Date, SKU, Qty, ToBranch, TotalLineCost) VALUES (@TransactionId, @Date, @SKU, @Qty, @ToBranch, @TotalLineCost)";
+                            string insertSql = @"INSERT INTO DeliveryLogs (TransactionId, Date, SKU, Qty, ToBranch, TotalLineCost, Requester, Reason) 
+                     VALUES (@TransactionId, @Date, @SKU, @Qty, @ToBranch, @TotalLineCost, @Requester, @Reason)";
                             connection.Execute(insertSql, item, transaction);
                         }
                         transaction.Commit();

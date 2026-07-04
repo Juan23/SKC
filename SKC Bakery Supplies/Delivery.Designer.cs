@@ -38,6 +38,10 @@
             lstSearch = new ListBox();
             dgvDeliveryItems = new DataGridView();
             btnSubmitDelivery = new Button();
+            cmbRequester = new ComboBox();
+            label4 = new Label();
+            txtReason = new TextBox();
+            label5 = new Label();
             ((System.ComponentModel.ISupportInitialize)numQty).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDeliveryItems).BeginInit();
             SuspendLayout();
@@ -62,7 +66,7 @@
             // 
             // txtProductSearch
             // 
-            txtProductSearch.Location = new Point(136, 24);
+            txtProductSearch.Location = new Point(8, 120);
             txtProductSearch.Name = "txtProductSearch";
             txtProductSearch.Size = new Size(272, 23);
             txtProductSearch.TabIndex = 2;
@@ -72,7 +76,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(136, 8);
+            label2.Location = new Point(8, 104);
             label2.Name = "label2";
             label2.Size = new Size(87, 15);
             label2.TabIndex = 3;
@@ -80,7 +84,7 @@
             // 
             // numQty
             // 
-            numQty.Location = new Point(416, 24);
+            numQty.Location = new Point(288, 120);
             numQty.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numQty.Name = "numQty";
             numQty.Size = new Size(64, 23);
@@ -92,7 +96,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(416, 8);
+            label3.Location = new Point(288, 104);
             label3.Name = "label3";
             label3.Size = new Size(53, 15);
             label3.TabIndex = 5;
@@ -100,7 +104,7 @@
             // 
             // btnAddItem
             // 
-            btnAddItem.Location = new Point(488, 24);
+            btnAddItem.Location = new Point(360, 120);
             btnAddItem.Name = "btnAddItem";
             btnAddItem.Size = new Size(75, 23);
             btnAddItem.TabIndex = 6;
@@ -111,7 +115,7 @@
             // lstSearch
             // 
             lstSearch.FormattingEnabled = true;
-            lstSearch.Location = new Point(136, 48);
+            lstSearch.Location = new Point(8, 144);
             lstSearch.Name = "lstSearch";
             lstSearch.Size = new Size(272, 94);
             lstSearch.TabIndex = 7;
@@ -123,7 +127,7 @@
             dgvDeliveryItems.AllowUserToAddRows = false;
             dgvDeliveryItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDeliveryItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDeliveryItems.Location = new Point(136, 48);
+            dgvDeliveryItems.Location = new Point(8, 152);
             dgvDeliveryItems.Name = "dgvDeliveryItems";
             dgvDeliveryItems.ReadOnly = true;
             dgvDeliveryItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -132,7 +136,7 @@
             // 
             // btnSubmitDelivery
             // 
-            btnSubmitDelivery.Location = new Point(712, 416);
+            btnSubmitDelivery.Location = new Point(360, 560);
             btnSubmitDelivery.Name = "btnSubmitDelivery";
             btnSubmitDelivery.Size = new Size(75, 23);
             btnSubmitDelivery.TabIndex = 9;
@@ -140,11 +144,48 @@
             btnSubmitDelivery.UseVisualStyleBackColor = true;
             btnSubmitDelivery.Click += btnSubmitDelivery_Click;
             // 
+            // cmbRequester
+            // 
+            cmbRequester.FormattingEnabled = true;
+            cmbRequester.Location = new Point(136, 24);
+            cmbRequester.Name = "cmbRequester";
+            cmbRequester.Size = new Size(121, 23);
+            cmbRequester.TabIndex = 10;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(136, 8);
+            label4.Name = "label4";
+            label4.Size = new Size(59, 15);
+            label4.TabIndex = 11;
+            label4.Text = "Requester";
+            // 
+            // txtReason
+            // 
+            txtReason.Location = new Point(8, 72);
+            txtReason.Name = "txtReason";
+            txtReason.Size = new Size(248, 23);
+            txtReason.TabIndex = 12;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(8, 56);
+            label5.Name = "label5";
+            label5.Size = new Size(45, 15);
+            label5.TabIndex = 13;
+            label5.Text = "Reason";
+            // 
             // frmDelivery
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(445, 589);
+            Controls.Add(label5);
+            Controls.Add(txtReason);
+            Controls.Add(label4);
+            Controls.Add(cmbRequester);
             Controls.Add(btnSubmitDelivery);
             Controls.Add(lstSearch);
             Controls.Add(btnAddItem);
@@ -176,5 +217,9 @@
         private ListBox lstSearch;
         private DataGridView dgvDeliveryItems;
         private Button btnSubmitDelivery;
+        private ComboBox cmbRequester;
+        private Label label4;
+        private TextBox txtReason;
+        private Label label5;
     }
 }

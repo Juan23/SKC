@@ -26,6 +26,10 @@ namespace SKC_Bakery_Supplies
         {
             masterCatalog = BakeryDatabaseManager.GetAllProducts();
             txtProductSearch.AutoCompleteMode = AutoCompleteMode.None;
+            // Load Requesters
+            cmbRequester.Items.AddRange(new string[] { "Kaesseah P", "Gena-flor G.", "Allan A.", "Armando V.", "James M.", "Marites C.", "Anilien B.", "Allan V.",
+            "Darlin V.","Julieta B.","Charmaine L","Gina M.","Hazel S.","Jessie M.","Mark C.","Anita E.","Angelie P.","Flordiliza G.","Anna S.","Razel G.",
+            "Nino G.","Anna T.","Kim M.","JV M.","Jenifer P.","Janeath D."});
 
             // Load Branches
             cmbBranch.Items.AddRange(new string[] { "Yoho", "Gaisano", "Liloy", "Labason" });
@@ -137,6 +141,14 @@ namespace SKC_Bakery_Supplies
                 MessageBox.Show("Please select a destination branch.");
                 return;
             }
+            if (string.IsNullOrWhiteSpace(cmbRequester.Text))
+            {
+                MessageBox.Show("Please select a requester.");
+                return;
+            }
+
+            string requesterName = cmbRequester.Text;
+            string reasonText = txtReason.Text.Trim();
 
             currentTransactionId = $"DEL-{DateTime.Now:yyyyMMdd}-{Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper()}";
             string dateStr = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -152,7 +164,9 @@ namespace SKC_Bakery_Supplies
                     Date = dateStr,
                     SKU = draft.SKU,
                     Qty = draft.Qty,
-                    ToBranch = targetBranch
+                    ToBranch = targetBranch,
+                    Requester = requesterName,
+                    Reason = reasonText
                 });
             }
 
