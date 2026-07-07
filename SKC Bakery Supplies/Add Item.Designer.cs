@@ -44,7 +44,6 @@
             // 
             txtSKU.Location = new Point(32, 32);
             txtSKU.Name = "txtSKU";
-            txtSKU.ReadOnly = true;
             txtSKU.Size = new Size(100, 23);
             txtSKU.TabIndex = 0;
             // 

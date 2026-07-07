@@ -30,6 +30,7 @@
         {
             dgvTickets = new DataGridView();
             groupBox1 = new GroupBox();
+            btnPrintDaily = new Button();
             btnDelete = new Button();
             btnSearch = new Button();
             label2 = new Label();
@@ -54,6 +55,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(btnPrintDaily);
             groupBox1.Controls.Add(btnDelete);
             groupBox1.Controls.Add(btnSearch);
             groupBox1.Controls.Add(label2);
@@ -66,6 +68,16 @@
             groupBox1.TabIndex = 3;
             groupBox1.TabStop = false;
             groupBox1.Text = "Settings";
+            // 
+            // btnPrintDaily
+            // 
+            btnPrintDaily.Location = new Point(8, 504);
+            btnPrintDaily.Name = "btnPrintDaily";
+            btnPrintDaily.Size = new Size(104, 24);
+            btnPrintDaily.TabIndex = 6;
+            btnPrintDaily.Text = "Print Day Report";
+            btnPrintDaily.UseVisualStyleBackColor = true;
+            btnPrintDaily.Click += this.btnPrintDaily_Click;
             // 
             // btnDelete
             // 
@@ -144,5 +156,6 @@
         private DateTimePicker dtpEnd;
         private Label label1;
         private DateTimePicker dtpStart;
+        private Button btnPrintDaily;
     }
 }

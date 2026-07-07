@@ -15,6 +15,7 @@ namespace SKC_Bakery_Supplies
         private List<BakeryProduct> masterCatalog;
         private bool isSelecting = false;
         private string currentTransactionId;
+        private List<DeliveryLog> completedLogsForPrint;
 
         public frmDelivery()
         {
@@ -174,6 +175,7 @@ namespace SKC_Bakery_Supplies
             try
             {
                 BakeryDatabaseManager.AddDeliveryBulk(finalLogs);
+                completedLogsForPrint = finalLogs;
 
                 // --- THE PRINT ENGINE TRIGGER ---
                 PrintDocument pDoc = new PrintDocument();
@@ -223,48 +225,64 @@ namespace SKC_Bakery_Supplies
 
             int y = 50;
             int margin = 50;
+            int rightEdge = e.PageBounds.Width - 50;
 
             g.DrawString("SKC BAKERY SUPPLIES", titleFont, brush, margin, y);
             y += 30;
             g.DrawString("INTERNAL DELIVERY SHEET", headerFont, brush, margin, y);
             y += 40;
 
-            g.DrawString($"BRANCH:  {cmbBranch.Text.ToUpper()}", headerFont, brush, margin, y);
+            // Header Details
+            g.DrawString($"BRANCH:    {cmbBranch.Text.ToUpper()}", headerFont, brush, margin, y);
+            g.DrawString($"REQUESTER: {cmbRequester.Text.ToUpper()}", headerFont, brush, margin + 400, y);
             y += 20;
-            g.DrawString($"TICKET:  {currentTransactionId}", regularFont, brush, margin, y);
+            g.DrawString($"TICKET:    {currentTransactionId}", regularFont, brush, margin, y);
+            g.DrawString($"REASON:    {txtReason.Text.ToUpper()}", regularFont, brush, margin + 400, y);
             y += 20;
-            g.DrawString($"DATE:    {DateTime.Now:yyyy-MM-dd HH:mm}", regularFont, brush, margin, y);
+            g.DrawString($"DATE:      {DateTime.Now:yyyy-MM-dd HH:mm}", regularFont, brush, margin, y);
             y += 40;
 
             // Table Headers
-            g.DrawLine(Pens.Black, margin, y, 750, y);
+            g.DrawLine(Pens.Black, margin, y, rightEdge, y);
             y += 10;
             g.DrawString("QTY", headerFont, brush, margin, y);
-            g.DrawString("ITEM DESCRIPTION", headerFont, brush, margin + 80, y);
+            g.DrawString("ITEM DESCRIPTION", headerFont, brush, margin + 60, y);
+            g.DrawString("UNIT COST", headerFont, brush, rightEdge - 200, y);
+            g.DrawString("TOTAL", headerFont, brush, rightEdge - 80, y);
             y += 25;
-            g.DrawLine(Pens.Black, margin, y, 750, y);
+            g.DrawLine(Pens.Black, margin, y, rightEdge, y);
             y += 15;
 
-            // Render Items Row by Row
-            foreach (var item in draftItems)
+            // Render Items
+            double grandTotal = 0;
+            foreach (var item in completedLogsForPrint)
             {
+                var product = masterCatalog.FirstOrDefault(p => p.SKU == item.SKU);
+                string description = product != null ? $"{product.Brand} {product.BaseName}" : item.SKU;
+                double unitCost = item.Qty > 0 ? item.TotalLineCost / item.Qty : 0;
+                grandTotal += item.TotalLineCost;
+
                 g.DrawString(item.Qty.ToString(), regularFont, brush, margin, y);
-                g.DrawString($"{item.Brand} {item.ItemName}", regularFont, brush, margin + 80, y);
+                g.DrawString(description, regularFont, brush, margin + 60, y);
+                g.DrawString(unitCost.ToString("N2"), regularFont, brush, rightEdge - 200, y);
+                g.DrawString(item.TotalLineCost.ToString("N2"), regularFont, brush, rightEdge - 80, y);
                 y += 25;
 
-                // Handle page breaks if the list exceeds the paper height
-                if (y > e.MarginBounds.Bottom)
+                if (y > e.MarginBounds.Bottom - 100)
                 {
                     e.HasMorePages = true;
                     return;
                 }
             }
 
-            g.DrawLine(Pens.Black, margin, y, 750, y);
+            g.DrawLine(Pens.Black, margin, y, rightEdge, y);
+            y += 10;
+            g.DrawString("GRAND TOTAL:", headerFont, brush, rightEdge - 200, y);
+            g.DrawString(grandTotal.ToString("N2"), headerFont, brush, rightEdge - 80, y);
             y += 40;
 
             g.DrawString("Prepared By: ___________________", regularFont, brush, margin, y);
-            g.DrawString("Received By: ___________________", regularFont, brush, margin + 400, y);
+            g.DrawString("Received By: ___________________", regularFont, brush, rightEdge - 300, y);
 
             e.HasMorePages = false;
         }

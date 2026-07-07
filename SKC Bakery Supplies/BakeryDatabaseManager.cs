@@ -230,9 +230,10 @@ namespace SKC_Bakery_Supplies
             using (var connection = new SqliteConnection(connectionString))
             {
                 string sql = @"
-                    SELECT TransactionId, Date, ToBranch, SUM(Qty) AS TotalItems 
-                    FROM DeliveryLogs WHERE Date >= @Start AND Date <= @End 
-                    GROUP BY TransactionId, Date, ToBranch ORDER BY Date DESC";
+            SELECT TransactionId, Date, ToBranch, SUM(Qty) AS TotalItems, 
+                   MAX(Requester) AS Requester, MAX(Reason) AS Reason, SUM(TotalLineCost) AS TotalCost
+            FROM DeliveryLogs WHERE Date >= @Start AND Date <= @End 
+            GROUP BY TransactionId, Date, ToBranch ORDER BY Date DESC";
 
                 return connection.Query<DeliveryTicketSummary>(sql, new
                 {
@@ -289,6 +290,21 @@ namespace SKC_Bakery_Supplies
             }
         }
 
+        public static List<DailyDeliveryPrintItem> GetDailyDeliveryConsolidation(DateTime targetDate)
+        {
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                string sql = @"
+            SELECT d.TransactionId, d.ToBranch, d.Requester, d.Reason, d.SKU, i.BaseName, i.Brand, SUM(d.Qty) as Qty, SUM(d.TotalLineCost) as TotalLineCost
+            FROM DeliveryLogs d
+            LEFT JOIN Inventory i ON d.SKU = i.SKU
+            WHERE date(d.Date) = date(@TargetDate)
+            GROUP BY d.TransactionId, d.ToBranch, d.Requester, d.Reason, d.SKU, i.BaseName, i.Brand
+            ORDER BY d.ToBranch, d.TransactionId, i.Brand, i.BaseName";
+
+                return connection.Query<DailyDeliveryPrintItem>(sql, new { TargetDate = targetDate.ToString("yyyy-MM-dd") }).ToList();
+            }
+        }
 
 
     } //end

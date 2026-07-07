@@ -31,6 +31,9 @@ namespace SKC_Bakery_Supplies
         public string Date { get; set; }
         public string ToBranch { get; set; }
         public int TotalItems { get; set; }
+        public string Requester { get; set; }
+        public string Reason { get; set; }
+        public double TotalCost { get; set; }
     }
 
     public class InventoryLot
@@ -41,5 +44,18 @@ namespace SKC_Bakery_Supplies
         public int OriginalQty { get; set; }
         public int RemainingQty { get; set; }
         public double UnitCost { get; set; }
+    }
+
+    public class DailyDeliveryPrintItem
+    {
+        public string TransactionId { get; set; }
+        public string ToBranch { get; set; }
+        public string Requester { get; set; }
+        public string Reason { get; set; }
+        public string SKU { get; set; }
+        public string Brand { get; set; }
+        public string BaseName { get; set; }
+        public int Qty { get; set; }
+        public double TotalLineCost { get; set; }
     }
 }
