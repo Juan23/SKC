@@ -105,6 +105,7 @@
             // numQty
             // 
             numQty.Location = new Point(16, 168);
+            numQty.Maximum = new decimal(new int[] { 9999, 0, 0, 0 });
             numQty.Name = "numQty";
             numQty.Size = new Size(56, 23);
             numQty.TabIndex = 6;
@@ -129,7 +130,7 @@
             numUnitCost.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
             numUnitCost.Name = "numUnitCost";
             numUnitCost.Size = new Size(104, 23);
-            numUnitCost.TabIndex = 8;
+            numUnitCost.TabIndex = 7;
             numUnitCost.ValueChanged += CalculateTotalCost;
             numUnitCost.Enter += HighlightNumericText;
             numUnitCost.KeyUp += CalculateTotalCost;
@@ -180,15 +181,12 @@
             // 
             txtTotalCost.Location = new Point(192, 168);
             txtTotalCost.Name = "txtTotalCost";
-            txtTotalCost.ReadOnly = true;
             txtTotalCost.Size = new Size(100, 23);
-            txtTotalCost.TabIndex = 14;
-            txtTotalCost.TabStop = false;
+            txtTotalCost.TabIndex = 8;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Enabled = false;
             label6.Location = new Point(192, 152);
             label6.Name = "label6";
             label6.Size = new Size(33, 15);

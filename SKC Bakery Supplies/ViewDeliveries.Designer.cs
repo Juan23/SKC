@@ -77,7 +77,7 @@
             btnPrintDaily.TabIndex = 6;
             btnPrintDaily.Text = "Print Day Report";
             btnPrintDaily.UseVisualStyleBackColor = true;
-            btnPrintDaily.Click += this.btnPrintDaily_Click;
+            btnPrintDaily.Click += btnPrintDaily_Click;
             // 
             // btnDelete
             // 
@@ -114,6 +114,7 @@
             dtpEnd.Name = "dtpEnd";
             dtpEnd.Size = new Size(200, 23);
             dtpEnd.TabIndex = 2;
+            dtpEnd.Value = new DateTime(2026, 7, 7, 18, 8, 23, 0);
             // 
             // label1
             // 

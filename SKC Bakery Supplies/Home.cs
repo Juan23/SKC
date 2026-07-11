@@ -52,5 +52,25 @@ namespace SKC_Bakery_Supplies
             frmViewDeliveries viewDeliveriesScreen = new frmViewDeliveries();
             viewDeliveriesScreen.ShowDialog();
         }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void btnSync_Click(object sender, EventArgs e)
+        {
+            btnSync.Enabled = false;
+            btnSync.Text = "Syncing...";
+
+            // Assuming this POS terminal is stationed at the "Yoho" branch. 
+            // You can make this dynamic later via a settings file.
+            string resultMessage = await NetworkSyncManager.SyncDeliveriesToServer("Yoho");
+
+            MessageBox.Show(resultMessage, "Sync Status");
+
+            btnSync.Text = "Sync to Central Server";
+            btnSync.Enabled = true;
+        }
     }
 }

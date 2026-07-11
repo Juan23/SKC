@@ -16,6 +16,7 @@ namespace SKC_Bakery_Supplies
         private bool isSelecting = false;
         private string currentTransactionId;
         private List<DeliveryLog> completedLogsForPrint;
+        private int printDeliveryIndex = 0;
 
         public frmDelivery()
         {
@@ -174,33 +175,27 @@ namespace SKC_Bakery_Supplies
             // Replace the existing BakeryDatabaseManager.AddDeliveryBulk(finalLogs); and print logic with this:
             try
             {
-                BakeryDatabaseManager.AddDeliveryBulk(finalLogs);
-                completedLogsForPrint = finalLogs;
+                completedLogsForPrint = BakeryDatabaseManager.AddDeliveryBulk(finalLogs);
 
                 // --- THE PRINT ENGINE TRIGGER ---
                 PrintDocument pDoc = new PrintDocument();
+
+                // Force A4 size (8.27" x 11.69") so the old PC doesn't squish it
+                pDoc.DefaultPageSettings.PaperSize = new PaperSize("A4", 827, 1169);
                 pDoc.PrintPage += RenderDeliverySlip;
 
-                // 1. Create a clean, silent preview window
-                Form previewForm = new Form { Text = "Delivery Sheet Preview", Width = 800, Height = 1000, ShowIcon = false };
-
-                // 2. Create our own Print Button (Moved to Top)
-                Button btnPrint = new Button { Text = "Print Report", Dock = DockStyle.Top, Height = 45, Cursor = Cursors.Hand };
-                btnPrint.Click += (s, ev) =>
+                // Revert to the standard WinForms built-in preview dialog
+                PrintPreviewDialog previewDialog = new PrintPreviewDialog
                 {
-                    PrintDialog pd = new PrintDialog { Document = pDoc, UseEXDialog = true };
-                    if (pd.ShowDialog() == DialogResult.OK)
-                    {
-                        try { pDoc.Print(); }
-                        catch (System.ComponentModel.Win32Exception) { /* catch cancel */ }
-                        catch (Exception ex) { MessageBox.Show($"Print failed: {ex.Message}", "Error"); }
-                    }
+                    Document = pDoc,
+                    Width = 800,
+                    Height = 1000,
+                    ShowIcon = false,
+                    Text = "Delivery Sheet Preview"
                 };
 
-                PrintPreviewControl ppc = new PrintPreviewControl { Dock = DockStyle.Fill, Document = pDoc };
-                previewForm.Controls.Add(btnPrint);
-                previewForm.Controls.Add(ppc);
-                previewForm.ShowDialog();
+                printDeliveryIndex = 0;
+                previewDialog.ShowDialog();
 
                 // 3. Cleanup & Reset
                 pDoc.PrintPage -= RenderDeliverySlip;

@@ -22,12 +22,15 @@ namespace SKC_Bakery_Supplies
 
         // Stops the dropdown from aggressively reopening when a selection is made
         private bool isSelecting = false;
+        private bool isAutoCalculating = false;
 
         public frmPurchases()
         {
             InitializeComponent();
+            txtTotalCost.TextChanged += CalculateUnitCostFromTotal;
             dgvPurchaseItems.DataSource = draftItems;
             draftItems.ListChanged += (s, e) => UpdateRunningTotal();
+
         }
 
         private void frmPurchases_Load(object sender, EventArgs e)
@@ -151,6 +154,7 @@ namespace SKC_Bakery_Supplies
             txtProductSearch.Clear();
             numQty.Value = 1;
             numUnitCost.Value = 0;
+            txtTotalCost.Text = "0.00";
             txtProductSearch.Focus();
         }
 
@@ -242,18 +246,31 @@ namespace SKC_Bakery_Supplies
 
         private void CalculateTotalCost(object sender, EventArgs e)
         {
-            // 1. Set default values
-            decimal quantity = 0;
-            decimal unitCost = 0;
+            if (isAutoCalculating) return;
+            isAutoCalculating = true;
 
-            // 2. Safely parse the RAW TEXT instead of the .Value property. 
-            // If the box is empty or has an invalid character, it safely falls back to 0 without crashing.
-            decimal.TryParse(numQty.Text, out quantity);
-            decimal.TryParse(numUnitCost.Text, out unitCost);
+            decimal.TryParse(numQty.Text, out decimal quantity);
+            decimal.TryParse(numUnitCost.Text, out decimal unitCost);
 
-            // 3. Execute the math and update the locked textbox
-            decimal total = quantity * unitCost;
-            txtTotalCost.Text = $"{total:N2}";
+            txtTotalCost.Text = (quantity * unitCost).ToString("0.00");
+
+            isAutoCalculating = false;
+        }
+
+        private void CalculateUnitCostFromTotal(object sender, EventArgs e)
+        {
+            if (isAutoCalculating) return;
+            isAutoCalculating = true;
+
+            decimal.TryParse(numQty.Text, out decimal quantity);
+            decimal.TryParse(txtTotalCost.Text, out decimal totalCost);
+
+            if (quantity > 0)
+            {
+                numUnitCost.Value = totalCost / quantity;
+            }
+
+            isAutoCalculating = false;
         }
     }
 }

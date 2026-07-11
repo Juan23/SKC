@@ -30,6 +30,7 @@ namespace SKC_Bakery_Supplies
                 try { connection.Execute("ALTER TABLE Inventory ADD COLUMN IsActive INTEGER DEFAULT 1"); } catch { }
                 try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN Requester TEXT"); } catch { }
                 try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN Reason TEXT"); } catch { }
+                try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN IsSynced INTEGER DEFAULT 0"); } catch { }
             }
         }
 
@@ -175,8 +176,10 @@ namespace SKC_Bakery_Supplies
             }
         }
 
-        public static void AddDeliveryBulk(List<DeliveryLog> deliveries)
+        public static List<DeliveryLog> AddDeliveryBulk(List<DeliveryLog> deliveries)
         {
+            var executedLogs = new List<DeliveryLog>();
+
             using (var connection = new SqliteConnection(connectionString))
             {
                 connection.Open();
@@ -187,7 +190,6 @@ namespace SKC_Bakery_Supplies
                         foreach (var item in deliveries)
                         {
                             int qtyNeeded = item.Qty;
-                            double totalCostForThisLine = 0;
 
                             string lotSql = "SELECT * FROM InventoryLots WHERE SKU = @SKU AND RemainingQty > 0 ORDER BY DateReceived ASC";
                             var availableLots = connection.Query<InventoryLot>(lotSql, new { SKU = item.SKU }, transaction).AsList();
@@ -197,22 +199,35 @@ namespace SKC_Bakery_Supplies
                                 if (qtyNeeded == 0) break;
 
                                 int qtyToTake = Math.Min(qtyNeeded, lot.RemainingQty);
-                                totalCostForThisLine += (qtyToTake * lot.UnitCost);
+                                double costForThisChunk = (qtyToTake * lot.UnitCost);
 
                                 lot.RemainingQty -= qtyToTake;
                                 qtyNeeded -= qtyToTake;
 
                                 connection.Execute("UPDATE InventoryLots SET RemainingQty = @RemainingQty WHERE LotId = @LotId",
                                     new { RemainingQty = lot.RemainingQty, LotId = lot.LotId }, transaction);
+
+                                // Create the exact line item for this specific lot
+                                var chunkLog = new DeliveryLog
+                                {
+                                    TransactionId = item.TransactionId,
+                                    Date = item.Date,
+                                    SKU = item.SKU,
+                                    Qty = qtyToTake,
+                                    ToBranch = item.ToBranch,
+                                    Requester = item.Requester,
+                                    Reason = item.Reason,
+                                    TotalLineCost = costForThisChunk
+                                };
+
+                                string insertSql = @"INSERT INTO DeliveryLogs (TransactionId, Date, SKU, Qty, ToBranch, TotalLineCost, Requester, Reason) 
+                                             VALUES (@TransactionId, @Date, @SKU, @Qty, @ToBranch, @TotalLineCost, @Requester, @Reason)";
+                                connection.Execute(insertSql, chunkLog, transaction);
+
+                                executedLogs.Add(chunkLog);
                             }
 
                             if (qtyNeeded > 0) throw new Exception($"Insufficient inventory for SKU: {item.SKU}. Short by {qtyNeeded} units.");
-
-                            item.TotalLineCost = totalCostForThisLine;
-
-                            string insertSql = @"INSERT INTO DeliveryLogs (TransactionId, Date, SKU, Qty, ToBranch, TotalLineCost, Requester, Reason) 
-                     VALUES (@TransactionId, @Date, @SKU, @Qty, @ToBranch, @TotalLineCost, @Requester, @Reason)";
-                            connection.Execute(insertSql, item, transaction);
                         }
                         transaction.Commit();
                     }
@@ -223,6 +238,7 @@ namespace SKC_Bakery_Supplies
                     }
                 }
             }
+            return executedLogs;
         }
 
         public static List<DeliveryTicketSummary> GetDeliveryTickets(DateTime startDate, DateTime endDate)
@@ -295,14 +311,32 @@ namespace SKC_Bakery_Supplies
             using (var connection = new SqliteConnection(connectionString))
             {
                 string sql = @"
-            SELECT d.TransactionId, d.ToBranch, d.Requester, d.Reason, d.SKU, i.BaseName, i.Brand, SUM(d.Qty) as Qty, SUM(d.TotalLineCost) as TotalLineCost
+            SELECT d.TransactionId, d.ToBranch, d.Requester, d.Reason, d.SKU, i.BaseName, i.Brand, d.Qty, d.TotalLineCost
             FROM DeliveryLogs d
             LEFT JOIN Inventory i ON d.SKU = i.SKU
             WHERE date(d.Date) = date(@TargetDate)
-            GROUP BY d.TransactionId, d.ToBranch, d.Requester, d.Reason, d.SKU, i.BaseName, i.Brand
             ORDER BY d.ToBranch, d.TransactionId, i.Brand, i.BaseName";
 
                 return connection.Query<DailyDeliveryPrintItem>(sql, new { TargetDate = targetDate.ToString("yyyy-MM-dd") }).ToList();
+            }
+        }
+
+        public static List<DeliveryLog> GetUnsyncedDeliveries()
+        {
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                return connection.Query<DeliveryLog>("SELECT * FROM DeliveryLogs WHERE IsSynced = 0 OR IsSynced IS NULL").ToList();
+            }
+        }
+
+        public static void MarkDeliveriesAsSynced(List<string> transactionIds)
+        {
+            if (transactionIds == null || transactionIds.Count == 0) return;
+
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                // Updates all matching IDs in one shot
+                connection.Execute("UPDATE DeliveryLogs SET IsSynced = 1 WHERE TransactionId IN @Ids", new { Ids = transactionIds });
             }
         }
 

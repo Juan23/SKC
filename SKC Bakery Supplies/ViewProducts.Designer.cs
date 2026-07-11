@@ -42,6 +42,7 @@
             txtNewBrand = new TextBox();
             label1 = new Label();
             txtNewSKU = new TextBox();
+            btnPrintInventory = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvProducts).BeginInit();
             grpQuickAddProduct.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numNewPrice).BeginInit();
@@ -101,7 +102,7 @@
             grpQuickAddProduct.Controls.Add(txtNewSKU);
             grpQuickAddProduct.Location = new Point(800, 8);
             grpQuickAddProduct.Name = "grpQuickAddProduct";
-            grpQuickAddProduct.Size = new Size(240, 408);
+            grpQuickAddProduct.Size = new Size(240, 208);
             grpQuickAddProduct.TabIndex = 4;
             grpQuickAddProduct.TabStop = false;
             grpQuickAddProduct.Text = "Quick Add Product";
@@ -183,11 +184,22 @@
             txtNewSKU.Size = new Size(72, 23);
             txtNewSKU.TabIndex = 0;
             // 
+            // btnPrintInventory
+            // 
+            btnPrintInventory.Location = new Point(944, 424);
+            btnPrintInventory.Name = "btnPrintInventory";
+            btnPrintInventory.Size = new Size(99, 23);
+            btnPrintInventory.TabIndex = 13;
+            btnPrintInventory.Text = "Print Inventory";
+            btnPrintInventory.UseVisualStyleBackColor = true;
+            btnPrintInventory.Click += btnPrintInventory_Click;
+            // 
             // frmViewProducts
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1047, 450);
+            Controls.Add(btnPrintInventory);
             Controls.Add(grpQuickAddProduct);
             Controls.Add(btnDelete);
             Controls.Add(btnEdit);
@@ -219,5 +231,6 @@
         private TextBox txtNewBaseName;
         private Label label2;
         private TextBox txtNewBrand;
+        private Button btnPrintInventory;
     }
 }

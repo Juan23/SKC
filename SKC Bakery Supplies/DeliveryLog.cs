@@ -23,6 +23,7 @@ namespace SKC_Bakery_Supplies
         public double TotalLineCost { get; set; }
         public string Requester { get; set; }
         public string Reason { get; set; }
+        public int IsSynced { get; set; }
     }
 
     public class DeliveryTicketSummary

@@ -37,12 +37,15 @@
             groupBox1 = new GroupBox();
             btnPrintReport = new Button();
             grpDelivery = new GroupBox();
-            btnCreateDelivery = new Button();
             btnViewDeliveries = new Button();
+            btnCreateDelivery = new Button();
+            groupBox2 = new GroupBox();
+            btnSync = new Button();
             grpPurchases.SuspendLayout();
             grpInventory.SuspendLayout();
             groupBox1.SuspendLayout();
             grpDelivery.SuspendLayout();
+            groupBox2.SuspendLayout();
             SuspendLayout();
             // 
             // btnAddNewPurchase
@@ -137,16 +140,6 @@
             grpDelivery.TabStop = false;
             grpDelivery.Text = "Delivery";
             // 
-            // btnCreateDelivery
-            // 
-            btnCreateDelivery.Location = new Point(8, 24);
-            btnCreateDelivery.Name = "btnCreateDelivery";
-            btnCreateDelivery.Size = new Size(75, 23);
-            btnCreateDelivery.TabIndex = 1;
-            btnCreateDelivery.Text = "Create Delivery";
-            btnCreateDelivery.UseVisualStyleBackColor = true;
-            btnCreateDelivery.Click += btnCreateDelivery_Click;
-            // 
             // btnViewDeliveries
             // 
             btnViewDeliveries.Location = new Point(8, 48);
@@ -157,11 +150,43 @@
             btnViewDeliveries.UseVisualStyleBackColor = true;
             btnViewDeliveries.Click += btnViewDeliveries_Click;
             // 
+            // btnCreateDelivery
+            // 
+            btnCreateDelivery.Location = new Point(8, 24);
+            btnCreateDelivery.Name = "btnCreateDelivery";
+            btnCreateDelivery.Size = new Size(75, 23);
+            btnCreateDelivery.TabIndex = 1;
+            btnCreateDelivery.Text = "Create Delivery";
+            btnCreateDelivery.UseVisualStyleBackColor = true;
+            btnCreateDelivery.Click += btnCreateDelivery_Click;
+            // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(btnSync);
+            groupBox2.Location = new Point(456, 8);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(112, 104);
+            groupBox2.TabIndex = 6;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "MAIN OFFICE";
+            groupBox2.Enter += groupBox2_Enter;
+            // 
+            // btnSync
+            // 
+            btnSync.Location = new Point(8, 24);
+            btnSync.Name = "btnSync";
+            btnSync.Size = new Size(96, 23);
+            btnSync.TabIndex = 3;
+            btnSync.Text = "Sync Reports";
+            btnSync.UseVisualStyleBackColor = true;
+            btnSync.Click += btnSync_Click;
+            // 
             // frmHome
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(groupBox2);
             Controls.Add(grpDelivery);
             Controls.Add(groupBox1);
             Controls.Add(grpInventory);
@@ -172,6 +197,7 @@
             grpInventory.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             grpDelivery.ResumeLayout(false);
+            groupBox2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -188,5 +214,7 @@
         private GroupBox grpDelivery;
         private Button btnCreateDelivery;
         private Button btnViewDeliveries;
+        private GroupBox groupBox2;
+        private Button btnSync;
     }
 }

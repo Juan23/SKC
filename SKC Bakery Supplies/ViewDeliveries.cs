@@ -30,8 +30,7 @@ namespace SKC_Bakery_Supplies
         {
             masterCatalog = BakeryDatabaseManager.GetAllProducts();
 
-            // Default to viewing the last 7 days
-            dtpStart.Value = DateTime.Today.AddDays(-7);
+            dtpStart.Value = DateTime.Today;
             dtpEnd.Value = DateTime.Today;
             LoadGrid();
         }

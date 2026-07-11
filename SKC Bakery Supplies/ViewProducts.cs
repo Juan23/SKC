@@ -1,19 +1,22 @@
-﻿using System;
+﻿using Dapper;
+using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
+using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.Data.Sqlite;
-using Dapper;
-using System.Globalization;
 
 namespace SKC_Bakery_Supplies
 {
     public partial class frmViewProducts : Form
     {
         private List<BakeryProduct> masterList;
+        private PrintDocument pDocInventory = new PrintDocument();
+        private int printInventoryIndex = 0;
 
         public frmViewProducts()
         {
@@ -197,6 +200,95 @@ namespace SKC_Bakery_Supplies
                 // Selects from index 0 to the absolute end of the string
                 numericControl.Select(0, numericControl.Text.Length);
             }
+        }
+
+        private void btnPrintInventory_Click(object sender, EventArgs e)
+        {
+            if (masterList == null || masterList.Count == 0) return;
+
+            printInventoryIndex = 0; // Reset pagination
+            pDocInventory.PrintPage -= RenderInventoryReport;
+            pDocInventory.PrintPage += RenderInventoryReport;
+
+            Form previewForm = new Form { Text = "Inventory Sheet Preview", Width = 800, Height = 1000, ShowIcon = false };
+            Button btnPrint = new Button { Text = "Print Report", Dock = DockStyle.Top, Height = 45, Cursor = Cursors.Hand };
+            btnPrint.Click += (s, ev) =>
+            {
+                PrintDialog pd = new PrintDialog { Document = pDocInventory, UseEXDialog = true };
+                if (pd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        printInventoryIndex = 0;
+                        pDocInventory.Print();
+                    }
+                    catch (Exception ex) { MessageBox.Show($"Print failed: {ex.Message}", "Error"); }
+                }
+            };
+
+            PrintPreviewControl ppc = new PrintPreviewControl { Dock = DockStyle.Fill, Document = pDocInventory };
+            previewForm.Controls.Add(btnPrint);
+            previewForm.Controls.Add(ppc);
+            previewForm.ShowDialog();
+        }
+
+        private void RenderInventoryReport(object sender, PrintPageEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Font titleFont = new Font("Courier New", 16, FontStyle.Bold);
+            Font headerFont = new Font("Courier New", 12, FontStyle.Bold);
+            Font regularFont = new Font("Courier New", 11);
+            Brush brush = Brushes.Black;
+
+            int y = 50;
+            int margin = 50;
+            int rightEdge = e.PageBounds.Width - 50;
+
+            g.DrawString("SKC BAKERY SUPPLIES", titleFont, brush, margin, y);
+            y += 30;
+            g.DrawString("PHYSICAL INVENTORY COUNT SHEET", headerFont, brush, margin, y);
+            y += 25;
+            g.DrawString($"DATE: {DateTime.Now:yyyy-MM-dd hh:mm tt}", regularFont, brush, margin, y);
+            y += 40;
+
+            // Table Headers
+            g.DrawLine(Pens.Black, margin, y, rightEdge, y);
+            y += 10;
+            g.DrawString("SYSTEM QTY", headerFont, brush, margin, y);
+            g.DrawString("ITEM DESCRIPTION", headerFont, brush, margin + 120, y);
+            g.DrawString("ACTUAL QTY", headerFont, brush, rightEdge - 150, y);
+            y += 25;
+            g.DrawLine(Pens.Black, margin, y, rightEdge, y);
+            y += 15;
+
+            // Render Items with Pagination
+            while (printInventoryIndex < masterList.Count)
+            {
+                var item = masterList[printInventoryIndex];
+                string description = string.IsNullOrWhiteSpace(item.BaseName) ? item.SKU : $"{item.Brand} {item.BaseName}";
+
+                g.DrawString(item.CurrentStock.ToString(), regularFont, brush, margin, y);
+                g.DrawString(description, regularFont, brush, margin + 120, y);
+                g.DrawString("__________", regularFont, brush, rightEdge - 150, y); // Blank line for physical writing
+                y += 25;
+
+                printInventoryIndex++;
+
+                // Page break logic
+                if (y > e.MarginBounds.Bottom - 50)
+                {
+                    e.HasMorePages = true;
+                    return;
+                }
+            }
+
+            // End of Document
+            g.DrawLine(Pens.Black, margin, y, rightEdge, y);
+            y += 40;
+            g.DrawString("Counted By: ___________________", regularFont, brush, margin, y);
+            g.DrawString("Verified By: ___________________", regularFont, brush, rightEdge - 300, y);
+
+            e.HasMorePages = false;
         }
     }
 }
