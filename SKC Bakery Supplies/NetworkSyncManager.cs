@@ -10,64 +10,78 @@ namespace SKC_Bakery_Supplies
 {
     public static class NetworkSyncManager
     {
-        // Your Tailscale IP and API Port
-        private static readonly string ApiBaseUrl = "https://100.108.218.24:7290";
+        // Target your central server on the secure Tailscale IP over plain HTTP (fully encrypted by Tailscale)
+        private static readonly string ApiBaseUrl = "http://100.84.79.35:7290";
 
-        // The HTTP Client with a bypass for the local dev SSL certificate
-        private static readonly HttpClient client = new HttpClient(new HttpClientHandler
+        private static readonly HttpClient client = new HttpClient
         {
-            ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-        });
+            Timeout = TimeSpan.FromSeconds(30)
+        };
 
-        public static async Task<string> SyncDeliveriesToServer(string branchName)
+        /// <summary>
+        /// Orchestrates a master synchronization pass between this branch's local SQLite ledger and Central PostgreSQL.
+        /// </summary>
+        public static async Task<string> PerformMasterSync(string branchName)
         {
             try
             {
-                // 1. Grab unsynced data
-                var unsynced = BakeryDatabaseManager.GetUnsyncedDeliveries();
+                var unsyncedPurchases = BakeryDatabaseManager.GetUnsyncedPurchases();
+                var unsyncedDeliveries = BakeryDatabaseManager.GetUnsyncedDeliveries();
+                var unsyncedLots = BakeryDatabaseManager.GetUnsyncedInventoryLots();
 
-                if (unsynced == null || unsynced.Count == 0)
-                {
-                    return "Everything is already up to date.";
-                }
+                // Fetch the master catalog from SQLite so we can sync it to PostgreSQL
+                var inventoryItems = BakeryDatabaseManager.GetAllProducts();
 
-                // 2. Format it to match the Server's exact JSON expectation
+                if (!unsyncedPurchases.Any() && !unsyncedDeliveries.Any() && !unsyncedLots.Any())
+                    return "Database is already fully synchronized with Central.";
+
                 var payload = new
                 {
                     BranchName = branchName,
-                    Deliveries = unsynced.Select(d => new
-                    {
-                        TransactionId = d.TransactionId,
-                        Date = d.Date,
-                        SKU = d.SKU,
-                        Qty = d.Qty,
-                        TotalLineCost = d.TotalLineCost
-                    }).ToList()
+                    // Send the catalog to satisfy PostgreSQL Foreign Key constraints
+                    Inventory = inventoryItems.Select(i => new { i.SKU, i.Brand, i.BaseName, i.Price, i.IsActive }).ToList(),
+                    Purchases = unsyncedPurchases.Select(p => new { p.Id, p.TransactionId, p.Date, p.SKU, p.Qty, p.UnitCost, p.Supplier }).ToList(),
+                    Deliveries = unsyncedDeliveries.Select(d => new { d.Id, d.TransactionId, d.Date, d.SKU, d.Qty, d.ToBranch, d.TotalLineCost, d.Requester, d.Reason }).ToList(),
+                    InventoryLots = unsyncedLots.Select(l => new { l.LotId, l.SKU, l.DateReceived, l.OriginalQty, l.RemainingQty, l.UnitCost }).ToList()
                 };
 
                 string jsonPayload = JsonSerializer.Serialize(payload);
                 var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-
-                // 3. Fire over Tailscale
-                HttpResponseMessage response = await client.PostAsync($"{ApiBaseUrl}/api/sync/deliveries", content);
+                HttpResponseMessage response = await client.PostAsync($"{ApiBaseUrl}/api/sync/master", content);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // 4. Only mark as synced if the server replied with a 200 OK
-                    var transactionIds = unsynced.Select(x => x.TransactionId).Distinct().ToList();
-                    BakeryDatabaseManager.MarkDeliveriesAsSynced(transactionIds);
+                    var syncResult = JsonSerializer.Deserialize<SyncResponseDto>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    if (syncResult != null && syncResult.Success)
+                    {
+                        BakeryDatabaseManager.MarkPurchasesAsSynced(syncResult.SyncedPurchaseIds);
+                        BakeryDatabaseManager.MarkDeliveriesAsSyncedById(syncResult.SyncedDeliveryIds);
+                        BakeryDatabaseManager.MarkInventoryLotsAsSynced(syncResult.SyncedLotIds);
 
-                    return $"Success! Synced {unsynced.Count} delivery lines to the central server.";
+                        int total = (syncResult.SyncedPurchaseIds?.Count ?? 0) + (syncResult.SyncedDeliveryIds?.Count ?? 0) + (syncResult.SyncedLotIds?.Count ?? 0);
+                        return $"Sync Success! Transported {total} records safely to Central server.";
+                    }
+                    return "Sync aborted: Central server processed the payload but returned a failure status.";
                 }
-                else
-                {
-                    return $"Server rejected the sync. Status: {response.StatusCode}";
-                }
+
+                // Force the MessageBox to show us the EXACT server crash details
+                string errorDetails = await response.Content.ReadAsStringAsync();
+                return $"Server Rejected Sync request.\nCode: {response.StatusCode}\n\nDetails:\n{errorDetails}";
             }
             catch (Exception ex)
             {
-                return $"Connection failed: {ex.Message}";
+                return $"Sync execution failed: {ex.Message}";
             }
         }
+    }
+
+    // Helper classes for deserialization matching server DTOs
+    public class SyncResponseDto
+    {
+        public bool Success { get; set; }
+        public List<string> SyncedInventorySKUs { get; set; }
+        public List<int> SyncedPurchaseIds { get; set; }
+        public List<int> SyncedDeliveryIds { get; set; }
+        public List<int> SyncedLotIds { get; set; }
     }
 }

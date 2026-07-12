@@ -63,11 +63,9 @@ namespace SKC_Bakery_Supplies
             btnSync.Enabled = false;
             btnSync.Text = "Syncing...";
 
-            // Assuming this POS terminal is stationed at the "Yoho" branch. 
-            // You can make this dynamic later via a settings file.
-            string resultMessage = await NetworkSyncManager.SyncDeliveriesToServer("Yoho");
+            string status = await NetworkSyncManager.PerformMasterSync("Bakery Supplies"); // branch name
 
-            MessageBox.Show(resultMessage, "Sync Status");
+            MessageBox.Show(status);
 
             btnSync.Text = "Sync to Central Server";
             btnSync.Enabled = true;

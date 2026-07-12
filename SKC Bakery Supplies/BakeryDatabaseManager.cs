@@ -31,6 +31,10 @@ namespace SKC_Bakery_Supplies
                 try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN Requester TEXT"); } catch { }
                 try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN Reason TEXT"); } catch { }
                 try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN IsSynced INTEGER DEFAULT 0"); } catch { }
+
+                try { connection.Execute("ALTER TABLE PurchaseLogs ADD COLUMN IsSynced INTEGER DEFAULT 0"); } catch { }
+                try { connection.Execute("ALTER TABLE DeliveryLogs ADD COLUMN IsSynced INTEGER DEFAULT 0"); } catch { }
+                try { connection.Execute("ALTER TABLE InventoryLots ADD COLUMN IsSynced INTEGER DEFAULT 0"); } catch { }
             }
         }
 
@@ -89,11 +93,11 @@ namespace SKC_Bakery_Supplies
                 connection.Open();
                 using (var transaction = connection.BeginTransaction())
                 {
-                    string sqlPurchase = @"INSERT INTO PurchaseLogs (TransactionId, Date, SKU, Qty, UnitCost, Supplier) VALUES (@TransactionId, @Date, @SKU, @Qty, @UnitCost, @Supplier)";
-                    connection.Execute(sqlPurchase, purchases, transaction: transaction);
+                    string sqlPurchase = @"INSERT INTO PurchaseLogs (TransactionId, Date, SKU, Qty, UnitCost, Supplier, IsSynced) 
+                       VALUES (@TransactionId, @Date, @SKU, @Qty, @UnitCost, @Supplier, 0)";
 
-                    string sqlLot = @"INSERT INTO InventoryLots (SKU, DateReceived, OriginalQty, RemainingQty, UnitCost) VALUES (@SKU, @Date, @Qty, @Qty, @UnitCost)";
-                    connection.Execute(sqlLot, purchases, transaction: transaction);
+                    string sqlLot = @"INSERT INTO InventoryLots (SKU, DateReceived, OriginalQty, RemainingQty, UnitCost, IsSynced) 
+                  VALUES (@SKU, @Date, @Qty, @Qty, @UnitCost, 0)";
 
                     transaction.Commit();
                 }
@@ -204,8 +208,8 @@ namespace SKC_Bakery_Supplies
                                 lot.RemainingQty -= qtyToTake;
                                 qtyNeeded -= qtyToTake;
 
-                                connection.Execute("UPDATE InventoryLots SET RemainingQty = @RemainingQty WHERE LotId = @LotId",
-                                    new { RemainingQty = lot.RemainingQty, LotId = lot.LotId }, transaction);
+                                connection.Execute("UPDATE InventoryLots SET RemainingQty = @RemainingQty, IsSynced = 0 WHERE LotId = @LotId",
+                                                   new { RemainingQty = lot.RemainingQty, LotId = lot.LotId }, transaction);
 
                                 // Create the exact line item for this specific lot
                                 var chunkLog = new DeliveryLog
@@ -217,11 +221,12 @@ namespace SKC_Bakery_Supplies
                                     ToBranch = item.ToBranch,
                                     Requester = item.Requester,
                                     Reason = item.Reason,
-                                    TotalLineCost = costForThisChunk
+                                    TotalLineCost = costForThisChunk,
+                                    IsSynced = 0
                                 };
 
-                                string insertSql = @"INSERT INTO DeliveryLogs (TransactionId, Date, SKU, Qty, ToBranch, TotalLineCost, Requester, Reason) 
-                                             VALUES (@TransactionId, @Date, @SKU, @Qty, @ToBranch, @TotalLineCost, @Requester, @Reason)";
+                                string insertSql = @"INSERT INTO DeliveryLogs (TransactionId, Date, SKU, Qty, ToBranch, TotalLineCost, Requester, Reason, IsSynced) 
+                     VALUES (@TransactionId, @Date, @SKU, @Qty, @ToBranch, @TotalLineCost, @Requester, @Reason, 0)";
                                 connection.Execute(insertSql, chunkLog, transaction);
 
                                 executedLogs.Add(chunkLog);
@@ -321,14 +326,6 @@ namespace SKC_Bakery_Supplies
             }
         }
 
-        public static List<DeliveryLog> GetUnsyncedDeliveries()
-        {
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                return connection.Query<DeliveryLog>("SELECT * FROM DeliveryLogs WHERE IsSynced = 0 OR IsSynced IS NULL").ToList();
-            }
-        }
-
         public static void MarkDeliveriesAsSynced(List<string> transactionIds)
         {
             if (transactionIds == null || transactionIds.Count == 0) return;
@@ -340,6 +337,45 @@ namespace SKC_Bakery_Supplies
             }
         }
 
+
+        public static List<PurchaseLog> GetUnsyncedPurchases()
+        {
+            using (var connection = new SqliteConnection(connectionString))
+                return connection.Query<PurchaseLog>("SELECT * FROM PurchaseLogs WHERE IsSynced = 0 OR IsSynced IS NULL").ToList();
+        }
+
+        public static List<DeliveryLog> GetUnsyncedDeliveries()
+        {
+            using (var connection = new SqliteConnection(connectionString))
+                return connection.Query<DeliveryLog>("SELECT * FROM DeliveryLogs WHERE IsSynced = 0 OR IsSynced IS NULL").ToList();
+        }
+
+        public static List<InventoryLot> GetUnsyncedInventoryLots()
+        {
+            using (var connection = new SqliteConnection(connectionString))
+                return connection.Query<InventoryLot>("SELECT * FROM InventoryLots WHERE IsSynced = 0 OR IsSynced IS NULL").ToList();
+        }
+
+        public static void MarkPurchasesAsSynced(List<int> ids)
+        {
+            if (ids != null && ids.Any())
+                using (var connection = new SqliteConnection(connectionString))
+                    connection.Execute("UPDATE PurchaseLogs SET IsSynced = 1 WHERE Id IN @Ids", new { Ids = ids });
+        }
+
+        public static void MarkDeliveriesAsSyncedById(List<int> ids)
+        {
+            if (ids != null && ids.Any())
+                using (var connection = new SqliteConnection(connectionString))
+                    connection.Execute("UPDATE DeliveryLogs SET IsSynced = 1 WHERE Id IN @Ids", new { Ids = ids });
+        }
+
+        public static void MarkInventoryLotsAsSynced(List<int> ids)
+        {
+            if (ids != null && ids.Any())
+                using (var connection = new SqliteConnection(connectionString))
+                    connection.Execute("UPDATE InventoryLots SET IsSynced = 1 WHERE LotId IN @Ids", new { Ids = ids });
+        }
 
     } //end
 }
