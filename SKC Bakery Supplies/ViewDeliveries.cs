@@ -26,9 +26,9 @@ namespace SKC_Bakery_Supplies
             InitializeComponent();
         }
 
-        private void frmViewDeliveries_Load(object sender, EventArgs e)
+        private async void frmViewDeliveries_Load(object sender, EventArgs e)
         {
-            masterCatalog = BakeryDatabaseManager.GetAllProducts();
+            masterCatalog = await CentralDataClient.GetAllProductsAsync();
 
             dtpStart.Value = DateTime.Today;
             dtpEnd.Value = DateTime.Today;

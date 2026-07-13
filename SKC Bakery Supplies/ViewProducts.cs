@@ -29,9 +29,9 @@ namespace SKC_Bakery_Supplies
             LoadGrid();
         }
 
-        private void LoadGrid()
+        private async void LoadGrid()
         {
-            masterList = BakeryDatabaseManager.GetAllProducts();
+            masterList = await CentralDataClient.GetAllProductsAsync();
             dgvProducts.DataSource = masterList;
 
             // Clean up the visuals

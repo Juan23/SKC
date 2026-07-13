@@ -24,9 +24,9 @@ namespace SKC_Bakery_Supplies
             dgvDeliveryItems.DataSource = draftItems;
         }
 
-        private void frmDelivery_Load(object sender, EventArgs e)
+        private async void frmDelivery_Load(object sender, EventArgs e)
         {
-            masterCatalog = BakeryDatabaseManager.GetAllProducts();
+            masterCatalog = await CentralDataClient.GetAllProductsAsync();
             txtProductSearch.AutoCompleteMode = AutoCompleteMode.None;
             // Load Requesters
             cmbRequester.Items.AddRange(new string[] { "Kaesseah P", "Gena-flor G.", "Allan A.", "Armando V.", "James M.", "Marites C.", "Anilien B.", "Allan V.",

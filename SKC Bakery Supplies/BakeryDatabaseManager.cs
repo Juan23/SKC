@@ -1,13 +1,29 @@
-﻿using System;
+﻿using Dapper;
+using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http.Json;
 using System.Text;
-using Dapper;
-using Microsoft.Data.Sqlite;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace SKC_Bakery_Supplies
 {
+
+    public static class CentralDataClient
+    {
+        private static readonly HttpClient client = new HttpClient();
+        private static readonly string ApiBaseUrl = "http://100.84.79.35:7290";
+
+        public static async Task<List<BakeryProduct>> GetAllProductsAsync()
+        {
+            // This hits the /api/inventory endpoint you just verified in the browser
+            return await client.GetFromJsonAsync<List<BakeryProduct>>($"{ApiBaseUrl}/api/inventory");
+        }
+    }
+
     public static class BakeryDatabaseManager
     {
         private static string connectionString = "Data Source = bakery_inventory.db";

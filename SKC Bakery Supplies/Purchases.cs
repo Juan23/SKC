@@ -39,9 +39,9 @@ namespace SKC_Bakery_Supplies
             txtProductSearch.AutoCompleteMode = AutoCompleteMode.None; // Kill native autocomplete
         }
 
-        private void RefreshCatalog()
+        private async void RefreshCatalog()
         {
-            masterCatalog = BakeryDatabaseManager.GetAllProducts();
+            masterCatalog = await CentralDataClient.GetAllProductsAsync();
         }
 
         private void txtProductSearch_TextChanged(object sender, EventArgs e)
