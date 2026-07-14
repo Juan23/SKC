@@ -13,6 +13,5 @@ namespace SKC_Bakery_Supplies
         public decimal UnitCost { get; set; }
         public string Supplier { get; set; }
         public string TransactionId { get; set; }
-        public int IsSynced { get; set; }
     }
 }

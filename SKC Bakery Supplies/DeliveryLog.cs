@@ -23,7 +23,6 @@ namespace SKC_Bakery_Supplies
         public double TotalLineCost { get; set; }
         public string Requester { get; set; }
         public string Reason { get; set; }
-        public int IsSynced { get; set; }
     }
 
     public class DeliveryTicketSummary
@@ -35,16 +34,6 @@ namespace SKC_Bakery_Supplies
         public string Requester { get; set; }
         public string Reason { get; set; }
         public double TotalCost { get; set; }
-    }
-
-    public class InventoryLot
-    {
-        public int LotId { get; set; }
-        public string SKU { get; set; }
-        public string DateReceived { get; set; }
-        public int OriginalQty { get; set; }
-        public int RemainingQty { get; set; }
-        public double UnitCost { get; set; }
     }
 
     public class DailyDeliveryPrintItem

@@ -41,7 +41,15 @@ namespace SKC_Bakery_Supplies
 
         private async void RefreshCatalog()
         {
-            masterCatalog = await CentralDataClient.GetAllProductsAsync();
+            try
+            {
+                masterCatalog = await CentralApiClient.GetAllProductsAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+                masterCatalog = new List<BakeryProduct>();
+            }
         }
 
         private void txtProductSearch_TextChanged(object sender, EventArgs e)
@@ -158,7 +166,7 @@ namespace SKC_Bakery_Supplies
             txtProductSearch.Focus();
         }
 
-        private void btnSubmitPurchase_Click(object sender, EventArgs e)
+        private async void btnSubmitPurchase_Click(object sender, EventArgs e)
         {
             if (draftItems.Count == 0) return;
             if (string.IsNullOrWhiteSpace(txtSupplier.Text))
@@ -188,7 +196,7 @@ namespace SKC_Bakery_Supplies
             }
 
             // Fire to the SQLite Ledger
-            BakeryDatabaseManager.AddPurchasesBulk(finalLogs);
+            await CentralApiClient.SubmitPurchasesAsync(finalLogs);
 
             MessageBox.Show($"Purchase Sheet committed safely.\nTicket ID: {transactionId}", "Success");
 

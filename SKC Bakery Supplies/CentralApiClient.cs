@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -9,7 +10,8 @@ namespace SKC_Bakery_Supplies
 {
     public static class CentralApiClient
     {
-        private static readonly string ApiBaseUrl = "http://100.84.79.35:7290";
+        private static readonly string ApiBaseUrl = "http://100.84.79.35:7290"; // droplet
+        // private static readonly string ApiBaseUrl = "http://localhost:53755";
 
         private static readonly HttpClient client = new HttpClient(new HttpClientHandler
         {
@@ -40,6 +42,96 @@ namespace SKC_Bakery_Supplies
 
             string errorDetails = await response.Content.ReadAsStringAsync();
             throw new Exception($"Failed to fetch catalog. Code: {response.StatusCode}\nDetails: {errorDetails}");
+        }
+
+        public static async Task AddProductAsync(object product)
+        {
+            var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/inventory", product, jsonOptions);
+            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                throw new Exception("Duplicate SKU");
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                string errorDetails = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to add product.\nDetails: {errorDetails}");
+            }
+        }
+
+        // -----------------------------------------------------------
+        // WRITE OPERATIONS
+        // -----------------------------------------------------------
+
+        public static async Task SubmitPurchasesAsync(object purchases)
+        {
+            var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/purchases", purchases, jsonOptions);
+            if (!response.IsSuccessStatusCode)
+            {
+                string errorDetails = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Purchase submission failed.\nCode: {response.StatusCode}\nDetails: {errorDetails}");
+            }
+        }
+
+        public static async Task<List<DeliveryLog>> SubmitDeliveriesAsync(object deliveries)
+        {
+            var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/deliveries", deliveries, jsonOptions);
+            if (!response.IsSuccessStatusCode)
+            {
+                string errorDetails = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Delivery submission failed (Likely insufficient inventory).\nDetails: {errorDetails}");
+            }
+            return await response.Content.ReadFromJsonAsync<List<DeliveryLog>>(jsonOptions) ?? new List<DeliveryLog>();
+        }
+
+        // --- HISTORY & REPORTS ---
+        public static async Task<List<PurchaseTicketSummary>> GetPurchaseTicketsAsync(DateTime start, DateTime end) =>
+            await client.GetFromJsonAsync<List<PurchaseTicketSummary>>($"{ApiBaseUrl}/api/purchases/tickets?start={start:yyyy-MM-dd}&end={end:yyyy-MM-dd}", jsonOptions);
+
+        public static async Task<List<PurchaseLog>> GetPurchaseDetailsAsync(string id) =>
+            await client.GetFromJsonAsync<List<PurchaseLog>>($"{ApiBaseUrl}/api/purchases/{id}", jsonOptions);
+
+        public static async Task DeletePurchaseTicketAsync(string id)
+        {
+            var res = await client.DeleteAsync($"{ApiBaseUrl}/api/purchases/{id}");
+            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
+        }
+
+        public static async Task<List<DeliveryTicketSummary>> GetDeliveryTicketsAsync(DateTime start, DateTime end) =>
+            await client.GetFromJsonAsync<List<DeliveryTicketSummary>>($"{ApiBaseUrl}/api/deliveries/tickets?start={start:yyyy-MM-dd}&end={end:yyyy-MM-dd}", jsonOptions);
+
+        public static async Task<List<DeliveryLog>> GetDeliveryDetailsAsync(string id) =>
+            await client.GetFromJsonAsync<List<DeliveryLog>>($"{ApiBaseUrl}/api/deliveries/{id}", jsonOptions);
+
+        public static async Task DeleteDeliveryTicketAsync(string id)
+        {
+            var res = await client.DeleteAsync($"{ApiBaseUrl}/api/deliveries/{id}");
+            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
+        }
+
+        public static async Task<List<DailyDeliveryPrintItem>> GetDailyDeliveryConsolidationAsync(DateTime date) =>
+            await client.GetFromJsonAsync<List<DailyDeliveryPrintItem>>($"{ApiBaseUrl}/api/deliveries/daily?targetDate={date:yyyy-MM-dd}", jsonOptions);
+
+        // --- PRODUCT MANAGEMENT ---
+        public static async Task UpdateProductAsync(string sku, string brand, string baseName)
+        {
+            var response = await client.PutAsJsonAsync($"{ApiBaseUrl}/api/inventory/{sku}", new { Brand = brand, BaseName = baseName }, jsonOptions);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Failed to update product.\nDetails: {await response.Content.ReadAsStringAsync()}");
+        }
+
+        public static async Task DeactivateProductAsync(string sku)
+        {
+            var response = await client.PatchAsync($"{ApiBaseUrl}/api/inventory/{sku}/deactivate", null);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Failed to discontinue product.\nDetails: {await response.Content.ReadAsStringAsync()}");
+        }
+
+        // --- CONNECTIVITY ---
+        public static async Task CheckHealthAsync()
+        {
+            var response = await client.GetAsync($"{ApiBaseUrl}/health");
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Server responded with {response.StatusCode}");
         }
     }
 }

@@ -33,7 +33,7 @@ namespace SKC_Bakery_Supplies
             return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(text.ToLower().Trim());
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtBaseName.Text))
             {
@@ -44,11 +44,18 @@ namespace SKC_Bakery_Supplies
             string cleanBrand = ToProperCase(txtBrand.Text);
             string cleanBaseName = ToProperCase(txtBaseName.Text);
 
-            // Execute the partial update
-            BakeryDatabaseManager.UpdateProductText(targetSKU, cleanBrand, cleanBaseName);
+            try
+            {
+                // Execute the partial update
+                await CentralApiClient.UpdateProductAsync(targetSKU, cleanBrand, cleanBaseName);
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
         }
     }
 }

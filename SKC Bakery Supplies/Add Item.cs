@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Dapper;
-using Microsoft.Data.Sqlite;
 using System.Globalization;
 
 namespace SKC_Bakery_Supplies
@@ -70,7 +68,7 @@ namespace SKC_Bakery_Supplies
         */
 
         // --- BUTTON LOGIC ---
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtBaseName.Text) || string.IsNullOrWhiteSpace(txtSKU.Text))
             {
@@ -85,21 +83,18 @@ namespace SKC_Bakery_Supplies
                 BaseName = ToProperCase(txtBaseName.Text),
                 // UOM = txtUOM.Text.ToLower().Trim(),
                 // PackMultiplier = numMultiplier.Value,
-                Price = numPrice.Value
+                Price = numPrice.Value,
+                IsActive = true
             };
 
             try
             {
-                using (var connection = new SqliteConnection("Data Source=bakery_inventory.db"))
-                {
-                    string sql = "INSERT INTO Inventory (SKU, Brand, BaseName, Price) VALUES (@SKU, @Brand, @BaseName, @Price)";
-                    connection.Execute(sql, NewProduct);
-                }
+                await CentralApiClient.AddProductAsync(NewProduct);
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
-            catch (SqliteException ex) when (ex.SqliteErrorCode == 19) // SQLite constraint violation (Duplicate SKU)
+            catch (Exception ex) when (ex.Message == "Duplicate SKU")
             {
                 MessageBox.Show("A product with this generated SKU already exists. Please modify the Brand, Name, or UOM to make it unique.", "Duplicate SKU Collision");
             }

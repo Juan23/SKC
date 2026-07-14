@@ -61,14 +61,22 @@ namespace SKC_Bakery_Supplies
         private async void btnSync_Click(object sender, EventArgs e)
         {
             btnSync.Enabled = false;
-            btnSync.Text = "Syncing...";
+            btnSync.Text = "Checking...";
 
-            string status = await NetworkSyncManager.PerformMasterSync("Bakery Supplies"); // branch name
-
-            MessageBox.Show(status);
-
-            btnSync.Text = "Sync to Central Server";
-            btnSync.Enabled = true;
+            try
+            {
+                await CentralApiClient.CheckHealthAsync();
+                MessageBox.Show("Connected to central server.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Cannot reach central server.\n{ex.Message}", "Connection Error");
+            }
+            finally
+            {
+                btnSync.Text = "Sync to Central Server";
+                btnSync.Enabled = true;
+            }
         }
     }
 }

@@ -11,7 +11,6 @@ namespace SKC_Bakery_Supplies
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            BakeryDatabaseManager.InitializeDatabase();
             Application.Run(new frmHome());
         }
     }

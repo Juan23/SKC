@@ -26,7 +26,15 @@ namespace SKC_Bakery_Supplies
 
         private async void frmDelivery_Load(object sender, EventArgs e)
         {
-            masterCatalog = await CentralDataClient.GetAllProductsAsync();
+            try
+            {
+                masterCatalog = await CentralApiClient.GetAllProductsAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+                masterCatalog = new List<BakeryProduct>();
+            }
             txtProductSearch.AutoCompleteMode = AutoCompleteMode.None;
             // Load Requesters
             cmbRequester.Items.AddRange(new string[] { "Kaesseah P", "Gena-flor G.", "Allan A.", "Armando V.", "James M.", "Marites C.", "Anilien B.", "Allan V.",
@@ -135,7 +143,7 @@ namespace SKC_Bakery_Supplies
             txtProductSearch.Focus();
         }
 
-        private void btnSubmitDelivery_Click(object sender, EventArgs e)
+        private async void btnSubmitDelivery_Click(object sender, EventArgs e)
         {
             if (draftItems.Count == 0) return;
             if (string.IsNullOrWhiteSpace(cmbBranch.Text))
@@ -172,10 +180,11 @@ namespace SKC_Bakery_Supplies
                 });
             }
 
-            // Replace the existing BakeryDatabaseManager.AddDeliveryBulk(finalLogs); and print logic with this:
             try
             {
-                completedLogsForPrint = BakeryDatabaseManager.AddDeliveryBulk(finalLogs);
+                // 1. Submit to the central server (this will throw an exception if it fails)
+                // 2. Use the server's response, which has the real per-lot FIFO cost split
+                completedLogsForPrint = await CentralApiClient.SubmitDeliveriesAsync(finalLogs);
 
                 // --- THE PRINT ENGINE TRIGGER ---
                 PrintDocument pDoc = new PrintDocument();

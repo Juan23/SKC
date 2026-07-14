@@ -28,7 +28,7 @@ namespace SKC_Bakery_Supplies
 
         private async void frmViewDeliveries_Load(object sender, EventArgs e)
         {
-            masterCatalog = await CentralDataClient.GetAllProductsAsync();
+            masterCatalog = await CentralApiClient.GetAllProductsAsync();
 
             dtpStart.Value = DateTime.Today;
             dtpEnd.Value = DateTime.Today;
@@ -40,14 +40,14 @@ namespace SKC_Bakery_Supplies
             LoadGrid();
         }
 
-        private void LoadGrid()
+        private async void LoadGrid()
         {
-            var tickets = BakeryDatabaseManager.GetDeliveryTickets(dtpStart.Value, dtpEnd.Value);
+            var tickets = await CentralApiClient.GetDeliveryTicketsAsync(dtpStart.Value, dtpEnd.Value);
             dgvTickets.DataSource = tickets;
             dgvTickets.ClearSelection();
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        private async void btnDelete_Click(object sender, EventArgs e)
         {
             if (dgvTickets.CurrentRow == null) return;
 
@@ -61,16 +61,16 @@ namespace SKC_Bakery_Supplies
 
             if (confirm == DialogResult.Yes)
             {
-                BakeryDatabaseManager.DeleteDeliveryTicket(selected.TransactionId);
+                await CentralApiClient.DeleteDeliveryTicketAsync(selected.TransactionId);
                 LoadGrid();
             }
         }
-        private void dgvTickets_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private async void dgvTickets_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
             printSummary = (DeliveryTicketSummary)dgvTickets.Rows[e.RowIndex].DataBoundItem;
-            printDetails = BakeryDatabaseManager.GetDeliveryDetails(printSummary.TransactionId);
+            printDetails = await CentralApiClient.GetDeliveryDetailsAsync(printSummary.TransactionId);
 
             pDoc.PrintPage -= RenderDeliverySlip;
             pDoc.PrintPage += RenderDeliverySlip;
@@ -190,10 +190,10 @@ namespace SKC_Bakery_Supplies
             e.HasMorePages = false;
         }
 
-        private void btnPrintDaily_Click(object sender, EventArgs e)
+        private async void btnPrintDaily_Click(object sender, EventArgs e)
         {
             printDailyDate = dtpStart.Value.Date;
-            printDailyDetails = BakeryDatabaseManager.GetDailyDeliveryConsolidation(printDailyDate);
+            printDailyDetails = await CentralApiClient.GetDailyDeliveryConsolidationAsync(printDailyDate);
 
             if (printDailyDetails.Count == 0)
             {

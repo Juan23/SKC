@@ -1,6 +1,4 @@
-﻿using Dapper;
-using Microsoft.Data.Sqlite;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -31,7 +29,7 @@ namespace SKC_Bakery_Supplies
 
         private async void LoadGrid()
         {
-            masterList = await CentralDataClient.GetAllProductsAsync();
+            masterList = await CentralApiClient.GetAllProductsAsync();
             dgvProducts.DataSource = masterList;
 
             // Clean up the visuals
@@ -58,7 +56,7 @@ namespace SKC_Bakery_Supplies
             }
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        private async void btnDelete_Click(object sender, EventArgs e)
         {
             if (dgvProducts.CurrentRow == null) return;
 
@@ -68,8 +66,15 @@ namespace SKC_Bakery_Supplies
 
             if (confirm == DialogResult.Yes)
             {
-                BakeryDatabaseManager.SoftDeleteProduct(selected.SKU);
-                LoadGrid(); // Refresh to hide the item
+                try
+                {
+                    await CentralApiClient.DeactivateProductAsync(selected.SKU);
+                    LoadGrid(); // Refresh to hide the item
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error");
+                }
             }
         }
 
@@ -137,7 +142,7 @@ namespace SKC_Bakery_Supplies
         */
 
         // --- 3. THE SAVE EXECUTION ---
-        private void btnSaveNew_Click(object sender, EventArgs e)
+        private async void btnSaveNew_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtNewBaseName.Text) || string.IsNullOrWhiteSpace(txtNewSKU.Text))
             {
@@ -158,11 +163,7 @@ namespace SKC_Bakery_Supplies
 
             try
             {
-                using (var connection = new SqliteConnection("Data Source=bakery_inventory.db"))
-                {
-                    string sql = "INSERT INTO Inventory (SKU, Brand, BaseName, Price, IsActive) VALUES (@SKU, @Brand, @BaseName, @Price, @IsActive)";
-                    connection.Execute(sql, newProduct);
-                }
+                await CentralApiClient.AddProductAsync(newProduct);
 
                 // 1. Refresh the grid instantly
                 LoadGrid();
@@ -170,16 +171,18 @@ namespace SKC_Bakery_Supplies
                 // 2. Wipe the Quick Add board clean for the next item
                 txtNewBrand.Clear();
                 txtNewBaseName.Clear();
-                // txtNewUOM.Clear();
                 txtNewSKU.Clear();
-                // numNewMultiplier.Value = 0;
                 numNewPrice.Value = 0;
 
                 txtNewBrand.Focus();
             }
-            catch (SqliteException ex) when (ex.SqliteErrorCode == 19)
+            catch (Exception ex) when (ex.Message == "Duplicate SKU")
             {
                 MessageBox.Show("A product with this generated SKU already exists. Please manually modify the SKU to make it unique (e.g., add a -2).", "Duplicate SKU");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
             }
         }
 

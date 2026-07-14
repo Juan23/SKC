@@ -29,10 +29,10 @@ namespace SKC_Bakery_Supplies
             LoadTickets();
         }
 
-        private void LoadTickets()
+        private async void LoadTickets()
         {
             // Fetch tickets from the engine and bind to Grid 1
-            List<PurchaseTicketSummary> tickets = BakeryDatabaseManager.GetPurchaseTickets(dtpStart.Value.Date, dtpEnd.Value.Date);
+            List<PurchaseTicketSummary> tickets = await CentralApiClient.GetPurchaseTicketsAsync(dtpStart.Value.Date, dtpEnd.Value.Date);
             dgvTickets.DataSource = tickets;
 
             // Clear Grid 2 until a new selection is made
@@ -41,12 +41,12 @@ namespace SKC_Bakery_Supplies
         }
 
         // When the user clicks a row in Grid 1, update Grid 2
-        private void dgvTickets_SelectionChanged(object sender, EventArgs e)
+        private async void dgvTickets_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvTickets.CurrentRow != null && dgvTickets.CurrentRow.DataBoundItem is PurchaseTicketSummary selectedTicket)
             {
                 // Fetch the exact breakdown for this specific ticket
-                List<PurchaseLog> details = BakeryDatabaseManager.GetPurchaseDetails(selectedTicket.TransactionId);
+                List<PurchaseLog> details = await CentralApiClient.GetPurchaseDetailsAsync(selectedTicket.TransactionId);
                 dgvDetails.DataSource = details;
 
                 // Hide system IDs from the user's view in Grid 2
@@ -55,7 +55,7 @@ namespace SKC_Bakery_Supplies
             }
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        private async void btnDelete_Click(object sender, EventArgs e)
         {
             if (dgvTickets.CurrentRow == null) return;
 
@@ -65,7 +65,7 @@ namespace SKC_Bakery_Supplies
             {
                 try
                 {
-                    BakeryDatabaseManager.DeletePurchaseTicket(selectedTicket.TransactionId);
+                    await CentralApiClient.DeletePurchaseTicketAsync(selectedTicket.TransactionId);
                     LoadTickets();
                 }
                 catch (Exception ex)
