@@ -32,6 +32,7 @@
             dgvProducts = new DataGridView();
             btnEdit = new Button();
             btnDelete = new Button();
+            btnAdjustStock = new Button();
             grpQuickAddProduct = new GroupBox();
             btnSaveNew = new Button();
             Price = new Label();
@@ -88,7 +89,17 @@
             btnDelete.Text = "Delete";
             btnDelete.UseVisualStyleBackColor = true;
             btnDelete.Click += btnDelete_Click;
-            // 
+            //
+            // btnAdjustStock
+            //
+            btnAdjustStock.Location = new Point(560, 424);
+            btnAdjustStock.Name = "btnAdjustStock";
+            btnAdjustStock.Size = new Size(75, 23);
+            btnAdjustStock.TabIndex = 10;
+            btnAdjustStock.Text = "Adjust";
+            btnAdjustStock.UseVisualStyleBackColor = true;
+            btnAdjustStock.Click += btnAdjustStock_Click;
+            //
             // grpQuickAddProduct
             // 
             grpQuickAddProduct.Controls.Add(btnSaveNew);
@@ -203,6 +214,7 @@
             Controls.Add(grpQuickAddProduct);
             Controls.Add(btnDelete);
             Controls.Add(btnEdit);
+            Controls.Add(btnAdjustStock);
             Controls.Add(dgvProducts);
             Controls.Add(txtSearch);
             Name = "frmViewProducts";
@@ -221,6 +233,7 @@
         private DataGridView dgvProducts;
         private Button btnEdit;
         private Button btnDelete;
+        private Button btnAdjustStock;
         private GroupBox grpQuickAddProduct;
         private Label label1;
         private TextBox txtNewSKU;

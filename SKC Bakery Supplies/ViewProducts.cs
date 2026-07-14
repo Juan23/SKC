@@ -78,6 +78,21 @@ namespace SKC_Bakery_Supplies
             }
         }
 
+        private void btnAdjustStock_Click(object sender, EventArgs e)
+        {
+            if (dgvProducts.CurrentRow == null) return;
+
+            var selected = (BakeryProduct)dgvProducts.CurrentRow.DataBoundItem;
+
+            using (var adjustForm = new frmAdjustInventory(selected))
+            {
+                if (adjustForm.ShowDialog() == DialogResult.OK)
+                {
+                    LoadGrid(); // Refresh so CurrentStock reflects the adjustment
+                }
+            }
+        }
+
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (dgvProducts.CurrentRow == null) return;

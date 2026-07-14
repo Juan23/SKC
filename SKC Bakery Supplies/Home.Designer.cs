@@ -34,6 +34,7 @@
             grpInventory = new GroupBox();
             btnAddInventoryItem = new Button();
             btnViewInventory = new Button();
+            btnAdjustmentHistory = new Button();
             groupBox1 = new GroupBox();
             btnPrintReport = new Button();
             grpDelivery = new GroupBox();
@@ -83,9 +84,10 @@
             // 
             grpInventory.Controls.Add(btnAddInventoryItem);
             grpInventory.Controls.Add(btnViewInventory);
+            grpInventory.Controls.Add(btnAdjustmentHistory);
             grpInventory.Location = new Point(120, 8);
             grpInventory.Name = "grpInventory";
-            grpInventory.Size = new Size(96, 104);
+            grpInventory.Size = new Size(96, 128);
             grpInventory.TabIndex = 3;
             grpInventory.TabStop = false;
             grpInventory.Text = "Inventory";
@@ -109,7 +111,17 @@
             btnViewInventory.Text = "View Items";
             btnViewInventory.UseVisualStyleBackColor = true;
             btnViewInventory.Click += btnViewInventory_Click;
-            // 
+            //
+            // btnAdjustmentHistory
+            //
+            btnAdjustmentHistory.Location = new Point(8, 72);
+            btnAdjustmentHistory.Name = "btnAdjustmentHistory";
+            btnAdjustmentHistory.Size = new Size(75, 23);
+            btnAdjustmentHistory.TabIndex = 3;
+            btnAdjustmentHistory.Text = "Adjustments";
+            btnAdjustmentHistory.UseVisualStyleBackColor = true;
+            btnAdjustmentHistory.Click += btnAdjustmentHistory_Click;
+            //
             // groupBox1
             // 
             groupBox1.Controls.Add(btnPrintReport);
@@ -209,6 +221,7 @@
         private GroupBox grpInventory;
         private Button btnViewInventory;
         private Button btnAddInventoryItem;
+        private Button btnAdjustmentHistory;
         private GroupBox groupBox1;
         private Button btnPrintReport;
         private GroupBox grpDelivery;

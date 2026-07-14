@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,11 @@ namespace SKC_Bakery_Supplies
         // Stops the dropdown from aggressively reopening when a selection is made
         private bool isSelecting = false;
         private bool isAutoCalculating = false;
+
+        // Holds the just-submitted ticket's line items so the print renderer can read them,
+        // and the transaction ID so it survives past the async submit call into the render callback.
+        private List<PurchaseLog> completedLogsForPrint;
+        private string currentTransactionId;
 
         public frmPurchases()
         {
@@ -180,13 +186,13 @@ namespace SKC_Bakery_Supplies
             string supplier = ToProperCase(txtSupplier.Text);
 
             // Auto transaction ID
-            string transactionId = $"PUR-{entryDate:yyyyMMdd}-{Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper()}";
+            currentTransactionId = $"PUR-{entryDate:yyyyMMdd}-{Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper()}";
 
             foreach (var draft in draftItems)
             {
                 finalLogs.Add(new PurchaseLog
                 {
-                    TransactionId = transactionId,
+                    TransactionId = currentTransactionId,
                     Date = entryDate,
                     Supplier = supplier,
                     SKU = draft.SKU,
@@ -195,14 +201,110 @@ namespace SKC_Bakery_Supplies
                 });
             }
 
-            // Fire to the SQLite Ledger
-            await CentralApiClient.SubmitPurchasesAsync(finalLogs);
+            try
+            {
+                await CentralApiClient.SubmitPurchasesAsync(finalLogs);
 
-            MessageBox.Show($"Purchase Sheet committed safely.\nTicket ID: {transactionId}", "Success");
+                // Unlike deliveries, a purchase line is never split across lots server-side,
+                // so what we sent is exactly what to print - no need to read back a server response.
+                completedLogsForPrint = finalLogs;
 
-            // Wipe the board clean
-            draftItems.Clear();
-            txtSupplier.Clear();
+                // --- THE PRINT ENGINE TRIGGER (mirrors Delivery.cs's slip printing) ---
+                PrintDocument pDoc = new PrintDocument();
+                pDoc.DefaultPageSettings.PaperSize = new PaperSize("A4", 827, 1169);
+                pDoc.PrintPage += RenderPurchaseSlip;
+
+                PrintPreviewDialog previewDialog = new PrintPreviewDialog
+                {
+                    Document = pDoc,
+                    Width = 800,
+                    Height = 1000,
+                    ShowIcon = false,
+                    Text = "Purchase Receipt Preview"
+                };
+                previewDialog.ShowDialog();
+                pDoc.PrintPage -= RenderPurchaseSlip;
+
+                // Wipe the board clean only after the receipt has been previewed/printed
+                draftItems.Clear();
+                txtSupplier.Clear();
+                currentTransactionId = "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Purchase Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // --- THE DOCUMENT RENDERER (mirrors Delivery.cs's RenderDeliverySlip) ---
+        private void RenderPurchaseSlip(object sender, PrintPageEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Font titleFont = new Font("Courier New", 18, FontStyle.Bold);
+            Font headerFont = new Font("Courier New", 12, FontStyle.Bold);
+            Font regularFont = new Font("Courier New", 11);
+            Brush brush = Brushes.Black;
+
+            int y = 50;
+            int margin = 50;
+            int rightEdge = e.PageBounds.Width - 50;
+
+            g.DrawString("SKC BAKERY SUPPLIES", titleFont, brush, margin, y);
+            y += 30;
+            g.DrawString("PURCHASE RECEIPT", headerFont, brush, margin, y);
+            y += 40;
+
+            // Header Details
+            g.DrawString($"SUPPLIER:  {txtSupplier.Text.ToUpper()}", headerFont, brush, margin, y);
+            g.DrawString($"DATE:      {dtpDate.Value:yyyy-MM-dd}", headerFont, brush, margin + 400, y);
+            y += 20;
+            g.DrawString($"TICKET:    {currentTransactionId}", regularFont, brush, margin, y);
+            y += 40;
+
+            // Table Headers
+            g.DrawLine(Pens.Black, margin, y, rightEdge, y);
+            y += 10;
+            g.DrawString("QTY", headerFont, brush, margin, y);
+            g.DrawString("ITEM DESCRIPTION", headerFont, brush, margin + 60, y);
+            g.DrawString("UNIT COST", headerFont, brush, rightEdge - 200, y);
+            g.DrawString("TOTAL", headerFont, brush, rightEdge - 80, y);
+            y += 25;
+            g.DrawLine(Pens.Black, margin, y, rightEdge, y);
+            y += 15;
+
+            // Render Items
+            decimal grandTotal = 0;
+            foreach (var item in completedLogsForPrint)
+            {
+                var product = masterCatalog.FirstOrDefault(p => p.SKU == item.SKU);
+                string description = product != null ? $"{product.Brand} {product.BaseName}" : item.SKU;
+                decimal lineTotal = item.Qty * item.UnitCost;
+                grandTotal += lineTotal;
+
+                g.DrawString(item.Qty.ToString(), regularFont, brush, margin, y);
+                g.DrawString(description, regularFont, brush, margin + 60, y);
+                g.DrawString(item.UnitCost.ToString("N2"), regularFont, brush, rightEdge - 200, y);
+                g.DrawString(lineTotal.ToString("N2"), regularFont, brush, rightEdge - 80, y);
+                y += 25;
+
+                if (y > e.MarginBounds.Bottom - 100)
+                {
+                    e.HasMorePages = true;
+                    return;
+                }
+            }
+
+            g.DrawLine(Pens.Black, margin, y, rightEdge, y);
+            y += 10;
+            g.DrawString("GRAND TOTAL:", headerFont, brush, rightEdge - 200, y);
+            g.DrawString(grandTotal.ToString("N2"), headerFont, brush, rightEdge - 80, y);
+            y += 40;
+
+            // No "Received By" line here (unlike the delivery slip) - a purchase receipt is
+            // filed internally alongside the vendor's own paper receipt, nobody signs for it.
+            g.DrawString("Prepared By: ___________________", regularFont, brush, margin, y);
+
+            e.HasMorePages = false;
         }
 
         // Keyboard catcher

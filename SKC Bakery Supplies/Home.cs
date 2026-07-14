@@ -41,6 +41,12 @@ namespace SKC_Bakery_Supplies
             }
         }
 
+        private void btnAdjustmentHistory_Click(object sender, EventArgs e)
+        {
+            frmAdjustmentHistory historyScreen = new frmAdjustmentHistory();
+            historyScreen.ShowDialog();
+        }
+
         private void btnCreateDelivery_Click(object sender, EventArgs e)
         {
             frmDelivery deliveryScreen = new frmDelivery();

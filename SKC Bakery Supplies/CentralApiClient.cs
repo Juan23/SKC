@@ -126,6 +126,20 @@ namespace SKC_Bakery_Supplies
                 throw new Exception($"Failed to discontinue product.\nDetails: {await response.Content.ReadAsStringAsync()}");
         }
 
+        // Reconciles system stock with a physical count. unitCost is only used if the count
+        // is HIGHER than system stock (found stock needs a cost basis); pass null to let the
+        // server default to the SKU's last purchase cost.
+        public static async Task AdjustInventoryAsync(string sku, int newCount, decimal? unitCost, string reason)
+        {
+            var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/inventory/{sku}/adjust",
+                new { NewCount = newCount, UnitCost = unitCost, Reason = reason }, jsonOptions);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Failed to adjust stock.\nDetails: {await response.Content.ReadAsStringAsync()}");
+        }
+
+        public static async Task<List<InventoryAdjustment>> GetInventoryAdjustmentsAsync(DateTime start, DateTime end) =>
+            await client.GetFromJsonAsync<List<InventoryAdjustment>>($"{ApiBaseUrl}/api/inventory/adjustments?start={start:yyyy-MM-dd}&end={end:yyyy-MM-dd}", jsonOptions);
+
         // --- CONNECTIVITY ---
         public static async Task CheckHealthAsync()
         {
