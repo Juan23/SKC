@@ -30,6 +30,7 @@
         {
             groupBox1 = new GroupBox();
             btnFilter = new Button();
+            btnPrint = new Button();
             label2 = new Label();
             dtpEnd = new DateTimePicker();
             label1 = new Label();
@@ -44,6 +45,7 @@
             // groupBox1
             // 
             groupBox1.Controls.Add(btnFilter);
+            groupBox1.Controls.Add(btnPrint);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(dtpEnd);
             groupBox1.Controls.Add(label1);
@@ -64,7 +66,17 @@
             btnFilter.Text = "Search";
             btnFilter.UseVisualStyleBackColor = true;
             btnFilter.Click += btnFilter_Click;
-            // 
+            //
+            // btnPrint
+            //
+            btnPrint.Location = new Point(88, 488);
+            btnPrint.Name = "btnPrint";
+            btnPrint.Size = new Size(75, 23);
+            btnPrint.TabIndex = 5;
+            btnPrint.Text = "Print";
+            btnPrint.UseVisualStyleBackColor = true;
+            btnPrint.Click += btnPrint_Click;
+            //
             // label2
             // 
             label2.AutoSize = true;
@@ -127,6 +139,7 @@
             Controls.Add(groupBox1);
             Name = "frmPurchasesReport";
             Text = "PurchasesReport";
+            Load += frmPurchasesReport_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTickets).EndInit();
@@ -138,6 +151,7 @@
 
         private GroupBox groupBox1;
         private Button btnFilter;
+        private Button btnPrint;
         private Label label2;
         private DateTimePicker dtpEnd;
         private Label label1;
