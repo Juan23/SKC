@@ -21,6 +21,11 @@ namespace SKC_Bakery_Supplies
         private List<DailyDeliveryPrintItem> printDailyDetails;
         private DateTime printDailyDate;
         private PrintDocument pDocDaily = new PrintDocument();
+        private int printDailyIndex = 0;
+        private string printDailyCurrentBranch = "";
+        private string printDailyCurrentTicket = "";
+        private double printDailyTicketTotal = 0;
+        private double printDailyGrandTotal = 0;
 
         public frmViewDeliveries()
         {
@@ -226,6 +231,12 @@ namespace SKC_Bakery_Supplies
             PrintPreviewControl ppc = new PrintPreviewControl { Dock = DockStyle.Fill, Document = pDocDaily };
             previewForm.Controls.Add(btnPrint);
             previewForm.Controls.Add(ppc);
+
+            printDailyIndex = 0;
+            printDailyCurrentBranch = "";
+            printDailyCurrentTicket = "";
+            printDailyTicketTotal = 0;
+            printDailyGrandTotal = 0;
             previewForm.ShowDialog();
         }
 
@@ -249,41 +260,74 @@ namespace SKC_Bakery_Supplies
             g.DrawString($"DATE: {printDailyDate:yyyy-MM-dd}", regularFont, brush, margin, y);
             y += 40;
 
-            string currentBranch = "";
-            string currentTicket = "";
-            double dailyGrandTotal = 0;
-            double ticketTotal = 0;
+            // printDailyIndex/CurrentBranch/CurrentTicket/TicketTotal/GrandTotal persist across
+            // HasMorePages callbacks so each page resumes where the last one left off instead of
+            // restarting the whole report from the first item.
 
-            foreach (var item in printDailyDetails)
+            // Resuming on a new page: if we're picking back up mid-branch/mid-ticket, redraw the
+            // header context so the continued rows are still identifiable, since the branch/ticket
+            // change checks below won't fire again until the underlying values actually change.
+            if (printDailyIndex > 0 && printDailyIndex < printDailyDetails.Count)
             {
-                // Branch Header
-                if (item.ToBranch != currentBranch)
+                var nextItem = printDailyDetails[printDailyIndex];
+                bool sameBranch = nextItem.ToBranch == printDailyCurrentBranch;
+                bool sameTicket = sameBranch && nextItem.TransactionId == printDailyCurrentTicket;
+
+                if (sameBranch)
                 {
-                    currentBranch = item.ToBranch;
                     y += 10;
                     g.DrawLine(Pens.Black, margin, y, rightEdge, y);
                     y += 5;
-                    g.DrawString($"BRANCH: {currentBranch.ToUpper()}", headerFont, brush, margin, y);
+                    g.DrawString($"BRANCH: {printDailyCurrentBranch.ToUpper()} (cont.)", headerFont, brush, margin, y);
+                    y += 20;
+                    g.DrawLine(Pens.Black, margin, y, rightEdge, y);
+                    y += 15;
+                }
+
+                if (sameTicket && printDailyCurrentTicket != "")
+                {
+                    g.DrawString($"TICKET: {printDailyCurrentTicket} (cont.)", headerFont, brush, margin, y);
+                    y += 20;
+
+                    g.DrawString("QTY", headerFont, brush, margin, y);
+                    g.DrawString("ITEM", headerFont, brush, margin + 50, y);
+                    g.DrawString("TOTAL", headerFont, brush, rightEdge - 80, y);
+                    y += 20;
+                }
+            }
+
+            while (printDailyIndex < printDailyDetails.Count)
+            {
+                var item = printDailyDetails[printDailyIndex];
+
+                // Branch Header
+                if (item.ToBranch != printDailyCurrentBranch)
+                {
+                    printDailyCurrentBranch = item.ToBranch;
+                    y += 10;
+                    g.DrawLine(Pens.Black, margin, y, rightEdge, y);
+                    y += 5;
+                    g.DrawString($"BRANCH: {printDailyCurrentBranch.ToUpper()}", headerFont, brush, margin, y);
                     y += 20;
                     g.DrawLine(Pens.Black, margin, y, rightEdge, y);
                     y += 15;
                 }
 
                 // Ticket Sub-Header
-                if (item.TransactionId != currentTicket)
+                if (item.TransactionId != printDailyCurrentTicket)
                 {
-                    if (currentTicket != "")
+                    if (printDailyCurrentTicket != "")
                     {
                         // Print total for previous ticket
                         y += 5;
-                        g.DrawString($"Ticket Total: {ticketTotal:N2}", headerFont, brush, rightEdge - 220, y);
+                        g.DrawString($"Ticket Total: {printDailyTicketTotal:N2}", headerFont, brush, rightEdge - 220, y);
                         y += 25;
                     }
 
-                    currentTicket = item.TransactionId;
-                    ticketTotal = 0;
+                    printDailyCurrentTicket = item.TransactionId;
+                    printDailyTicketTotal = 0;
 
-                    g.DrawString($"TICKET: {currentTicket}", headerFont, brush, margin, y);
+                    g.DrawString($"TICKET: {printDailyCurrentTicket}", headerFont, brush, margin, y);
                     y += 15;
                     g.DrawString($"Req: {item.Requester} | Rsn: {item.Reason}", italicFont, brush, margin, y);
                     y += 20;
@@ -295,13 +339,15 @@ namespace SKC_Bakery_Supplies
                 }
 
                 string description = string.IsNullOrWhiteSpace(item.BaseName) ? item.SKU : $"{item.Brand} {item.BaseName}";
-                ticketTotal += item.TotalLineCost;
-                dailyGrandTotal += item.TotalLineCost;
+                printDailyTicketTotal += item.TotalLineCost;
+                printDailyGrandTotal += item.TotalLineCost;
 
                 g.DrawString(item.Qty.ToString(), regularFont, brush, margin, y);
                 g.DrawString(description, regularFont, brush, margin + 50, y);
                 g.DrawString(item.TotalLineCost.ToString("N2"), regularFont, brush, rightEdge - 80, y);
                 y += 20;
+
+                printDailyIndex++;
 
                 if (y > e.MarginBounds.Bottom - 80)
                 {
@@ -312,14 +358,14 @@ namespace SKC_Bakery_Supplies
 
             // Print the final ticket total
             y += 5;
-            g.DrawString($"Ticket Total: {ticketTotal:N2}", headerFont, brush, rightEdge - 220, y);
+            g.DrawString($"Ticket Total: {printDailyTicketTotal:N2}", headerFont, brush, rightEdge - 220, y);
             y += 30;
 
             // Daily Grand Total
             g.DrawLine(Pens.Black, margin, y, rightEdge, y);
             y += 10;
             g.DrawString("DAILY GRAND TOTAL:", titleFont, brush, margin, y);
-            g.DrawString(dailyGrandTotal.ToString("N2"), titleFont, brush, rightEdge - 200, y);
+            g.DrawString(printDailyGrandTotal.ToString("N2"), titleFont, brush, rightEdge - 200, y);
 
             e.HasMorePages = false;
         }
