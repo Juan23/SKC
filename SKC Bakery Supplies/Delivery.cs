@@ -257,20 +257,25 @@ namespace SKC_Bakery_Supplies
             g.DrawLine(Pens.Black, margin, y, rightEdge, y);
             y += 15;
 
-            // Render Items
-            double grandTotal = 0;
-            foreach (var item in completedLogsForPrint)
+            // Render Items (printDeliveryIndex persists across HasMorePages callbacks so each page
+            // resumes where the last one left off instead of restarting from the first item)
+            // Computed over the full list up front (not accumulated per-page) so the footer on the
+            // final page always shows the true document total, not just the last page's subtotal.
+            double grandTotal = completedLogsForPrint.Sum(i => i.TotalLineCost);
+            while (printDeliveryIndex < completedLogsForPrint.Count)
             {
+                var item = completedLogsForPrint[printDeliveryIndex];
                 var product = masterCatalog.FirstOrDefault(p => p.SKU == item.SKU);
                 string description = product != null ? $"{product.Brand} {product.BaseName}" : item.SKU;
                 double unitCost = item.Qty > 0 ? item.TotalLineCost / item.Qty : 0;
-                grandTotal += item.TotalLineCost;
 
                 g.DrawString(item.Qty.ToString(), regularFont, brush, margin, y);
                 g.DrawString(description, regularFont, brush, margin + 60, y);
                 g.DrawString(unitCost.ToString("N2"), regularFont, brush, rightEdge - 200, y);
                 g.DrawString(item.TotalLineCost.ToString("N2"), regularFont, brush, rightEdge - 80, y);
                 y += 25;
+
+                printDeliveryIndex++;
 
                 if (y > e.MarginBounds.Bottom - 100)
                 {

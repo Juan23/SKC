@@ -19,6 +19,7 @@ namespace SKC_Bakery_Supplies
         // Holds the selected ticket's data for the print renderer callback (mirrors ViewDeliveries.cs's reprint fields).
         private PurchaseTicketSummary printSummary;
         private List<PurchaseLog> printDetails;
+        private int printPurchaseIndex = 0;
 
         public frmPurchasesReport()
         {
@@ -136,6 +137,8 @@ namespace SKC_Bakery_Supplies
             PrintPreviewControl ppc = new PrintPreviewControl { Dock = DockStyle.Fill, Document = pDoc };
             previewForm.Controls.Add(btnPrintReport);
             previewForm.Controls.Add(ppc);
+
+            printPurchaseIndex = 0;
             previewForm.ShowDialog();
 
             pDoc.PrintPage -= RenderPurchaseSlip;
@@ -175,19 +178,25 @@ namespace SKC_Bakery_Supplies
             g.DrawLine(Pens.Black, margin, y, rightEdge, y);
             y += 15;
 
-            decimal grandTotal = 0;
-            foreach (var item in printDetails)
+            // printPurchaseIndex persists across HasMorePages callbacks so each page resumes where
+            // the last one left off instead of restarting from the first item. Grand total is
+            // computed over the full list up front (not accumulated per-page) so the footer on the
+            // final page always shows the true document total, not just the last page's subtotal.
+            decimal grandTotal = printDetails.Sum(i => i.Qty * i.UnitCost);
+            while (printPurchaseIndex < printDetails.Count)
             {
+                var item = printDetails[printPurchaseIndex];
                 var product = masterCatalog.FirstOrDefault(p => p.SKU == item.SKU);
                 string description = product != null ? $"{product.Brand} {product.BaseName}" : item.SKU;
                 decimal lineTotal = item.Qty * item.UnitCost;
-                grandTotal += lineTotal;
 
                 g.DrawString(item.Qty.ToString(), regularFont, brush, margin, y);
                 g.DrawString(description, regularFont, brush, margin + 60, y);
                 g.DrawString(item.UnitCost.ToString("N2"), regularFont, brush, rightEdge - 200, y);
                 g.DrawString(lineTotal.ToString("N2"), regularFont, brush, rightEdge - 80, y);
                 y += 25;
+
+                printPurchaseIndex++;
 
                 if (y > e.MarginBounds.Bottom - 100)
                 {

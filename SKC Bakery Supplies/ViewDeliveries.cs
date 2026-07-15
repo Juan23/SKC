@@ -16,6 +16,7 @@ namespace SKC_Bakery_Supplies
         // Temporary holding variables for the print engine
         private DeliveryTicketSummary printSummary;
         private List<DeliveryLog> printDetails;
+        private int printDeliveryIndex = 0;
 
         private List<DailyDeliveryPrintItem> printDailyDetails;
         private DateTime printDailyDate;
@@ -107,6 +108,7 @@ namespace SKC_Bakery_Supplies
             previewForm.Controls.Add(btnPrint);
             previewForm.Controls.Add(ppc);
 
+            printDeliveryIndex = 0;
             previewForm.ShowDialog();
 
             // 4. Cleanup
@@ -151,9 +153,12 @@ namespace SKC_Bakery_Supplies
             g.DrawLine(Pens.Black, margin, y, rightEdge, y);
             y += 15;
 
-            // Render Items Row by Row
-            foreach (var item in printDetails)
+            // Render Items Row by Row (printDeliveryIndex persists across HasMorePages callbacks so
+            // each page resumes where the last one left off instead of restarting from the first item)
+            while (printDeliveryIndex < printDetails.Count)
             {
+                var item = printDetails[printDeliveryIndex];
+
                 // Translate the database SKU back into a readable name
                 string description = item.SKU;
                 var product = masterCatalog.FirstOrDefault(p => p.SKU == item.SKU);
@@ -168,6 +173,8 @@ namespace SKC_Bakery_Supplies
                 g.DrawString(unitCost.ToString("N2"), regularFont, brush, rightEdge - 200, y);
                 g.DrawString(item.TotalLineCost.ToString("N2"), regularFont, brush, rightEdge - 80, y);
                 y += 25;
+
+                printDeliveryIndex++;
 
                 // Handle page breaks if the list exceeds the paper height
                 if (y > e.MarginBounds.Bottom)
