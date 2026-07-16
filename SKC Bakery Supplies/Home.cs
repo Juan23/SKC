@@ -14,6 +14,9 @@ namespace SKC_Bakery_Supplies
         {
             InitializeComponent();
 
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            Text = $"SKC Bakery Supplies  (v{version?.ToString(3)})";
+
             // Added in code rather than the Designer so we don't hand-edit Home.Designer.cs.
             var btnBranchInventoryReport = new Button
             {

@@ -31,6 +31,7 @@ namespace SKC_Bakery_Supplies
             lblBranch = new System.Windows.Forms.Label();
             cmbBranch = new System.Windows.Forms.ComboBox();
             btnLoad = new System.Windows.Forms.Button();
+            btnAdjust = new System.Windows.Forms.Button();
             btnPrint = new System.Windows.Forms.Button();
             dgvStock = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)dgvStock).BeginInit();
@@ -64,13 +65,23 @@ namespace SKC_Bakery_Supplies
             btnLoad.UseVisualStyleBackColor = true;
             btnLoad.Click += btnLoad_Click;
             //
+            // btnAdjust
+            //
+            btnAdjust.Location = new System.Drawing.Point(342, 16);
+            btnAdjust.Name = "btnAdjust";
+            btnAdjust.Size = new System.Drawing.Size(100, 25);
+            btnAdjust.TabIndex = 3;
+            btnAdjust.Text = "Adjust Stock";
+            btnAdjust.UseVisualStyleBackColor = true;
+            btnAdjust.Click += btnAdjust_Click;
+            //
             // btnPrint
             //
             btnPrint.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             btnPrint.Location = new System.Drawing.Point(614, 16);
             btnPrint.Name = "btnPrint";
             btnPrint.Size = new System.Drawing.Size(90, 25);
-            btnPrint.TabIndex = 3;
+            btnPrint.TabIndex = 4;
             btnPrint.Text = "Print";
             btnPrint.UseVisualStyleBackColor = true;
             btnPrint.Click += btnPrint_Click;
@@ -97,6 +108,7 @@ namespace SKC_Bakery_Supplies
             ClientSize = new System.Drawing.Size(724, 535);
             Controls.Add(dgvStock);
             Controls.Add(btnPrint);
+            Controls.Add(btnAdjust);
             Controls.Add(btnLoad);
             Controls.Add(cmbBranch);
             Controls.Add(lblBranch);
@@ -115,6 +127,7 @@ namespace SKC_Bakery_Supplies
         private System.Windows.Forms.Label lblBranch;
         private System.Windows.Forms.ComboBox cmbBranch;
         private System.Windows.Forms.Button btnLoad;
+        private System.Windows.Forms.Button btnAdjust;
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.DataGridView dgvStock;
     }

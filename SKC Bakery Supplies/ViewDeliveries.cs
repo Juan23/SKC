@@ -27,9 +27,36 @@ namespace SKC_Bakery_Supplies
         private double printDailyTicketTotal = 0;
         private double printDailyGrandTotal = 0;
 
+        private Button btnEdit;
+
         public frmViewDeliveries()
         {
             InitializeComponent();
+
+            // Added in code rather than the Designer so we don't hand-edit ViewDeliveries.Designer.cs.
+            btnEdit = new Button
+            {
+                Location = new Point(8, 480),
+                Name = "btnEdit",
+                Size = new Size(104, 23),
+                Text = "Edit Ticket",
+                UseVisualStyleBackColor = true,
+                Enabled = false
+            };
+            btnEdit.Click += btnEdit_Click;
+            groupBox1.Controls.Add(btnEdit);
+
+            // Only InTransit tickets can be edited or deleted; once a branch has accepted, the
+            // ticket is locked (server rejects both), so disable the buttons to match.
+            dgvTickets.SelectionChanged += dgvTickets_SelectionChanged;
+        }
+
+        private void dgvTickets_SelectionChanged(object sender, EventArgs e)
+        {
+            bool isInTransit = dgvTickets.CurrentRow?.DataBoundItem is DeliveryTicketSummary t
+                               && t.Status == "InTransit";
+            btnEdit.Enabled = isInTransit;
+            btnDelete.Enabled = isInTransit;
         }
 
         private async void frmViewDeliveries_Load(object sender, EventArgs e)
@@ -78,6 +105,56 @@ namespace SKC_Bakery_Supplies
                 LoadGrid();
             }
         }
+
+        private async void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (dgvTickets.CurrentRow?.DataBoundItem is not DeliveryTicketSummary selected) return;
+            if (selected.Status != "InTransit")
+            {
+                MessageBox.Show("Only deliveries still in transit can be edited.", "Cannot Edit",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            List<DeliveryLog> lines;
+            try
+            {
+                lines = await CentralApiClient.GetDeliveryDetailsAsync(selected.TransactionId);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            DialogResult confirm = MessageBox.Show(
+                $"This will remove ticket {selected.TransactionId} (restocking its items to Office) and reopen it " +
+                "in the Create Delivery screen, pre-filled, so you can adjust and re-submit it.\n\n" +
+                "The branch will see the corrected ticket as a new delivery to accept. Continue?",
+                "Edit Delivery",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (confirm != DialogResult.Yes) return;
+
+            try
+            {
+                await CentralApiClient.DeleteDeliveryTicketAsync(selected.TransactionId);
+            }
+            catch (Exception ex)
+            {
+                // e.g. the branch accepted it a moment ago - abort without opening the editor.
+                MessageBox.Show(ex.Message, "Edit Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                LoadGrid();
+                return;
+            }
+
+            using (var editForm = new frmDelivery(lines))
+            {
+                editForm.ShowDialog();
+            }
+            LoadGrid();
+        }
+
         private async void dgvTickets_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;

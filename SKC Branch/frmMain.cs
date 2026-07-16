@@ -11,7 +11,9 @@ namespace SKC_Branch
         {
             this.branchName = branchName;
             InitializeComponent();
-            Text = $"SKC Branch - {branchName}";
+
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            Text = $"SKC Branch - {branchName}  (v{version?.ToString(3)})";
             lblHeader.Text = $"Pending Deliveries for {branchName}";
 
             // Added in code rather than the Designer so we don't hand-edit frmMain.Designer.cs
@@ -129,6 +131,10 @@ namespace SKC_Branch
                 await BranchApiClient.AcceptDeliveryAsync(selected.TransactionId, branchName, acceptedBy.Trim());
                 MessageBox.Show($"Delivery {selected.TransactionId} accepted.", "Accepted",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (DeliveryChangedException ex)
+            {
+                MessageBox.Show(ex.Message, "Delivery Changed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {

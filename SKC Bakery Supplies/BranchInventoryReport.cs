@@ -9,6 +9,7 @@ namespace SKC_Bakery_Supplies
     public partial class frmBranchInventoryReport : Form
     {
         private List<BakeryProduct> currentList = new List<BakeryProduct>();
+        private string loadedBranch = null; // the branch the grid currently shows, not just the dropdown
         private PrintDocument pDocStock = new PrintDocument();
         private int printStockIndex = 0;
 
@@ -31,6 +32,7 @@ namespace SKC_Bakery_Supplies
             try
             {
                 currentList = await CentralApiClient.GetBranchInventoryAsync(branch);
+                loadedBranch = branch;
                 dgvStock.DataSource = currentList;
 
                 if (dgvStock.Columns["IsActive"] != null) dgvStock.Columns["IsActive"].Visible = false;
@@ -40,6 +42,26 @@ namespace SKC_Bakery_Supplies
             catch (Exception ex)
             {
                 MessageBox.Show($"Could not load stock for {branch}.\n\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnAdjust_Click(object sender, EventArgs e)
+        {
+            if (loadedBranch == null || dgvStock.CurrentRow?.DataBoundItem is not BakeryProduct selected)
+            {
+                MessageBox.Show("Load a branch and select an item to adjust.", "No Selection",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Adjust against the branch the grid is actually showing (loadedBranch), not the
+            // dropdown's current value, in case the user changed it without reloading.
+            using (var adjustForm = new frmAdjustInventory(selected, loadedBranch))
+            {
+                if (adjustForm.ShowDialog() == DialogResult.OK)
+                {
+                    btnLoad_Click(sender, e); // refresh so CurrentStock reflects the adjustment
+                }
             }
         }
 

@@ -119,7 +119,27 @@ namespace SKC_Bakery_Supplies
         public static async Task DeleteDeliveryTicketAsync(string id)
         {
             var res = await client.DeleteAsync($"{ApiBaseUrl}/api/deliveries/{id}");
-            if (!res.IsSuccessStatusCode) throw new Exception(await res.Content.ReadAsStringAsync());
+            if (!res.IsSuccessStatusCode) throw new Exception(ExtractProblemDetail(await res.Content.ReadAsStringAsync()));
+        }
+
+        // The API returns errors as RFC 9110 ProblemDetails JSON (via Results.Problem). Pull out
+        // the human-readable "detail" so callers can show it plainly instead of a raw JSON blob.
+        private static string ExtractProblemDetail(string body)
+        {
+            if (string.IsNullOrWhiteSpace(body)) return "Request failed.";
+            try
+            {
+                using var doc = JsonDocument.Parse(body);
+                if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                    doc.RootElement.TryGetProperty("detail", out var detail) &&
+                    detail.ValueKind == JsonValueKind.String)
+                {
+                    var text = detail.GetString();
+                    if (!string.IsNullOrWhiteSpace(text)) return text;
+                }
+            }
+            catch (JsonException) { /* not JSON - fall through to raw body */ }
+            return body;
         }
 
         public static async Task<List<DailyDeliveryPrintItem>> GetDailyDeliveryConsolidationAsync(DateTime date) =>
@@ -143,16 +163,21 @@ namespace SKC_Bakery_Supplies
         // Reconciles system stock with a physical count. unitCost is only used if the count
         // is HIGHER than system stock (found stock needs a cost basis); pass null to let the
         // server default to the SKU's last purchase cost.
-        public static async Task AdjustInventoryAsync(string sku, int newCount, decimal? unitCost, string reason)
+        public static async Task AdjustInventoryAsync(string sku, int newCount, decimal? unitCost, string reason, string branch = "Office")
         {
             var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/inventory/{sku}/adjust",
-                new { NewCount = newCount, UnitCost = unitCost, Reason = reason }, jsonOptions);
+                new { NewCount = newCount, UnitCost = unitCost, Reason = reason, Branch = branch }, jsonOptions);
             if (!response.IsSuccessStatusCode)
                 throw new Exception($"Failed to adjust stock.\nDetails: {await response.Content.ReadAsStringAsync()}");
         }
 
-        public static async Task<List<InventoryAdjustment>> GetInventoryAdjustmentsAsync(DateTime start, DateTime end) =>
-            await client.GetFromJsonAsync<List<InventoryAdjustment>>($"{ApiBaseUrl}/api/inventory/adjustments?start={start:yyyy-MM-dd}&end={end:yyyy-MM-dd}", jsonOptions);
+        public static async Task<List<InventoryAdjustment>> GetInventoryAdjustmentsAsync(DateTime start, DateTime end, string branch = null)
+        {
+            string url = $"{ApiBaseUrl}/api/inventory/adjustments?start={start:yyyy-MM-dd}&end={end:yyyy-MM-dd}";
+            if (!string.IsNullOrWhiteSpace(branch))
+                url += $"&branch={Uri.EscapeDataString(branch)}";
+            return await client.GetFromJsonAsync<List<InventoryAdjustment>>(url, jsonOptions);
+        }
 
         // --- CONNECTIVITY ---
         public static async Task CheckHealthAsync()

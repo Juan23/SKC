@@ -11,5 +11,6 @@ namespace SKC_Bakery_Supplies
         public int QtyDelta { get; set; }
         public decimal UnitCost { get; set; }
         public string Reason { get; set; }
+        public string Branch { get; set; }
     }
 }

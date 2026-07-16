@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace SKC_Branch
 {
+    // Thrown when an accept fails because the ticket no longer exists (office amended/deleted it).
+    public class DeliveryChangedException : Exception
+    {
+        public DeliveryChangedException(string message) : base(message) { }
+    }
+
     public static class BranchApiClient
     {
         private static readonly string ApiBaseUrl = "http://100.84.79.35:7290"; // droplet
@@ -76,6 +82,13 @@ namespace SKC_Branch
             if (response.StatusCode == HttpStatusCode.Conflict)
             {
                 throw new Exception("This delivery has already been accepted.");
+            }
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                // The ticket no longer exists - the office deleted or amended it after this
+                // screen last refreshed. Signal that distinctly so the UI can prompt a review.
+                throw new DeliveryChangedException(
+                    "This delivery was changed by the office. Please review the updated list.");
             }
             if (!response.IsSuccessStatusCode)
             {

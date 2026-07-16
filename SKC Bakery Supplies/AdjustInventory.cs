@@ -6,15 +6,27 @@ namespace SKC_Bakery_Supplies
     public partial class frmAdjustInventory : Form
     {
         private readonly string targetSKU;
+        private readonly string targetBranch;
 
+        // Office stock (from ViewProducts).
         public frmAdjustInventory(BakeryProduct itemToAdjust)
+            : this(itemToAdjust, "Office")
+        {
+        }
+
+        // Branch-scoped stock (from Branch Inventory Report).
+        public frmAdjustInventory(BakeryProduct itemToAdjust, string branch)
         {
             InitializeComponent();
 
             targetSKU = itemToAdjust.SKU;
+            targetBranch = branch;
             lblItem.Text = $"{itemToAdjust.SearchDisplay} ({itemToAdjust.SKU})";
             lblSystemQty.Text = $"System Qty: {itemToAdjust.CurrentStock}";
             numActualQty.Value = itemToAdjust.CurrentStock;
+
+            if (!string.Equals(branch, "Office", StringComparison.Ordinal))
+                Text = $"Adjust Stock — {branch}";
         }
 
         private async void btnSave_Click(object sender, EventArgs e)
@@ -31,7 +43,7 @@ namespace SKC_Bakery_Supplies
 
             try
             {
-                await CentralApiClient.AdjustInventoryAsync(targetSKU, (int)numActualQty.Value, unitCost, txtReason.Text.Trim());
+                await CentralApiClient.AdjustInventoryAsync(targetSKU, (int)numActualQty.Value, unitCost, txtReason.Text.Trim(), targetBranch);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

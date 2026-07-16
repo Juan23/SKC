@@ -17,11 +17,20 @@ namespace SKC_Bakery_Supplies
         private string currentTransactionId;
         private List<DeliveryLog> completedLogsForPrint;
         private int printDeliveryIndex = 0;
+        private List<DeliveryLog> amendSeedLines; // non-null when reopened to amend a deleted ticket
 
         public frmDelivery()
         {
             InitializeComponent();
             dgvDeliveryItems.DataSource = draftItems;
+        }
+
+        // Reopen the create screen pre-filled from an existing ticket's lines (branch, requester,
+        // reason, items) so the admin can amend without retyping. The caller has already deleted
+        // the old ticket (restocking Office); submitting here mints a fresh ticket id.
+        public frmDelivery(List<DeliveryLog> existingLines) : this()
+        {
+            amendSeedLines = existingLines;
         }
 
         private async void frmDelivery_Load(object sender, EventArgs e)
@@ -44,6 +53,43 @@ namespace SKC_Bakery_Supplies
             // Load Branches
             cmbBranch.Items.AddRange(new string[] { "Yoho", "Gaisano", "Liloy", "Labason" });
             if (cmbBranch.Items.Count > 0) cmbBranch.SelectedIndex = 0;
+
+            if (amendSeedLines != null && amendSeedLines.Count > 0)
+                ApplyAmendSeed();
+        }
+
+        private void ApplyAmendSeed()
+        {
+            var first = amendSeedLines[0];
+
+            if (cmbBranch.Items.Contains(first.ToBranch)) cmbBranch.SelectedItem = first.ToBranch;
+            else cmbBranch.Text = first.ToBranch;
+
+            if (!string.IsNullOrWhiteSpace(first.Requester))
+            {
+                if (cmbRequester.Items.Contains(first.Requester)) cmbRequester.SelectedItem = first.Requester;
+                else cmbRequester.Text = first.Requester;
+            }
+
+            txtReason.Text = first.Reason ?? "";
+
+            // The ticket's rows may be FIFO-split (several rows, same SKU); collapse back to one
+            // draft line per SKU so the admin sees the quantities they originally entered.
+            var grouped = amendSeedLines
+                .GroupBy(l => l.SKU)
+                .Select(g => new { SKU = g.Key, Qty = g.Sum(x => x.Qty) });
+
+            foreach (var g in grouped)
+            {
+                var product = masterCatalog.FirstOrDefault(p => p.SKU == g.SKU);
+                draftItems.Add(new DraftDeliveryItem
+                {
+                    SKU = g.SKU,
+                    Brand = product?.Brand ?? "",
+                    ItemName = product?.BaseName ?? g.SKU,
+                    Qty = g.Qty
+                });
+            }
         }
 
         private void txtProductSearch_TextChanged(object sender, EventArgs e)
