@@ -15,12 +15,19 @@ namespace SKC_POS
         public frmUploadSales()
         {
             InitializeComponent();
+
+            // The Designer field is still named "rdoIpil" (a stale branch name from before the
+            // rename to "Yoho"), but every other branch-name location in the system (Delivery.cs,
+            // frmBranchPicker.cs, BranchInventoryReport.cs, delivery_logs.to_branch rows) uses
+            // "Yoho". Relabel here rather than renaming the Designer field, since .Designer.cs
+            // files are edited via the Designer, not by hand (see SKC Bakery Supplies/.claudesettings.json).
+            rdoIpil.Text = "Yoho";
         }
 
         private void btnUploadSales_Click(object sender, EventArgs e)
         {
             string selectedBranch = "";
-            if (rdoIpil.Checked) selectedBranch = "Ipil";
+            if (rdoIpil.Checked) selectedBranch = "Yoho";
             else if (rdoLiloy.Checked) selectedBranch = "Liloy";
             else if (rdoLabason.Checked) selectedBranch = "Labason";
             else if (rdoGaisano.Checked) selectedBranch = "Gaisano";
@@ -75,7 +82,11 @@ namespace SKC_POS
 
                     DatabaseManager.AddSalesBulk(importedSales);
 
-                    MessageBox.Show($"Successfully logged {importedSales.Count} sales items for {selectedBranch} on {selectedDate.ToShortDateString()}", "Import Complete");
+                    MessageBox.Show(
+                        $"Saved {importedSales.Count} sales items for {selectedBranch} on {selectedDate.ToShortDateString()} " +
+                        "to this PC's local legacy log.\n\nThis does NOT sync to the live SKC inventory/sales system " +
+                        "(skc-api) - it's a standalone local record only.",
+                        "Import Complete (Local Log Only)");
                 }
                 catch (Exception ex)
                 {

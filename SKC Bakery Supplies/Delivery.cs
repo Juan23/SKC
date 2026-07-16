@@ -17,7 +17,8 @@ namespace SKC_Bakery_Supplies
         private string currentTransactionId;
         private List<DeliveryLog> completedLogsForPrint;
         private int printDeliveryIndex = 0;
-        private List<DeliveryLog> amendSeedLines; // non-null when reopened to amend a deleted ticket
+        private List<DeliveryLog> amendSeedLines; // non-null when reopened to amend an existing ticket
+        private string amendTransactionId; // non-null when reopened to amend an existing ticket
 
         public frmDelivery()
         {
@@ -26,10 +27,12 @@ namespace SKC_Bakery_Supplies
         }
 
         // Reopen the create screen pre-filled from an existing ticket's lines (branch, requester,
-        // reason, items) so the admin can amend without retyping. The caller has already deleted
-        // the old ticket (restocking Office); submitting here mints a fresh ticket id.
-        public frmDelivery(List<DeliveryLog> existingLines) : this()
+        // reason, items) so the admin can amend without retyping. The old ticket is deleted only
+        // at submit time (see btnSubmitDelivery_Click) - not here - so closing this window without
+        // submitting leaves the original ticket untouched instead of silently losing it.
+        public frmDelivery(string existingTransactionId, List<DeliveryLog> existingLines) : this()
         {
+            amendTransactionId = existingTransactionId;
             amendSeedLines = existingLines;
         }
 
@@ -201,6 +204,37 @@ namespace SKC_Bakery_Supplies
             {
                 MessageBox.Show("Please select a requester.");
                 return;
+            }
+
+            // Amending an existing ticket: delete the original here, right before submitting the
+            // replacement, instead of when the screen was opened. If the admin backs out before
+            // reaching this point, the original ticket is untouched. If the delete succeeds but the
+            // resubmit below fails, the draft is NOT cleared (see the catch block), so the admin can
+            // just click Submit again without retyping anything.
+            if (!string.IsNullOrEmpty(amendTransactionId))
+            {
+                DialogResult confirm = MessageBox.Show(
+                    $"This will remove the original ticket {amendTransactionId} (restocking its items to Office) " +
+                    "and submit these items as a new delivery. The branch will see the corrected ticket as a new " +
+                    "delivery to accept. Continue?",
+                    "Confirm Amend",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+                if (confirm != DialogResult.Yes) return;
+
+                try
+                {
+                    await CentralApiClient.DeleteDeliveryTicketAsync(amendTransactionId);
+                }
+                catch (Exception ex)
+                {
+                    // e.g. the branch accepted it a moment ago - original ticket is still intact.
+                    MessageBox.Show(ex.Message, "Amend Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Don't attempt the delete again on a retry after a submit failure below.
+                amendTransactionId = null;
             }
 
             string requesterName = cmbRequester.Text;

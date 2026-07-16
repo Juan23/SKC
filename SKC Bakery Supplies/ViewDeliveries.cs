@@ -127,28 +127,10 @@ namespace SKC_Bakery_Supplies
                 return;
             }
 
-            DialogResult confirm = MessageBox.Show(
-                $"This will remove ticket {selected.TransactionId} (restocking its items to Office) and reopen it " +
-                "in the Create Delivery screen, pre-filled, so you can adjust and re-submit it.\n\n" +
-                "The branch will see the corrected ticket as a new delivery to accept. Continue?",
-                "Edit Delivery",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-            if (confirm != DialogResult.Yes) return;
-
-            try
-            {
-                await CentralApiClient.DeleteDeliveryTicketAsync(selected.TransactionId);
-            }
-            catch (Exception ex)
-            {
-                // e.g. the branch accepted it a moment ago - abort without opening the editor.
-                MessageBox.Show(ex.Message, "Edit Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                LoadGrid();
-                return;
-            }
-
-            using (var editForm = new frmDelivery(lines))
+            // The original ticket is deleted (restocking Office) only at submit time inside
+            // frmDelivery, not here - so closing the editor without submitting leaves the
+            // original ticket untouched instead of silently losing it.
+            using (var editForm = new frmDelivery(selected.TransactionId, lines))
             {
                 editForm.ShowDialog();
             }

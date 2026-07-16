@@ -63,7 +63,11 @@ namespace SKC_POS
 
                     DatabaseManager.AddProductsBulk(importedProducts);
 
-                    MessageBox.Show($"Successfully seeded database with {importedProducts.Count} products from clean file.", "Import Complete");
+                    MessageBox.Show(
+                        $"Seeded this PC's local legacy database with {importedProducts.Count} products from the file.\n\n" +
+                        "This does NOT update the live shared product catalog (skc-api) - use SKC Admin's Products tab " +
+                        "or SKC Bakery Supplies' Add/Edit Item for the real catalog.",
+                        "Import Complete (Local Log Only)");
                 }
                 catch (Exception ex)
                 {
