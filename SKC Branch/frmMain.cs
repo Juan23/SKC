@@ -29,12 +29,30 @@ namespace SKC_Branch
             };
             btnMyStock.Click += btnMyStock_Click;
             Controls.Add(btnMyStock);
+
+            var btnProduction = new Button
+            {
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Location = new Point(554, 56),
+                Name = "btnProduction",
+                Size = new Size(110, 35),
+                Text = "Bake / Decorate",
+                UseVisualStyleBackColor = true
+            };
+            btnProduction.Click += btnProduction_Click;
+            Controls.Add(btnProduction);
         }
 
         private void btnMyStock_Click(object sender, EventArgs e)
         {
             using var stockForm = new frmBranchStock(branchName);
             stockForm.ShowDialog();
+        }
+
+        private void btnProduction_Click(object sender, EventArgs e)
+        {
+            using var productionForm = new frmProduction(branchName);
+            productionForm.ShowDialog();
         }
 
         private async void frmMain_Load(object sender, EventArgs e)

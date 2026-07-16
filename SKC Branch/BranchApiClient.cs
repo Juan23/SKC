@@ -112,6 +112,58 @@ namespace SKC_Branch
             throw new Exception($"Failed to fetch branch stock. Code: {response.StatusCode}\nDetails: {errorDetails}");
         }
 
+        public static async Task<List<Recipe>> GetRecipesAsync()
+        {
+            HttpResponseMessage response = await client.GetAsync($"{ApiBaseUrl}/api/recipes");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<Recipe>>(content, jsonOptions) ?? new List<Recipe>();
+            }
+
+            string errorDetails = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to fetch recipes. Code: {response.StatusCode}\nDetails: {errorDetails}");
+        }
+
+        public static async Task<ProductionResult> SubmitProductionAsync(string branch, int recipeId, string staffName,
+            decimal batchMultiplier, int outputQty, string transactionId)
+        {
+            var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/production",
+                new
+                {
+                    Branch = branch,
+                    RecipeId = recipeId,
+                    StaffName = staffName,
+                    BatchMultiplier = batchMultiplier,
+                    OutputQty = outputQty,
+                    TransactionId = transactionId
+                }, jsonOptions);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string errorDetails = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Production failed (likely insufficient stock).\nDetails: {errorDetails}");
+            }
+
+            return await response.Content.ReadFromJsonAsync<ProductionResult>(jsonOptions) ?? new ProductionResult();
+        }
+
+        public static async Task<List<ProductionBatch>> GetProductionHistoryAsync(string branch)
+        {
+            HttpResponseMessage response = await client.GetAsync(
+                $"{ApiBaseUrl}/api/production?branch={Uri.EscapeDataString(branch)}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<ProductionBatch>>(content, jsonOptions) ?? new List<ProductionBatch>();
+            }
+
+            string errorDetails = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to fetch production history. Code: {response.StatusCode}\nDetails: {errorDetails}");
+        }
+
         public static async Task<bool> CheckHealthAsync()
         {
             try

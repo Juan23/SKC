@@ -42,4 +42,41 @@ namespace SKC_Branch
         public string BaseName { get; set; } = string.Empty;
         public int CurrentStock { get; set; }
     }
+
+    public class RecipeLine
+    {
+        public string InputSku { get; set; } = string.Empty;
+        public int Qty { get; set; }
+    }
+
+    public class Recipe
+    {
+        public int RecipeId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Kind { get; set; } = string.Empty; // "Baking" or "Decorating"
+        public string OutputSku { get; set; } = string.Empty;
+        public int OutputQty { get; set; }
+        public bool IsActive { get; set; }
+        public List<RecipeLine> Lines { get; set; } = new();
+    }
+
+    public class ProductionResult
+    {
+        public string OutputSku { get; set; } = string.Empty;
+        public int OutputQty { get; set; }
+        public decimal TotalInputCost { get; set; }
+    }
+
+    public class ProductionBatch
+    {
+        public string TransactionId { get; set; } = string.Empty;
+        public string Date { get; set; } = string.Empty;
+        public int RecipeId { get; set; }
+        public string RecipeName { get; set; } = string.Empty;
+        public string StaffName { get; set; } = string.Empty;
+        public decimal BatchMultiplier { get; set; }
+        public string OutputSku { get; set; } = string.Empty;
+        public int OutputQty { get; set; }
+        public decimal TotalInputCost { get; set; }
+    }
 }
