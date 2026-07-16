@@ -13,6 +13,24 @@ namespace SKC_Bakery_Supplies
         public frmHome()
         {
             InitializeComponent();
+
+            // Added in code rather than the Designer so we don't hand-edit Home.Designer.cs.
+            var btnBranchInventoryReport = new Button
+            {
+                Location = new Point(8, 96),
+                Name = "btnBranchInventoryReport",
+                Size = new Size(75, 23),
+                Text = "Branch Stock",
+                UseVisualStyleBackColor = true
+            };
+            btnBranchInventoryReport.Click += btnBranchInventoryReport_Click;
+            grpInventory.Controls.Add(btnBranchInventoryReport);
+        }
+
+        private void btnBranchInventoryReport_Click(object sender, EventArgs e)
+        {
+            frmBranchInventoryReport reportScreen = new frmBranchInventoryReport();
+            reportScreen.ShowDialog();
         }
 
         private void btnAddNewPurchase_Click(object sender, EventArgs e)

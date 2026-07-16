@@ -84,6 +84,21 @@ namespace SKC_Branch
             }
         }
 
+        public static async Task<List<BranchStockItem>> GetMyStockAsync(string branch)
+        {
+            HttpResponseMessage response = await client.GetAsync(
+                $"{ApiBaseUrl}/api/inventory/branch/{Uri.EscapeDataString(branch)}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<BranchStockItem>>(content, jsonOptions) ?? new List<BranchStockItem>();
+            }
+
+            string errorDetails = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to fetch branch stock. Code: {response.StatusCode}\nDetails: {errorDetails}");
+        }
+
         public static async Task<bool> CheckHealthAsync()
         {
             try

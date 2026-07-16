@@ -34,4 +34,12 @@ namespace SKC_Branch
         public string Requester { get; set; } = string.Empty;
         public string Reason { get; set; } = string.Empty;
     }
+
+    public class BranchStockItem
+    {
+        public string SKU { get; set; } = string.Empty;
+        public string Brand { get; set; } = string.Empty;
+        public string BaseName { get; set; } = string.Empty;
+        public int CurrentStock { get; set; }
+    }
 }

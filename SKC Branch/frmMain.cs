@@ -13,6 +13,26 @@ namespace SKC_Branch
             InitializeComponent();
             Text = $"SKC Branch - {branchName}";
             lblHeader.Text = $"Pending Deliveries for {branchName}";
+
+            // Added in code rather than the Designer so we don't hand-edit frmMain.Designer.cs
+            // (workspace convention - see SKC Bakery Supplies/.claudesettings.json).
+            var btnMyStock = new Button
+            {
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Location = new Point(554, 15),
+                Name = "btnMyStock",
+                Size = new Size(110, 35),
+                Text = "My Stock",
+                UseVisualStyleBackColor = true
+            };
+            btnMyStock.Click += btnMyStock_Click;
+            Controls.Add(btnMyStock);
+        }
+
+        private void btnMyStock_Click(object sender, EventArgs e)
+        {
+            using var stockForm = new frmBranchStock(branchName);
+            stockForm.ShowDialog();
         }
 
         private async void frmMain_Load(object sender, EventArgs e)

@@ -44,6 +44,20 @@ namespace SKC_Bakery_Supplies
             throw new Exception($"Failed to fetch catalog. Code: {response.StatusCode}\nDetails: {errorDetails}");
         }
 
+        public static async Task<List<BakeryProduct>> GetBranchInventoryAsync(string branch)
+        {
+            HttpResponseMessage response = await client.GetAsync($"{ApiBaseUrl}/api/inventory/branch/{Uri.EscapeDataString(branch)}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<BakeryProduct>>(content, jsonOptions) ?? new List<BakeryProduct>();
+            }
+
+            string errorDetails = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to fetch branch inventory. Code: {response.StatusCode}\nDetails: {errorDetails}");
+        }
+
         public static async Task AddProductAsync(object product)
         {
             var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/inventory", product, jsonOptions);
