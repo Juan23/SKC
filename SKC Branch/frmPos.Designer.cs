@@ -106,12 +106,12 @@ namespace SKC_Branch
                 | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvCart.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             dgvCart.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvCart.Location = new System.Drawing.Point(15, 90);
+            dgvCart.Location = new System.Drawing.Point(15, 128);
             dgvCart.Name = "dgvCart";
             dgvCart.ReadOnly = true;
             dgvCart.RowHeadersVisible = false;
             dgvCart.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvCart.Size = new System.Drawing.Size(615, 440);
+            dgvCart.Size = new System.Drawing.Size(615, 402);
             dgvCart.TabIndex = 6;
             //
             // btnDiscount

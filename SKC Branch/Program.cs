@@ -24,7 +24,9 @@ namespace SKC_Branch
             // screen opens so a sale can never race an uninitialized store.
             PosLocalStore.Initialize();
 
-            Application.Run(new frmMain(config.BranchName));
+            // POS is the startup screen; deliveries/production/stock are reached from
+            // its nav buttons and opened as ShowDialog, same as before the flip.
+            Application.Run(new frmPos(config.BranchName));
         }
     }
 }

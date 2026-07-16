@@ -52,11 +52,16 @@ namespace SKC_Branch
             Directory.CreateDirectory(DbDir);
             using var connection = new SqliteConnection(connectionString);
 
+            // Money columns are TEXT, not REAL: Microsoft.Data.Sqlite binds a C# decimal
+            // parameter as text, but a REAL column's affinity would then coerce that text
+            // into a double on storage (e.g. 145.70 -> 145.6999...), and casting back with
+            // (decimal) locks the drift in. TEXT affinity stores the bound text verbatim, so
+            // Dapper reads it back into decimal exact. Qty/Stock stay INTEGER - no fraction to lose.
             connection.Execute(@"CREATE TABLE IF NOT EXISTS catalog_cache (
                 SKU TEXT PRIMARY KEY,
                 Brand TEXT,
                 BaseName TEXT,
-                Price REAL NOT NULL DEFAULT 0,
+                Price TEXT NOT NULL DEFAULT '0',
                 Category TEXT,
                 Stock INTEGER NOT NULL DEFAULT 0)");
 
@@ -64,7 +69,7 @@ namespace SKC_Branch
                 ClientSaleId TEXT PRIMARY KEY,
                 StaffName TEXT NOT NULL,
                 SoldAt TEXT NOT NULL,
-                TotalAmount REAL NOT NULL)");
+                TotalAmount TEXT NOT NULL)");
 
             connection.Execute(@"CREATE TABLE IF NOT EXISTS pending_sale_lines (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,14 +77,14 @@ namespace SKC_Branch
                 SKU TEXT,
                 Description TEXT NOT NULL,
                 Qty INTEGER NOT NULL,
-                UnitPrice REAL NOT NULL,
-                LineTotal REAL NOT NULL)");
+                UnitPrice TEXT NOT NULL,
+                LineTotal TEXT NOT NULL)");
 
             connection.Execute(@"CREATE TABLE IF NOT EXISTS sale_log (
                 ClientSaleId TEXT PRIMARY KEY,
                 StaffName TEXT NOT NULL,
                 SoldAt TEXT NOT NULL,
-                TotalAmount REAL NOT NULL,
+                TotalAmount TEXT NOT NULL,
                 Status TEXT NOT NULL,
                 Detail TEXT NOT NULL DEFAULT '')");
         }
@@ -151,7 +156,7 @@ namespace SKC_Branch
         {
             using var connection = new SqliteConnection(connectionString);
 
-            var headers = connection.Query<(string ClientSaleId, string StaffName, string SoldAt, double TotalAmount)>(
+            var headers = connection.Query<(string ClientSaleId, string StaffName, string SoldAt, decimal TotalAmount)>(
                 "SELECT ClientSaleId, StaffName, SoldAt, TotalAmount FROM pending_sales ORDER BY SoldAt ASC").ToList();
 
             var sales = new List<PosSaleDto>();
@@ -167,8 +172,17 @@ namespace SKC_Branch
                     ClientSaleId = h.ClientSaleId,
                     Branch = branch,
                     StaffName = h.StaffName,
-                    SoldAt = DateTime.Parse(h.SoldAt, null, System.Globalization.DateTimeStyles.RoundtripKind),
-                    TotalAmount = (decimal)h.TotalAmount,
+                    // Stored as the counter's own wall-clock (see QueueSale); strip the Kind
+                    // here so System.Text.Json serializes it with no UTC offset. Otherwise a
+                    // Local-kind DateTime round-trips through the wire with "+08:00", the
+                    // UTC droplet converts it on deserialize, and the sale lands in
+                    // pos_sales.sold_at (TIMESTAMP WITHOUT TIME ZONE) shifted ~8h earlier -
+                    // confirmed live: a sale pushed with an offset came back 8h off, one
+                    // pushed without an offset came back exact.
+                    SoldAt = DateTime.SpecifyKind(
+                        DateTime.Parse(h.SoldAt, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                        DateTimeKind.Unspecified),
+                    TotalAmount = h.TotalAmount,
                     Lines = lines
                 });
             }
@@ -211,7 +225,7 @@ namespace SKC_Branch
             using var connection = new SqliteConnection(connectionString);
             string dayPrefix = day.ToString("yyyy-MM-dd");
 
-            var rows = connection.Query<(string ClientSaleId, string StaffName, string SoldAt, double TotalAmount, string Status, string Detail)>(@"
+            var rows = connection.Query<(string ClientSaleId, string StaffName, string SoldAt, decimal TotalAmount, string Status, string Detail)>(@"
                 SELECT ClientSaleId, StaffName, SoldAt, TotalAmount, 'Pending' AS Status, '' AS Detail
                 FROM pending_sales WHERE SoldAt LIKE @like
                 UNION ALL
@@ -225,7 +239,7 @@ namespace SKC_Branch
                     ClientSaleId = r.ClientSaleId,
                     StaffName = r.StaffName,
                     SoldAt = DateTime.Parse(r.SoldAt, null, System.Globalization.DateTimeStyles.RoundtripKind),
-                    TotalAmount = (decimal)r.TotalAmount,
+                    TotalAmount = r.TotalAmount,
                     Status = r.Status,
                     Detail = r.Detail
                 })

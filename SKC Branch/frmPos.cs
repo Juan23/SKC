@@ -22,8 +22,84 @@ namespace SKC_Branch
         {
             this.branchName = branchName;
             InitializeComponent();
-            Text = $"Point of Sale - {branchName}";
+
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            Text = $"SKC Branch - {branchName} - POS  (v{version?.ToString(3)})";
             dgvCart.DataSource = cart;
+
+            // POS is now the app's startup screen, so it's the hub for reaching the other
+            // branch screens (all still opened as ShowDialog, same as before the flip - only
+            // the direction changed). Added in code, not the Designer, per the workspace
+            // convention (see SKC Bakery Supplies/.claudesettings.json).
+            var btnGoDeliveries = new Button
+            {
+                Location = new Point(15, 90),
+                Name = "btnGoDeliveries",
+                Size = new Size(190, 30),
+                Text = "Pending Deliveries",
+                UseVisualStyleBackColor = true
+            };
+            btnGoDeliveries.Click += btnGoDeliveries_Click;
+            Controls.Add(btnGoDeliveries);
+
+            var btnGoMyStock = new Button
+            {
+                Location = new Point(220, 90),
+                Name = "btnGoMyStock",
+                Size = new Size(190, 30),
+                Text = "My Stock",
+                UseVisualStyleBackColor = true
+            };
+            btnGoMyStock.Click += btnGoMyStock_Click;
+            Controls.Add(btnGoMyStock);
+
+            var btnGoProduction = new Button
+            {
+                Location = new Point(425, 90),
+                Name = "btnGoProduction",
+                Size = new Size(190, 30),
+                Text = "Bake / Decorate",
+                UseVisualStyleBackColor = true
+            };
+            btnGoProduction.Click += btnGoProduction_Click;
+            Controls.Add(btnGoProduction);
+
+            FormClosing += frmPos_FormClosing;
+        }
+
+        // Unsynced sales are durable (they retry on next launch), so this isn't a data-loss
+        // warning - just a heads-up so a cashier closing at end of day knows sales are still
+        // queued rather than assuming everything already reached the office.
+        private void frmPos_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            int pending = PosLocalStore.PendingCount();
+            if (pending == 0) return;
+
+            var proceed = MessageBox.Show(
+                $"{pending} sale(s) have not synced to the server yet.\n\n" +
+                "They are saved on this computer and will sync automatically once online " +
+                "(or press Sync Now first). Close anyway?",
+                "Unsynced Sales", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (proceed != DialogResult.Yes) e.Cancel = true;
+        }
+
+        private void btnGoDeliveries_Click(object? sender, EventArgs e)
+        {
+            using var form = new frmMain(branchName);
+            form.ShowDialog();
+        }
+
+        private void btnGoMyStock_Click(object? sender, EventArgs e)
+        {
+            using var form = new frmBranchStock(branchName);
+            form.ShowDialog();
+        }
+
+        private void btnGoProduction_Click(object? sender, EventArgs e)
+        {
+            using var form = new frmProduction(branchName);
+            form.ShowDialog();
         }
 
         private async void frmPos_Load(object sender, EventArgs e)

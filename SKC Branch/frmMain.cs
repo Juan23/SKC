@@ -16,61 +16,8 @@ namespace SKC_Branch
             Text = $"SKC Branch - {branchName}  (v{version?.ToString(3)})";
             lblHeader.Text = $"Pending Deliveries for {branchName}";
 
-            // Added in code rather than the Designer so we don't hand-edit frmMain.Designer.cs
-            // (workspace convention - see SKC Bakery Supplies/.claudesettings.json).
-            var btnMyStock = new Button
-            {
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(554, 15),
-                Name = "btnMyStock",
-                Size = new Size(110, 35),
-                Text = "My Stock",
-                UseVisualStyleBackColor = true
-            };
-            btnMyStock.Click += btnMyStock_Click;
-            Controls.Add(btnMyStock);
-
-            var btnProduction = new Button
-            {
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(554, 56),
-                Name = "btnProduction",
-                Size = new Size(110, 35),
-                Text = "Bake / Decorate",
-                UseVisualStyleBackColor = true
-            };
-            btnProduction.Click += btnProduction_Click;
-            Controls.Add(btnProduction);
-
-            var btnPos = new Button
-            {
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(554, 97),
-                Name = "btnPos",
-                Size = new Size(110, 35),
-                Text = "POS / Sell",
-                UseVisualStyleBackColor = true
-            };
-            btnPos.Click += btnPos_Click;
-            Controls.Add(btnPos);
-        }
-
-        private void btnPos_Click(object? sender, EventArgs e)
-        {
-            using var posForm = new frmPos(branchName);
-            posForm.ShowDialog();
-        }
-
-        private void btnMyStock_Click(object? sender, EventArgs e)
-        {
-            using var stockForm = new frmBranchStock(branchName);
-            stockForm.ShowDialog();
-        }
-
-        private void btnProduction_Click(object? sender, EventArgs e)
-        {
-            using var productionForm = new frmProduction(branchName);
-            productionForm.ShowDialog();
+            // Deliveries is now reached from the POS hub (frmPos, the app's startup screen)
+            // rather than the other way around - navigation buttons live there now.
         }
 
         private async void frmMain_Load(object sender, EventArgs e)
