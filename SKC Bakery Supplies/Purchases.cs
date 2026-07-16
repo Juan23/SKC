@@ -31,6 +31,11 @@ namespace SKC_Bakery_Supplies
         private string currentTransactionId;
         private int printPurchaseIndex = 0;
 
+        // Toggle for buying by the supplier's pack unit (e.g. "Sack (25kg)") instead of the
+        // base unit inventory is tracked in (grams). Added in code rather than the Designer
+        // so we don't hand-edit Purchases.Designer.cs (see SKC Bakery Supplies/.claudesettings.json).
+        private CheckBox chkByPack;
+
         public frmPurchases()
         {
             InitializeComponent();
@@ -38,6 +43,15 @@ namespace SKC_Bakery_Supplies
             dgvPurchaseItems.DataSource = draftItems;
             draftItems.ListChanged += (s, e) => UpdateRunningTotal();
 
+            chkByPack = new CheckBox
+            {
+                Location = new Point(16, 196),
+                Name = "chkByPack",
+                Size = new Size(400, 20),
+                Text = "Buy by pack",
+                Visible = false
+            };
+            Controls.Add(chkByPack);
         }
 
         private void frmPurchases_Load(object sender, EventArgs e)
@@ -110,7 +124,26 @@ namespace SKC_Bakery_Supplies
                 isSelecting = false; // Unlock it
 
                 lstSearch.Visible = false;
+                UpdatePackToggle(selectedItem);
                 numQty.Focus();
+            }
+        }
+
+        // Shows the "buy by pack" toggle only for products with a purchase-unit conversion
+        // set up (see SKC Admin's classification screen). Unset/1.0 multiplier products
+        // behave exactly as before - qty entered is already the base unit.
+        private void UpdatePackToggle(BakeryProduct product)
+        {
+            if (product.PackMultiplier > 1)
+            {
+                chkByPack.Text = $"Buy by pack ({(string.IsNullOrWhiteSpace(product.Uom) ? "pack" : product.Uom)} = {product.PackMultiplier:0.####} base units)";
+                chkByPack.Visible = true;
+                chkByPack.Checked = false;
+            }
+            else
+            {
+                chkByPack.Visible = false;
+                chkByPack.Checked = false;
             }
         }
 
@@ -155,14 +188,31 @@ namespace SKC_Bakery_Supplies
                 }
             }
 
+            // "Buy by pack": numQty/numUnitCost are entered as pack count / cost-per-pack
+            // (e.g. "2 sacks at 500 each"); convert to base units (grams) before storing,
+            // since inventory_lots and recipes always work in base units. The displayed
+            // running total is unaffected either way - it's pack-count * pack-cost either way.
+            int qty;
+            decimal unitCost;
+            if (chkByPack.Visible && chkByPack.Checked && item.PackMultiplier > 0)
+            {
+                qty = (int)(numQty.Value * item.PackMultiplier);
+                unitCost = numUnitCost.Value / item.PackMultiplier;
+            }
+            else
+            {
+                qty = (int)numQty.Value;
+                unitCost = numUnitCost.Value;
+            }
+
             // Add to the Draft Grid
             draftItems.Add(new DraftPurchaseItem
             {
                 SKU = item.SKU,
                 Brand = item.Brand,
                 ItemName = item.BaseName,
-                Qty = (int)numQty.Value,
-                UnitCost = numUnitCost.Value
+                Qty = qty,
+                UnitCost = unitCost
             });
 
             // Reset entry bar
@@ -170,6 +220,8 @@ namespace SKC_Bakery_Supplies
             numQty.Value = 1;
             numUnitCost.Value = 0;
             txtTotalCost.Text = "0.00";
+            chkByPack.Visible = false;
+            chkByPack.Checked = false;
             txtProductSearch.Focus();
         }
 

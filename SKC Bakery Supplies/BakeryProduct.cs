@@ -11,8 +11,9 @@ namespace SKC_Bakery_Supplies
         public string SKU { get; set; }
         public string Brand { get; set; }
         public string BaseName { get; set; }
-        // public string UOM { get; set; }
-        // public decimal PackMultiplier { get; set; }
+        public string Category { get; set; } = "RawMaterial";
+        public string Uom { get; set; }
+        public decimal PackMultiplier { get; set; } = 1;
         public decimal Price { get; set; }
         public bool IsActive { get; set; } = true;
         public int CurrentStock { get; set; }
