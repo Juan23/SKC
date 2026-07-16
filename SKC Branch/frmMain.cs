@@ -41,15 +41,33 @@ namespace SKC_Branch
             };
             btnProduction.Click += btnProduction_Click;
             Controls.Add(btnProduction);
+
+            var btnPos = new Button
+            {
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Location = new Point(554, 97),
+                Name = "btnPos",
+                Size = new Size(110, 35),
+                Text = "POS / Sell",
+                UseVisualStyleBackColor = true
+            };
+            btnPos.Click += btnPos_Click;
+            Controls.Add(btnPos);
         }
 
-        private void btnMyStock_Click(object sender, EventArgs e)
+        private void btnPos_Click(object? sender, EventArgs e)
+        {
+            using var posForm = new frmPos(branchName);
+            posForm.ShowDialog();
+        }
+
+        private void btnMyStock_Click(object? sender, EventArgs e)
         {
             using var stockForm = new frmBranchStock(branchName);
             stockForm.ShowDialog();
         }
 
-        private void btnProduction_Click(object sender, EventArgs e)
+        private void btnProduction_Click(object? sender, EventArgs e)
         {
             using var productionForm = new frmProduction(branchName);
             productionForm.ShowDialog();
@@ -57,20 +75,23 @@ namespace SKC_Branch
 
         private async void frmMain_Load(object sender, EventArgs e)
         {
+            // Startup must survive being offline without blocking modals - the POS works
+            // from its local cache, so an offline launch should land straight in a usable
+            // app. Failures here show in the header instead of a MessageBox; deliveries
+            // and production still surface their own errors when actually used.
             try
             {
                 masterCatalog = await BranchApiClient.GetAllProductsAsync();
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show($"Could not load the product catalog. Item names will show as SKUs.\n\n{ex.Message}",
-                    "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                masterCatalog = new List<BranchProduct>();
             }
 
-            await RefreshPendingAsync();
+            await RefreshPendingAsync(suppressErrors: true);
         }
 
-        private async Task RefreshPendingAsync()
+        private async Task RefreshPendingAsync(bool suppressErrors = false)
         {
             try
             {
@@ -79,11 +100,16 @@ namespace SKC_Branch
                 dgvPending.ClearSelection();
                 dgvLines.DataSource = null;
                 btnAccept.Enabled = pending.Count > 0;
+                lblHeader.Text = $"Pending Deliveries for {branchName}";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not load pending deliveries.\n\n{ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                lblHeader.Text = $"Pending Deliveries for {branchName}  (offline - could not reach server)";
+                if (!suppressErrors)
+                {
+                    MessageBox.Show($"Could not load pending deliveries.\n\n{ex.Message}",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

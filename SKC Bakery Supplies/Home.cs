@@ -28,6 +28,25 @@ namespace SKC_Bakery_Supplies
             };
             btnBranchInventoryReport.Click += btnBranchInventoryReport_Click;
             grpInventory.Controls.Add(btnBranchInventoryReport);
+
+            // POS sales synced up from the branches - lives in the "Reports" group
+            // (free slot under Print Report). Same code-only convention as above.
+            var btnBranchSales = new Button
+            {
+                Location = new Point(8, 48),
+                Name = "btnBranchSales",
+                Size = new Size(75, 23),
+                Text = "Branch Sales",
+                UseVisualStyleBackColor = true
+            };
+            btnBranchSales.Click += btnBranchSales_Click;
+            groupBox1.Controls.Add(btnBranchSales);
+        }
+
+        private void btnBranchSales_Click(object? sender, EventArgs e)
+        {
+            frmBranchSalesReport salesScreen = new frmBranchSalesReport();
+            salesScreen.ShowDialog();
         }
 
         private void btnBranchInventoryReport_Click(object sender, EventArgs e)

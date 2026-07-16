@@ -164,6 +164,22 @@ namespace SKC_Branch
             throw new Exception($"Failed to fetch production history. Code: {response.StatusCode}\nDetails: {errorDetails}");
         }
 
+        // Pushes queued POS sales. The server is idempotent by ClientSaleId, so re-pushing
+        // after a lost response is safe - AlreadySynced comes back instead of a double-deduct.
+        public static async Task<List<SaleSyncResult>> PushSalesAsync(List<PosSaleDto> sales)
+        {
+            var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/sales", sales, jsonOptions);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string errorDetails = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to push sales. Code: {response.StatusCode}\nDetails: {errorDetails}");
+            }
+
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<SaleSyncResult>>(content, jsonOptions) ?? new List<SaleSyncResult>();
+        }
+
         public static async Task<bool> CheckHealthAsync()
         {
             try

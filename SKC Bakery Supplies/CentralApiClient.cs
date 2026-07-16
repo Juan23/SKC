@@ -58,6 +58,36 @@ namespace SKC_Bakery_Supplies
             throw new Exception($"Failed to fetch branch inventory. Code: {response.StatusCode}\nDetails: {errorDetails}");
         }
 
+        public static async Task<List<BranchSaleSummary>> GetBranchSalesAsync(string branch, DateTime start, DateTime end)
+        {
+            HttpResponseMessage response = await client.GetAsync(
+                $"{ApiBaseUrl}/api/sales?branch={Uri.EscapeDataString(branch)}&start={start:yyyy-MM-ddTHH:mm:ss}&end={end:yyyy-MM-ddTHH:mm:ss}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<BranchSaleSummary>>(content, jsonOptions) ?? new List<BranchSaleSummary>();
+            }
+
+            string errorDetails = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to fetch branch sales. Code: {response.StatusCode}\nDetails: {errorDetails}");
+        }
+
+        public static async Task<List<BranchSaleLine>> GetBranchSaleLinesAsync(string branch, string clientSaleId)
+        {
+            HttpResponseMessage response = await client.GetAsync(
+                $"{ApiBaseUrl}/api/sales/{Uri.EscapeDataString(branch)}/{Uri.EscapeDataString(clientSaleId)}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<BranchSaleLine>>(content, jsonOptions) ?? new List<BranchSaleLine>();
+            }
+
+            string errorDetails = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to fetch sale lines. Code: {response.StatusCode}\nDetails: {errorDetails}");
+        }
+
         public static async Task AddProductAsync(object product)
         {
             var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/inventory", product, jsonOptions);

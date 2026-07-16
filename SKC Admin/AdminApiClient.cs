@@ -46,6 +46,16 @@ namespace SKC_Admin
                 throw new Exception($"Failed to update classification.\nDetails: {await response.Content.ReadAsStringAsync()}");
         }
 
+        public static async Task SetPriceAsync(string sku, decimal price)
+        {
+            var response = await client.PutAsJsonAsync(
+                $"{ApiBaseUrl}/api/inventory/{Uri.EscapeDataString(sku)}/price",
+                new { Price = price }, jsonOptions);
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Failed to update price.\nDetails: {await response.Content.ReadAsStringAsync()}");
+        }
+
         public static async Task<List<Recipe>> GetRecipesAsync()
         {
             HttpResponseMessage response = await client.GetAsync($"{ApiBaseUrl}/api/recipes");

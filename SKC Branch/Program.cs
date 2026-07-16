@@ -20,6 +20,10 @@ namespace SKC_Branch
                 config.Save();
             }
 
+            // Idempotent CREATE IF NOT EXISTS; the POS queue must exist before any
+            // screen opens so a sale can never race an uninitialized store.
+            PosLocalStore.Initialize();
+
             Application.Run(new frmMain(config.BranchName));
         }
     }

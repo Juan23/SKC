@@ -13,6 +13,11 @@ namespace SKC_Admin
         public decimal PackMultiplier { get; set; } = 1;
         public int CurrentStock { get; set; }
 
+        // Sellable-at-POS is derived, not stored: the owner prices what branches may
+        // sell (bread, candles) and leaves raw materials/intermediaries (flour, chiffon)
+        // at 0. Category deliberately plays no part - see PUT /api/inventory/{sku}/price.
+        public bool Sellable => Price > 0;
+
         // Combo-box display text only - hidden from the products grid via Browsable(false).
         [Browsable(false)]
         public string Display => $"{Brand} {BaseName}".Trim();
