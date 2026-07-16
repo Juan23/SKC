@@ -67,7 +67,14 @@ namespace SKC_Bakery_Supplies
 
             if (confirm == DialogResult.Yes)
             {
-                await CentralApiClient.DeleteDeliveryTicketAsync(selected.TransactionId);
+                try
+                {
+                    await CentralApiClient.DeleteDeliveryTicketAsync(selected.TransactionId);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Delete Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
                 LoadGrid();
             }
         }

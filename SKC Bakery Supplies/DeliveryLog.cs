@@ -34,6 +34,7 @@ namespace SKC_Bakery_Supplies
         public string Requester { get; set; }
         public string Reason { get; set; }
         public double TotalCost { get; set; }
+        public string Status { get; set; }
     }
 
     public class DailyDeliveryPrintItem
