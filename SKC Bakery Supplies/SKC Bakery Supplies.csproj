@@ -14,9 +14,4 @@
     <PackageReference Include="PDFsharp" Version="6.2.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SKC POS\SKC POS.csproj" />
-    <ProjectReference Include="..\SKC.DataEngine\SKC.DataEngine.csproj" />
-  </ItemGroup>
-
 </Project>

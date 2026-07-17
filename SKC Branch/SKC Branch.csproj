@@ -12,7 +12,7 @@
 
   <!-- Deliberate deviation from the workspace's no-packages convention for client apps:
        the POS is offline-first and genuinely needs a local store (queue + catalog cache).
-       Same package versions as SKC.DataEngine; still no project references. -->
+       Same package versions as the retired SKC.DataEngine used; still no project references. -->
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.79" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.10" />
