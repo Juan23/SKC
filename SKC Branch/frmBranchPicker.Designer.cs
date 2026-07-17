@@ -65,7 +65,7 @@ namespace SKC_Branch
             //
             // frmBranchPicker
             //
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(320, 150);
             Controls.Add(btnOk);

@@ -36,9 +36,10 @@ namespace SKC_Branch
             // btnRefresh
             //
             btnRefresh.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnRefresh.Location = new System.Drawing.Point(574, 15);
+            btnRefresh.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnRefresh.Location = new System.Drawing.Point(1130, 15);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new System.Drawing.Size(110, 35);
+            btnRefresh.Size = new System.Drawing.Size(130, 40);
             btnRefresh.TabIndex = 1;
             btnRefresh.Text = "Refresh";
             btnRefresh.UseVisualStyleBackColor = true;
@@ -51,25 +52,27 @@ namespace SKC_Branch
             dgvHistory.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             dgvHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvHistory.Location = new System.Drawing.Point(20, 60);
+            dgvHistory.Location = new System.Drawing.Point(20, 70);
             dgvHistory.Name = "dgvHistory";
             dgvHistory.ReadOnly = true;
             dgvHistory.RowHeadersVisible = false;
             dgvHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvHistory.Size = new System.Drawing.Size(664, 430);
+            dgvHistory.Size = new System.Drawing.Size(1240, 550);
             dgvHistory.TabIndex = 2;
             //
             // frmProductionHistory
             //
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(704, 511);
+            ClientSize = new System.Drawing.Size(1280, 640);
             Controls.Add(dgvHistory);
             Controls.Add(btnRefresh);
             Controls.Add(lblHeader);
-            MinimumSize = new System.Drawing.Size(600, 400);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "frmProductionHistory";
-            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Text = "Production History";
             Load += frmProductionHistory_Load;
             ((System.ComponentModel.ISupportInitialize)dgvHistory).EndInit();

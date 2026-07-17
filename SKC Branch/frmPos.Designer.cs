@@ -20,6 +20,9 @@ namespace SKC_Branch
             components = new System.ComponentModel.Container();
             lblStaff = new System.Windows.Forms.Label();
             txtStaff = new System.Windows.Forms.TextBox();
+            btnGoDeliveries = new System.Windows.Forms.Button();
+            btnGoMyStock = new System.Windows.Forms.Button();
+            btnGoProduction = new System.Windows.Forms.Button();
             lblSearch = new System.Windows.Forms.Label();
             txtSearch = new System.Windows.Forms.TextBox();
             numQty = new System.Windows.Forms.NumericUpDown();
@@ -47,54 +50,93 @@ namespace SKC_Branch
             // lblStaff
             //
             lblStaff.AutoSize = true;
-            lblStaff.Location = new System.Drawing.Point(15, 18);
+            lblStaff.Font = new System.Drawing.Font("Segoe UI", 10F);
+            lblStaff.Location = new System.Drawing.Point(20, 27);
             lblStaff.Name = "lblStaff";
-            lblStaff.Size = new System.Drawing.Size(48, 15);
+            lblStaff.Size = new System.Drawing.Size(62, 23);
             lblStaff.TabIndex = 0;
             lblStaff.Text = "Cashier";
             //
             // txtStaff
             //
-            txtStaff.Location = new System.Drawing.Point(80, 15);
+            txtStaff.Font = new System.Drawing.Font("Segoe UI", 12F);
+            txtStaff.Location = new System.Drawing.Point(95, 20);
             txtStaff.Name = "txtStaff";
-            txtStaff.Size = new System.Drawing.Size(200, 23);
+            txtStaff.Size = new System.Drawing.Size(225, 29);
             txtStaff.TabIndex = 1;
+            //
+            // btnGoDeliveries
+            //
+            btnGoDeliveries.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnGoDeliveries.Location = new System.Drawing.Point(330, 15);
+            btnGoDeliveries.Name = "btnGoDeliveries";
+            btnGoDeliveries.Size = new System.Drawing.Size(190, 40);
+            btnGoDeliveries.TabIndex = 2;
+            btnGoDeliveries.Text = "Pending Deliveries";
+            btnGoDeliveries.UseVisualStyleBackColor = true;
+            btnGoDeliveries.Click += btnGoDeliveries_Click;
+            //
+            // btnGoMyStock
+            //
+            btnGoMyStock.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnGoMyStock.Location = new System.Drawing.Point(530, 15);
+            btnGoMyStock.Name = "btnGoMyStock";
+            btnGoMyStock.Size = new System.Drawing.Size(190, 40);
+            btnGoMyStock.TabIndex = 3;
+            btnGoMyStock.Text = "My Stock";
+            btnGoMyStock.UseVisualStyleBackColor = true;
+            btnGoMyStock.Click += btnGoMyStock_Click;
+            //
+            // btnGoProduction
+            //
+            btnGoProduction.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnGoProduction.Location = new System.Drawing.Point(730, 15);
+            btnGoProduction.Name = "btnGoProduction";
+            btnGoProduction.Size = new System.Drawing.Size(190, 40);
+            btnGoProduction.TabIndex = 4;
+            btnGoProduction.Text = "Bake / Decorate";
+            btnGoProduction.UseVisualStyleBackColor = true;
+            btnGoProduction.Click += btnGoProduction_Click;
             //
             // lblSearch
             //
             lblSearch.AutoSize = true;
-            lblSearch.Location = new System.Drawing.Point(15, 55);
+            lblSearch.Font = new System.Drawing.Font("Segoe UI", 10F);
+            lblSearch.Location = new System.Drawing.Point(20, 72);
             lblSearch.Name = "lblSearch";
-            lblSearch.Size = new System.Drawing.Size(31, 15);
-            lblSearch.TabIndex = 2;
+            lblSearch.Size = new System.Drawing.Size(40, 23);
+            lblSearch.TabIndex = 5;
             lblSearch.Text = "Item";
             //
             // txtSearch
             //
-            txtSearch.Location = new System.Drawing.Point(80, 52);
+            txtSearch.Font = new System.Drawing.Font("Segoe UI", 12F);
+            txtSearch.Location = new System.Drawing.Point(95, 65);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new System.Drawing.Size(370, 23);
-            txtSearch.TabIndex = 3;
+            txtSearch.Size = new System.Drawing.Size(610, 29);
+            txtSearch.TabIndex = 6;
             txtSearch.TextChanged += txtSearch_TextChanged;
             txtSearch.KeyDown += txtSearch_KeyDown;
             //
             // numQty
             //
-            numQty.Location = new System.Drawing.Point(460, 52);
+            numQty.Font = new System.Drawing.Font("Segoe UI", 12F);
+            numQty.Location = new System.Drawing.Point(720, 65);
             numQty.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             numQty.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numQty.Name = "numQty";
-            numQty.Size = new System.Drawing.Size(70, 23);
-            numQty.TabIndex = 4;
+            numQty.Size = new System.Drawing.Size(90, 29);
+            numQty.TabIndex = 7;
             numQty.Value = new decimal(new int[] { 1, 0, 0, 0 });
             //
             // lstSearch
             //
-            lstSearch.ItemHeight = 15;
-            lstSearch.Location = new System.Drawing.Point(80, 78);
+            lstSearch.Font = new System.Drawing.Font("Segoe UI", 12F);
+            lstSearch.ItemHeight = 21;
+            lstSearch.Location = new System.Drawing.Point(95, 96);
             lstSearch.Name = "lstSearch";
-            lstSearch.Size = new System.Drawing.Size(450, 139);
-            lstSearch.TabIndex = 5;
+            lstSearch.Size = new System.Drawing.Size(610, 256);
+            lstSearch.TabIndex = 8;
             lstSearch.Visible = false;
             lstSearch.Click += lstSearch_Click;
             //
@@ -106,21 +148,23 @@ namespace SKC_Branch
                 | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvCart.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             dgvCart.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvCart.Location = new System.Drawing.Point(15, 128);
+            dgvCart.Font = new System.Drawing.Font("Segoe UI", 12F);
+            dgvCart.Location = new System.Drawing.Point(20, 115);
             dgvCart.Name = "dgvCart";
             dgvCart.ReadOnly = true;
             dgvCart.RowHeadersVisible = false;
             dgvCart.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvCart.Size = new System.Drawing.Size(615, 402);
-            dgvCart.TabIndex = 6;
+            dgvCart.Size = new System.Drawing.Size(900, 490);
+            dgvCart.TabIndex = 9;
             //
             // btnDiscount
             //
             btnDiscount.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnDiscount.Location = new System.Drawing.Point(645, 90);
+            btnDiscount.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnDiscount.Location = new System.Drawing.Point(940, 15);
             btnDiscount.Name = "btnDiscount";
-            btnDiscount.Size = new System.Drawing.Size(240, 32);
-            btnDiscount.TabIndex = 7;
+            btnDiscount.Size = new System.Drawing.Size(320, 40);
+            btnDiscount.TabIndex = 10;
             btnDiscount.Text = "Discount...";
             btnDiscount.UseVisualStyleBackColor = true;
             btnDiscount.Click += btnDiscount_Click;
@@ -128,10 +172,11 @@ namespace SKC_Branch
             // btnRemoveLine
             //
             btnRemoveLine.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnRemoveLine.Location = new System.Drawing.Point(645, 130);
+            btnRemoveLine.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnRemoveLine.Location = new System.Drawing.Point(940, 65);
             btnRemoveLine.Name = "btnRemoveLine";
-            btnRemoveLine.Size = new System.Drawing.Size(240, 32);
-            btnRemoveLine.TabIndex = 8;
+            btnRemoveLine.Size = new System.Drawing.Size(320, 40);
+            btnRemoveLine.TabIndex = 11;
             btnRemoveLine.Text = "Remove Selected Line";
             btnRemoveLine.UseVisualStyleBackColor = true;
             btnRemoveLine.Click += btnRemoveLine_Click;
@@ -139,10 +184,11 @@ namespace SKC_Branch
             // btnDayLog
             //
             btnDayLog.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnDayLog.Location = new System.Drawing.Point(645, 170);
+            btnDayLog.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnDayLog.Location = new System.Drawing.Point(940, 115);
             btnDayLog.Name = "btnDayLog";
-            btnDayLog.Size = new System.Drawing.Size(240, 32);
-            btnDayLog.TabIndex = 9;
+            btnDayLog.Size = new System.Drawing.Size(320, 40);
+            btnDayLog.TabIndex = 12;
             btnDayLog.Text = "Today's Sales...";
             btnDayLog.UseVisualStyleBackColor = true;
             btnDayLog.Click += btnDayLog_Click;
@@ -150,10 +196,11 @@ namespace SKC_Branch
             // btnSyncNow
             //
             btnSyncNow.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnSyncNow.Location = new System.Drawing.Point(645, 210);
+            btnSyncNow.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnSyncNow.Location = new System.Drawing.Point(940, 165);
             btnSyncNow.Name = "btnSyncNow";
-            btnSyncNow.Size = new System.Drawing.Size(240, 32);
-            btnSyncNow.TabIndex = 10;
+            btnSyncNow.Size = new System.Drawing.Size(320, 40);
+            btnSyncNow.TabIndex = 13;
             btnSyncNow.Text = "Sync Now";
             btnSyncNow.UseVisualStyleBackColor = true;
             btnSyncNow.Click += btnSyncNow_Click;
@@ -162,20 +209,21 @@ namespace SKC_Branch
             //
             lblTotalCaption.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             lblTotalCaption.AutoSize = true;
-            lblTotalCaption.Location = new System.Drawing.Point(645, 290);
+            lblTotalCaption.Font = new System.Drawing.Font("Segoe UI", 11F);
+            lblTotalCaption.Location = new System.Drawing.Point(940, 230);
             lblTotalCaption.Name = "lblTotalCaption";
-            lblTotalCaption.Size = new System.Drawing.Size(35, 15);
-            lblTotalCaption.TabIndex = 11;
+            lblTotalCaption.Size = new System.Drawing.Size(47, 25);
+            lblTotalCaption.TabIndex = 14;
             lblTotalCaption.Text = "Total";
             //
             // lblTotal
             //
             lblTotal.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblTotal.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Bold);
-            lblTotal.Location = new System.Drawing.Point(645, 308);
+            lblTotal.Font = new System.Drawing.Font("Segoe UI", 28F, System.Drawing.FontStyle.Bold);
+            lblTotal.Location = new System.Drawing.Point(940, 260);
             lblTotal.Name = "lblTotal";
-            lblTotal.Size = new System.Drawing.Size(240, 45);
-            lblTotal.TabIndex = 12;
+            lblTotal.Size = new System.Drawing.Size(320, 62);
+            lblTotal.TabIndex = 15;
             lblTotal.Text = "0.00";
             lblTotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             //
@@ -183,63 +231,64 @@ namespace SKC_Branch
             //
             lblCash.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             lblCash.AutoSize = true;
-            lblCash.Location = new System.Drawing.Point(645, 368);
+            lblCash.Font = new System.Drawing.Font("Segoe UI", 11F);
+            lblCash.Location = new System.Drawing.Point(940, 340);
             lblCash.Name = "lblCash";
-            lblCash.Size = new System.Drawing.Size(67, 15);
-            lblCash.TabIndex = 13;
+            lblCash.Size = new System.Drawing.Size(90, 25);
+            lblCash.TabIndex = 16;
             lblCash.Text = "Cash Given";
             //
             // txtCash
             //
             txtCash.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            txtCash.Font = new System.Drawing.Font("Segoe UI", 12F);
-            txtCash.Location = new System.Drawing.Point(645, 388);
+            txtCash.Font = new System.Drawing.Font("Segoe UI", 14F);
+            txtCash.Location = new System.Drawing.Point(940, 370);
             txtCash.Name = "txtCash";
-            txtCash.Size = new System.Drawing.Size(240, 29);
-            txtCash.TabIndex = 14;
+            txtCash.Size = new System.Drawing.Size(320, 32);
+            txtCash.TabIndex = 17;
             txtCash.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             txtCash.TextChanged += txtCash_TextChanged;
             //
             // lblChange
             //
             lblChange.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblChange.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            lblChange.Location = new System.Drawing.Point(645, 424);
+            lblChange.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            lblChange.Location = new System.Drawing.Point(940, 412);
             lblChange.Name = "lblChange";
-            lblChange.Size = new System.Drawing.Size(240, 30);
-            lblChange.TabIndex = 15;
+            lblChange.Size = new System.Drawing.Size(320, 36);
+            lblChange.TabIndex = 18;
             lblChange.Text = "Change: 0.00";
             lblChange.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             //
             // btnComplete
             //
-            btnComplete.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnComplete.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            btnComplete.Location = new System.Drawing.Point(645, 465);
+            btnComplete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            btnComplete.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            btnComplete.Location = new System.Drawing.Point(940, 495);
             btnComplete.Name = "btnComplete";
-            btnComplete.Size = new System.Drawing.Size(240, 60);
-            btnComplete.TabIndex = 16;
+            btnComplete.Size = new System.Drawing.Size(320, 80);
+            btnComplete.TabIndex = 19;
             btnComplete.Text = "COMPLETE SALE";
             btnComplete.UseVisualStyleBackColor = true;
             btnComplete.Click += btnComplete_Click;
             //
             // lblLastSale
             //
-            lblLastSale.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblLastSale.Location = new System.Drawing.Point(645, 530);
+            lblLastSale.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            lblLastSale.Location = new System.Drawing.Point(940, 585);
             lblLastSale.Name = "lblLastSale";
-            lblLastSale.Size = new System.Drawing.Size(240, 20);
-            lblLastSale.TabIndex = 17;
+            lblLastSale.Size = new System.Drawing.Size(320, 22);
+            lblLastSale.TabIndex = 20;
             lblLastSale.Text = "";
             lblLastSale.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             //
             // statusStrip
             //
             statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblSyncStatus });
-            statusStrip.Location = new System.Drawing.Point(0, 553);
+            statusStrip.Location = new System.Drawing.Point(0, 618);
             statusStrip.Name = "statusStrip";
-            statusStrip.Size = new System.Drawing.Size(900, 22);
-            statusStrip.TabIndex = 18;
+            statusStrip.Size = new System.Drawing.Size(1280, 22);
+            statusStrip.TabIndex = 21;
             //
             // lblSyncStatus
             //
@@ -254,12 +303,15 @@ namespace SKC_Branch
             //
             // frmPos
             //
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(900, 575);
+            ClientSize = new System.Drawing.Size(1280, 640);
             Controls.Add(lstSearch);
             Controls.Add(lblStaff);
             Controls.Add(txtStaff);
+            Controls.Add(btnGoDeliveries);
+            Controls.Add(btnGoMyStock);
+            Controls.Add(btnGoProduction);
             Controls.Add(lblSearch);
             Controls.Add(txtSearch);
             Controls.Add(numQty);
@@ -276,10 +328,12 @@ namespace SKC_Branch
             Controls.Add(btnComplete);
             Controls.Add(lblLastSale);
             Controls.Add(statusStrip);
-            MinimumSize = new System.Drawing.Size(916, 614);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "frmPos";
-            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "Point of Sale";
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Load += frmPos_Load;
             ((System.ComponentModel.ISupportInitialize)numQty).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvCart).EndInit();
@@ -293,6 +347,9 @@ namespace SKC_Branch
 
         private System.Windows.Forms.Label lblStaff;
         private System.Windows.Forms.TextBox txtStaff;
+        private System.Windows.Forms.Button btnGoDeliveries;
+        private System.Windows.Forms.Button btnGoMyStock;
+        private System.Windows.Forms.Button btnGoProduction;
         private System.Windows.Forms.Label lblSearch;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.NumericUpDown numQty;

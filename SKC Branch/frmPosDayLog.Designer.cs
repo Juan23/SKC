@@ -27,10 +27,10 @@ namespace SKC_Branch
             // lblHeader
             //
             lblHeader.AutoSize = true;
-            lblHeader.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            lblHeader.Location = new System.Drawing.Point(15, 15);
+            lblHeader.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            lblHeader.Location = new System.Drawing.Point(20, 15);
             lblHeader.Name = "lblHeader";
-            lblHeader.Size = new System.Drawing.Size(120, 21);
+            lblHeader.Size = new System.Drawing.Size(160, 32);
             lblHeader.TabIndex = 0;
             lblHeader.Text = "Today's Sales";
             //
@@ -42,31 +42,32 @@ namespace SKC_Branch
                 | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvSales.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             dgvSales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvSales.Location = new System.Drawing.Point(15, 45);
+            dgvSales.Location = new System.Drawing.Point(20, 60);
             dgvSales.Name = "dgvSales";
             dgvSales.ReadOnly = true;
             dgvSales.RowHeadersVisible = false;
             dgvSales.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvSales.Size = new System.Drawing.Size(670, 330);
+            dgvSales.Size = new System.Drawing.Size(1240, 510);
             dgvSales.TabIndex = 1;
             //
             // lblTotals
             //
             lblTotals.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left
                 | System.Windows.Forms.AnchorStyles.Right;
-            lblTotals.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            lblTotals.Location = new System.Drawing.Point(15, 385);
+            lblTotals.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
+            lblTotals.Location = new System.Drawing.Point(20, 590);
             lblTotals.Name = "lblTotals";
-            lblTotals.Size = new System.Drawing.Size(550, 25);
+            lblTotals.Size = new System.Drawing.Size(1090, 30);
             lblTotals.TabIndex = 2;
             lblTotals.Text = "Total: 0.00";
             //
             // btnRefresh
             //
             btnRefresh.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnRefresh.Location = new System.Drawing.Point(575, 382);
+            btnRefresh.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnRefresh.Location = new System.Drawing.Point(1130, 585);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new System.Drawing.Size(110, 30);
+            btnRefresh.Size = new System.Drawing.Size(130, 40);
             btnRefresh.TabIndex = 3;
             btnRefresh.Text = "Refresh";
             btnRefresh.UseVisualStyleBackColor = true;
@@ -74,16 +75,18 @@ namespace SKC_Branch
             //
             // frmPosDayLog
             //
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(700, 425);
+            ClientSize = new System.Drawing.Size(1280, 640);
             Controls.Add(lblHeader);
             Controls.Add(dgvSales);
             Controls.Add(lblTotals);
             Controls.Add(btnRefresh);
-            MinimumSize = new System.Drawing.Size(600, 380);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "frmPosDayLog";
-            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Text = "Today's Sales";
             Load += frmPosDayLog_Load;
             ((System.ComponentModel.ISupportInitialize)dgvSales).EndInit();

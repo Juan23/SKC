@@ -47,9 +47,10 @@ namespace SKC_Branch
             // btnRefresh
             //
             btnRefresh.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnRefresh.Location = new System.Drawing.Point(474, 15);
+            btnRefresh.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnRefresh.Location = new System.Drawing.Point(1130, 15);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new System.Drawing.Size(110, 35);
+            btnRefresh.Size = new System.Drawing.Size(130, 40);
             btnRefresh.TabIndex = 1;
             btnRefresh.Text = "Refresh";
             btnRefresh.UseVisualStyleBackColor = true;
@@ -62,25 +63,27 @@ namespace SKC_Branch
             dgvStock.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvStock.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             dgvStock.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvStock.Location = new System.Drawing.Point(20, 60);
+            dgvStock.Location = new System.Drawing.Point(20, 70);
             dgvStock.Name = "dgvStock";
             dgvStock.ReadOnly = true;
             dgvStock.RowHeadersVisible = false;
             dgvStock.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvStock.Size = new System.Drawing.Size(564, 430);
+            dgvStock.Size = new System.Drawing.Size(1240, 550);
             dgvStock.TabIndex = 2;
             //
             // frmBranchStock
             //
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(604, 511);
+            ClientSize = new System.Drawing.Size(1280, 640);
             Controls.Add(dgvStock);
             Controls.Add(btnRefresh);
             Controls.Add(lblHeader);
-            MinimumSize = new System.Drawing.Size(500, 400);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "frmBranchStock";
-            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Text = "My Stock";
             Load += frmBranchStock_Load;
             ((System.ComponentModel.ISupportInitialize)dgvStock).EndInit();

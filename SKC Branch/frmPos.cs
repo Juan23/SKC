@@ -27,42 +27,11 @@ namespace SKC_Branch
             Text = $"SKC Branch - {branchName} - POS  (v{version?.ToString(3)})";
             dgvCart.DataSource = cart;
 
-            // POS is now the app's startup screen, so it's the hub for reaching the other
-            // branch screens (all still opened as ShowDialog, same as before the flip - only
-            // the direction changed). Added in code, not the Designer, per the workspace
-            // convention (see SKC Bakery Supplies/.claudesettings.json).
-            var btnGoDeliveries = new Button
-            {
-                Location = new Point(15, 90),
-                Name = "btnGoDeliveries",
-                Size = new Size(190, 30),
-                Text = "Pending Deliveries",
-                UseVisualStyleBackColor = true
-            };
-            btnGoDeliveries.Click += btnGoDeliveries_Click;
-            Controls.Add(btnGoDeliveries);
-
-            var btnGoMyStock = new Button
-            {
-                Location = new Point(220, 90),
-                Name = "btnGoMyStock",
-                Size = new Size(190, 30),
-                Text = "My Stock",
-                UseVisualStyleBackColor = true
-            };
-            btnGoMyStock.Click += btnGoMyStock_Click;
-            Controls.Add(btnGoMyStock);
-
-            var btnGoProduction = new Button
-            {
-                Location = new Point(425, 90),
-                Name = "btnGoProduction",
-                Size = new Size(190, 30),
-                Text = "Bake / Decorate",
-                UseVisualStyleBackColor = true
-            };
-            btnGoProduction.Click += btnGoProduction_Click;
-            Controls.Add(btnGoProduction);
+            // Fill mode would split the cart into equal quarters; the item name deserves
+            // the lion's share of the 900px grid. Columns exist already - binding a
+            // BindingList materializes them synchronously. Null-guarded so a renamed
+            // CartLine property degrades to equal widths instead of crashing startup.
+            if (dgvCart.Columns["Item"] is { } itemColumn) itemColumn.FillWeight = 300;
 
             FormClosing += frmPos_FormClosing;
         }

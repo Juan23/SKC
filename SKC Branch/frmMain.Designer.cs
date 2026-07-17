@@ -51,9 +51,10 @@ namespace SKC_Branch
             // btnRefresh
             //
             btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnRefresh.Location = new Point(674, 15);
+            btnRefresh.Font = new Font("Segoe UI", 10F);
+            btnRefresh.Location = new Point(1130, 15);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(110, 35);
+            btnRefresh.Size = new Size(130, 40);
             btnRefresh.TabIndex = 1;
             btnRefresh.Text = "Refresh";
             btnRefresh.UseVisualStyleBackColor = true;
@@ -66,21 +67,21 @@ namespace SKC_Branch
             dgvPending.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             dgvPending.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvPending.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvPending.Location = new Point(20, 60);
+            dgvPending.Location = new Point(20, 70);
             dgvPending.MultiSelect = false;
             dgvPending.Name = "dgvPending";
             dgvPending.ReadOnly = true;
             dgvPending.RowHeadersVisible = false;
             dgvPending.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPending.Size = new Size(764, 220);
+            dgvPending.Size = new Size(1240, 220);
             dgvPending.TabIndex = 2;
             dgvPending.SelectionChanged += dgvPending_SelectionChanged;
             //
             // lblLines
             //
             lblLines.AutoSize = true;
-            lblLines.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblLines.Location = new Point(20, 292);
+            lblLines.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblLines.Location = new Point(20, 305);
             lblLines.Name = "lblLines";
             lblLines.Size = new Size(160, 23);
             lblLines.TabIndex = 3;
@@ -93,22 +94,22 @@ namespace SKC_Branch
             dgvLines.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvLines.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvLines.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvLines.Location = new Point(20, 320);
+            dgvLines.Location = new Point(20, 340);
             dgvLines.MultiSelect = false;
             dgvLines.Name = "dgvLines";
             dgvLines.ReadOnly = true;
             dgvLines.RowHeadersVisible = false;
             dgvLines.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvLines.Size = new Size(764, 230);
+            dgvLines.Size = new Size(1240, 215);
             dgvLines.TabIndex = 4;
             //
             // btnAccept
             //
             btnAccept.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btnAccept.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            btnAccept.Location = new Point(20, 565);
+            btnAccept.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            btnAccept.Location = new Point(20, 570);
             btnAccept.Name = "btnAccept";
-            btnAccept.Size = new Size(764, 50);
+            btnAccept.Size = new Size(1240, 55);
             btnAccept.TabIndex = 5;
             btnAccept.Text = "Accept Selected Delivery";
             btnAccept.UseVisualStyleBackColor = true;
@@ -116,18 +117,20 @@ namespace SKC_Branch
             //
             // frmMain
             //
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(804, 631);
+            ClientSize = new Size(1280, 640);
             Controls.Add(btnAccept);
             Controls.Add(dgvLines);
             Controls.Add(lblLines);
             Controls.Add(dgvPending);
             Controls.Add(btnRefresh);
             Controls.Add(lblHeader);
-            MinimumSize = new Size(700, 550);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "frmMain";
             StartPosition = FormStartPosition.CenterScreen;
+            WindowState = FormWindowState.Maximized;
             Text = "SKC Branch";
             Load += frmMain_Load;
             ((System.ComponentModel.ISupportInitialize)dgvPending).EndInit();
