@@ -31,27 +31,12 @@ namespace SKC_Bakery_Supplies
         private string currentTransactionId;
         private int printPurchaseIndex = 0;
 
-        // Toggle for buying by the supplier's pack unit (e.g. "Sack (25kg)") instead of the
-        // base unit inventory is tracked in (grams). Added in code rather than the Designer
-        // so we don't hand-edit Purchases.Designer.cs (see SKC Bakery Supplies/.claudesettings.json).
-        private CheckBox chkByPack;
-
         public frmPurchases()
         {
             InitializeComponent();
             txtTotalCost.TextChanged += CalculateUnitCostFromTotal;
             dgvPurchaseItems.DataSource = draftItems;
             draftItems.ListChanged += (s, e) => UpdateRunningTotal();
-
-            chkByPack = new CheckBox
-            {
-                Location = new Point(16, 196),
-                Name = "chkByPack",
-                Size = new Size(400, 20),
-                Text = "Buy by pack",
-                Visible = false
-            };
-            Controls.Add(chkByPack);
         }
 
         private void frmPurchases_Load(object sender, EventArgs e)

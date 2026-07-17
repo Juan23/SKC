@@ -28,6 +28,7 @@ namespace SKC_Bakery_Supplies
         /// </summary>
         private void InitializeComponent()
         {
+            lblHeader = new System.Windows.Forms.Label();
             lblBranch = new System.Windows.Forms.Label();
             cmbBranch = new System.Windows.Forms.ComboBox();
             btnLoad = new System.Windows.Forms.Button();
@@ -37,40 +38,54 @@ namespace SKC_Bakery_Supplies
             ((System.ComponentModel.ISupportInitialize)dgvStock).BeginInit();
             SuspendLayout();
             //
+            // lblHeader
+            //
+            lblHeader.AutoSize = true;
+            lblHeader.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            lblHeader.Location = new System.Drawing.Point(20, 15);
+            lblHeader.Name = "lblHeader";
+            lblHeader.Size = new System.Drawing.Size(220, 32);
+            lblHeader.TabIndex = 0;
+            lblHeader.Text = "Branch Inventory";
+            //
             // lblBranch
             //
             lblBranch.AutoSize = true;
-            lblBranch.Location = new System.Drawing.Point(20, 20);
+            lblBranch.Font = new System.Drawing.Font("Segoe UI", 11F);
+            lblBranch.Location = new System.Drawing.Point(20, 66);
             lblBranch.Name = "lblBranch";
-            lblBranch.Size = new System.Drawing.Size(50, 15);
-            lblBranch.TabIndex = 0;
+            lblBranch.Size = new System.Drawing.Size(58, 20);
+            lblBranch.TabIndex = 1;
             lblBranch.Text = "Branch:";
             //
             // cmbBranch
             //
             cmbBranch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbBranch.Font = new System.Drawing.Font("Segoe UI", 11F);
             cmbBranch.FormattingEnabled = true;
-            cmbBranch.Location = new System.Drawing.Point(76, 17);
+            cmbBranch.Location = new System.Drawing.Point(90, 62);
             cmbBranch.Name = "cmbBranch";
-            cmbBranch.Size = new System.Drawing.Size(160, 23);
-            cmbBranch.TabIndex = 1;
+            cmbBranch.Size = new System.Drawing.Size(220, 28);
+            cmbBranch.TabIndex = 2;
             //
             // btnLoad
             //
-            btnLoad.Location = new System.Drawing.Point(246, 16);
+            btnLoad.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnLoad.Location = new System.Drawing.Point(326, 60);
             btnLoad.Name = "btnLoad";
-            btnLoad.Size = new System.Drawing.Size(90, 25);
-            btnLoad.TabIndex = 2;
+            btnLoad.Size = new System.Drawing.Size(110, 32);
+            btnLoad.TabIndex = 3;
             btnLoad.Text = "Load";
             btnLoad.UseVisualStyleBackColor = true;
             btnLoad.Click += btnLoad_Click;
             //
             // btnAdjust
             //
-            btnAdjust.Location = new System.Drawing.Point(342, 16);
+            btnAdjust.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnAdjust.Location = new System.Drawing.Point(446, 60);
             btnAdjust.Name = "btnAdjust";
-            btnAdjust.Size = new System.Drawing.Size(100, 25);
-            btnAdjust.TabIndex = 3;
+            btnAdjust.Size = new System.Drawing.Size(140, 32);
+            btnAdjust.TabIndex = 4;
             btnAdjust.Text = "Adjust Stock";
             btnAdjust.UseVisualStyleBackColor = true;
             btnAdjust.Click += btnAdjust_Click;
@@ -78,10 +93,11 @@ namespace SKC_Bakery_Supplies
             // btnPrint
             //
             btnPrint.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnPrint.Location = new System.Drawing.Point(614, 16);
+            btnPrint.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnPrint.Location = new System.Drawing.Point(1140, 60);
             btnPrint.Name = "btnPrint";
-            btnPrint.Size = new System.Drawing.Size(90, 25);
-            btnPrint.TabIndex = 4;
+            btnPrint.Size = new System.Drawing.Size(120, 32);
+            btnPrint.TabIndex = 5;
             btnPrint.Text = "Print";
             btnPrint.UseVisualStyleBackColor = true;
             btnPrint.Click += btnPrint_Click;
@@ -93,28 +109,31 @@ namespace SKC_Bakery_Supplies
             dgvStock.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvStock.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             dgvStock.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvStock.Location = new System.Drawing.Point(20, 55);
+            dgvStock.Location = new System.Drawing.Point(20, 105);
             dgvStock.Name = "dgvStock";
             dgvStock.ReadOnly = true;
             dgvStock.RowHeadersVisible = false;
             dgvStock.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvStock.Size = new System.Drawing.Size(684, 460);
-            dgvStock.TabIndex = 4;
+            dgvStock.Size = new System.Drawing.Size(1240, 515);
+            dgvStock.TabIndex = 6;
             //
             // frmBranchInventoryReport
             //
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(724, 535);
+            ClientSize = new System.Drawing.Size(1280, 640);
             Controls.Add(dgvStock);
             Controls.Add(btnPrint);
             Controls.Add(btnAdjust);
             Controls.Add(btnLoad);
             Controls.Add(cmbBranch);
             Controls.Add(lblBranch);
-            MinimumSize = new System.Drawing.Size(600, 400);
+            Controls.Add(lblHeader);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "frmBranchInventoryReport";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Text = "Branch Inventory Report";
             Load += frmBranchInventoryReport_Load;
             ((System.ComponentModel.ISupportInitialize)dgvStock).EndInit();
@@ -124,6 +143,7 @@ namespace SKC_Bakery_Supplies
 
         #endregion
 
+        private System.Windows.Forms.Label lblHeader;
         private System.Windows.Forms.Label lblBranch;
         private System.Windows.Forms.ComboBox cmbBranch;
         private System.Windows.Forms.Button btnLoad;

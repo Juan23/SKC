@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            lblHeader = new Label();
             txtSearch = new TextBox();
             dgvProducts = new DataGridView();
             btnEdit = new Button();
@@ -48,60 +49,94 @@
             grpQuickAddProduct.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numNewPrice).BeginInit();
             SuspendLayout();
-            // 
+            //
+            // lblHeader
+            //
+            lblHeader.AutoSize = true;
+            lblHeader.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblHeader.Location = new Point(20, 15);
+            lblHeader.Name = "lblHeader";
+            lblHeader.Size = new Size(120, 32);
+            lblHeader.TabIndex = 0;
+            lblHeader.Text = "Products";
+            //
             // txtSearch
-            // 
-            txtSearch.Location = new Point(8, 8);
+            //
+            txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtSearch.Font = new Font("Segoe UI", 11F);
+            txtSearch.Location = new Point(20, 60);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new Size(784, 23);
-            txtSearch.TabIndex = 0;
+            txtSearch.PlaceholderText = "Search products...";
+            txtSearch.Size = new Size(900, 28);
+            txtSearch.TabIndex = 1;
             txtSearch.TextChanged += txtSearch_TextChanged;
-            // 
+            //
             // dgvProducts
-            // 
+            //
             dgvProducts.AllowUserToAddRows = false;
-            dgvProducts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCellsExceptHeader;
+            dgvProducts.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvProducts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvProducts.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
             dgvProducts.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvProducts.Location = new Point(8, 40);
+            dgvProducts.Location = new Point(20, 100);
             dgvProducts.Name = "dgvProducts";
             dgvProducts.ReadOnly = true;
+            dgvProducts.RowHeadersVisible = false;
             dgvProducts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvProducts.Size = new Size(784, 376);
-            dgvProducts.TabIndex = 1;
-            // 
-            // btnEdit
-            // 
-            btnEdit.Location = new Point(640, 424);
-            btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(75, 23);
-            btnEdit.TabIndex = 2;
-            btnEdit.Text = "Edit";
-            btnEdit.UseVisualStyleBackColor = true;
-            btnEdit.Click += btnEdit_Click;
-            // 
-            // btnDelete
-            // 
-            btnDelete.Location = new Point(720, 424);
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(75, 23);
-            btnDelete.TabIndex = 3;
-            btnDelete.Text = "Delete";
-            btnDelete.UseVisualStyleBackColor = true;
-            btnDelete.Click += btnDelete_Click;
+            dgvProducts.Size = new Size(900, 470);
+            dgvProducts.TabIndex = 2;
             //
             // btnAdjustStock
             //
-            btnAdjustStock.Location = new Point(560, 424);
+            btnAdjustStock.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnAdjustStock.Font = new Font("Segoe UI", 10F);
+            btnAdjustStock.Location = new Point(20, 588);
             btnAdjustStock.Name = "btnAdjustStock";
-            btnAdjustStock.Size = new Size(75, 23);
-            btnAdjustStock.TabIndex = 10;
+            btnAdjustStock.Size = new Size(120, 40);
+            btnAdjustStock.TabIndex = 3;
             btnAdjustStock.Text = "Adjust";
             btnAdjustStock.UseVisualStyleBackColor = true;
             btnAdjustStock.Click += btnAdjustStock_Click;
             //
+            // btnEdit
+            //
+            btnEdit.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnEdit.Font = new Font("Segoe UI", 10F);
+            btnEdit.Location = new Point(150, 588);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(120, 40);
+            btnEdit.TabIndex = 4;
+            btnEdit.Text = "Edit";
+            btnEdit.UseVisualStyleBackColor = true;
+            btnEdit.Click += btnEdit_Click;
+            //
+            // btnDelete
+            //
+            btnDelete.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnDelete.Font = new Font("Segoe UI", 10F);
+            btnDelete.Location = new Point(280, 588);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(120, 40);
+            btnDelete.TabIndex = 5;
+            btnDelete.Text = "Delete";
+            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.Click += btnDelete_Click;
+            //
+            // btnPrintInventory
+            //
+            btnPrintInventory.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnPrintInventory.Font = new Font("Segoe UI", 10F);
+            btnPrintInventory.Location = new Point(410, 588);
+            btnPrintInventory.Name = "btnPrintInventory";
+            btnPrintInventory.Size = new Size(160, 40);
+            btnPrintInventory.TabIndex = 6;
+            btnPrintInventory.Text = "Print Inventory";
+            btnPrintInventory.UseVisualStyleBackColor = true;
+            btnPrintInventory.Click += btnPrintInventory_Click;
+            //
             // grpQuickAddProduct
-            // 
+            //
+            grpQuickAddProduct.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             grpQuickAddProduct.Controls.Add(btnSaveNew);
             grpQuickAddProduct.Controls.Add(Price);
             grpQuickAddProduct.Controls.Add(numNewPrice);
@@ -111,105 +146,96 @@
             grpQuickAddProduct.Controls.Add(txtNewBrand);
             grpQuickAddProduct.Controls.Add(label1);
             grpQuickAddProduct.Controls.Add(txtNewSKU);
-            grpQuickAddProduct.Location = new Point(800, 8);
+            grpQuickAddProduct.Font = new Font("Segoe UI", 10F);
+            grpQuickAddProduct.Location = new Point(940, 60);
             grpQuickAddProduct.Name = "grpQuickAddProduct";
-            grpQuickAddProduct.Size = new Size(240, 208);
-            grpQuickAddProduct.TabIndex = 4;
+            grpQuickAddProduct.Size = new Size(320, 340);
+            grpQuickAddProduct.TabIndex = 7;
             grpQuickAddProduct.TabStop = false;
             grpQuickAddProduct.Text = "Quick Add Product";
-            // 
+            //
             // btnSaveNew
-            // 
-            btnSaveNew.Location = new Point(160, 176);
+            //
+            btnSaveNew.Location = new Point(16, 220);
             btnSaveNew.Name = "btnSaveNew";
-            btnSaveNew.Size = new Size(75, 23);
-            btnSaveNew.TabIndex = 12;
+            btnSaveNew.Size = new Size(284, 40);
+            btnSaveNew.TabIndex = 4;
             btnSaveNew.Text = "Add Item";
             btnSaveNew.UseVisualStyleBackColor = true;
             btnSaveNew.Click += btnSaveNew_Click;
-            // 
+            //
             // Price
-            // 
+            //
             Price.AutoSize = true;
-            Price.Location = new Point(168, 128);
+            Price.Location = new Point(16, 150);
             Price.Name = "Price";
-            Price.Size = new Size(33, 15);
-            Price.TabIndex = 11;
+            Price.Size = new Size(42, 20);
+            Price.TabIndex = 3;
             Price.Text = "Price";
-            // 
+            //
             // numNewPrice
-            // 
-            numNewPrice.Location = new Point(168, 144);
+            //
+            numNewPrice.Location = new Point(16, 170);
             numNewPrice.Name = "numNewPrice";
-            numNewPrice.Size = new Size(64, 23);
-            numNewPrice.TabIndex = 10;
+            numNewPrice.Size = new Size(140, 28);
+            numNewPrice.TabIndex = 3;
             numNewPrice.Enter += HighlightNumericText;
-            // 
+            //
             // label3
-            // 
+            //
             label3.AutoSize = true;
-            label3.Location = new Point(8, 80);
+            label3.Location = new Point(16, 90);
             label3.Name = "label3";
-            label3.Size = new Size(66, 15);
-            label3.TabIndex = 5;
+            label3.Size = new Size(84, 20);
+            label3.TabIndex = 2;
             label3.Text = "Base Name";
-            // 
+            //
             // txtNewBaseName
-            // 
-            txtNewBaseName.Location = new Point(8, 96);
+            //
+            txtNewBaseName.Location = new Point(16, 110);
             txtNewBaseName.Name = "txtNewBaseName";
-            txtNewBaseName.Size = new Size(224, 23);
-            txtNewBaseName.TabIndex = 4;
+            txtNewBaseName.Size = new Size(284, 28);
+            txtNewBaseName.TabIndex = 2;
             txtNewBaseName.TextChanged += txtNewBaseName_TextChanged;
-            // 
+            //
             // label2
-            // 
+            //
             label2.AutoSize = true;
-            label2.Location = new Point(88, 32);
+            label2.Location = new Point(170, 30);
             label2.Name = "label2";
-            label2.Size = new Size(38, 15);
-            label2.TabIndex = 3;
+            label2.Size = new Size(48, 20);
+            label2.TabIndex = 1;
             label2.Text = "Brand";
-            // 
+            //
             // txtNewBrand
-            // 
-            txtNewBrand.Location = new Point(88, 48);
+            //
+            txtNewBrand.Location = new Point(170, 50);
             txtNewBrand.Name = "txtNewBrand";
-            txtNewBrand.Size = new Size(144, 23);
-            txtNewBrand.TabIndex = 2;
+            txtNewBrand.Size = new Size(130, 28);
+            txtNewBrand.TabIndex = 1;
             txtNewBrand.TextChanged += txtNewBrand_TextChanged;
-            // 
+            //
             // label1
-            // 
+            //
             label1.AutoSize = true;
-            label1.Location = new Point(8, 32);
+            label1.Location = new Point(16, 30);
             label1.Name = "label1";
-            label1.Size = new Size(28, 15);
-            label1.TabIndex = 1;
+            label1.Size = new Size(36, 20);
+            label1.TabIndex = 0;
             label1.Text = "SKU";
-            // 
+            //
             // txtNewSKU
-            // 
-            txtNewSKU.Location = new Point(8, 48);
+            //
+            txtNewSKU.Location = new Point(16, 50);
             txtNewSKU.Name = "txtNewSKU";
-            txtNewSKU.Size = new Size(72, 23);
+            txtNewSKU.Size = new Size(140, 28);
             txtNewSKU.TabIndex = 0;
-            // 
-            // btnPrintInventory
-            // 
-            btnPrintInventory.Location = new Point(944, 424);
-            btnPrintInventory.Name = "btnPrintInventory";
-            btnPrintInventory.Size = new Size(99, 23);
-            btnPrintInventory.TabIndex = 13;
-            btnPrintInventory.Text = "Print Inventory";
-            btnPrintInventory.UseVisualStyleBackColor = true;
-            btnPrintInventory.Click += btnPrintInventory_Click;
-            // 
+            //
             // frmViewProducts
-            // 
+            //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1047, 450);
+            ClientSize = new Size(1280, 640);
             Controls.Add(btnPrintInventory);
             Controls.Add(grpQuickAddProduct);
             Controls.Add(btnDelete);
@@ -217,7 +243,12 @@
             Controls.Add(btnAdjustStock);
             Controls.Add(dgvProducts);
             Controls.Add(txtSearch);
+            Controls.Add(lblHeader);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "frmViewProducts";
+            StartPosition = FormStartPosition.CenterScreen;
+            WindowState = FormWindowState.Maximized;
             Text = "ViewProducts";
             ((System.ComponentModel.ISupportInitialize)dgvProducts).EndInit();
             grpQuickAddProduct.ResumeLayout(false);
@@ -229,6 +260,7 @@
 
         #endregion
 
+        private Label lblHeader;
         private TextBox txtSearch;
         private DataGridView dgvProducts;
         private Button btnEdit;

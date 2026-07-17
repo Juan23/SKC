@@ -28,6 +28,7 @@ namespace SKC_Bakery_Supplies
         /// </summary>
         private void InitializeComponent()
         {
+            lblHeader = new System.Windows.Forms.Label();
             lblBranch = new System.Windows.Forms.Label();
             cmbBranch = new System.Windows.Forms.ComboBox();
             lblFrom = new System.Windows.Forms.Label();
@@ -43,64 +44,81 @@ namespace SKC_Bakery_Supplies
             ((System.ComponentModel.ISupportInitialize)dgvLines).BeginInit();
             SuspendLayout();
             //
+            // lblHeader
+            //
+            lblHeader.AutoSize = true;
+            lblHeader.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            lblHeader.Location = new System.Drawing.Point(20, 15);
+            lblHeader.Name = "lblHeader";
+            lblHeader.Size = new System.Drawing.Size(180, 32);
+            lblHeader.TabIndex = 0;
+            lblHeader.Text = "Branch Sales";
+            //
             // lblBranch
             //
             lblBranch.AutoSize = true;
-            lblBranch.Location = new System.Drawing.Point(20, 20);
+            lblBranch.Font = new System.Drawing.Font("Segoe UI", 11F);
+            lblBranch.Location = new System.Drawing.Point(20, 66);
             lblBranch.Name = "lblBranch";
-            lblBranch.Size = new System.Drawing.Size(50, 15);
-            lblBranch.TabIndex = 0;
+            lblBranch.Size = new System.Drawing.Size(58, 20);
+            lblBranch.TabIndex = 1;
             lblBranch.Text = "Branch:";
             //
             // cmbBranch
             //
             cmbBranch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbBranch.Font = new System.Drawing.Font("Segoe UI", 11F);
             cmbBranch.FormattingEnabled = true;
-            cmbBranch.Location = new System.Drawing.Point(76, 17);
+            cmbBranch.Location = new System.Drawing.Point(86, 62);
             cmbBranch.Name = "cmbBranch";
-            cmbBranch.Size = new System.Drawing.Size(130, 23);
-            cmbBranch.TabIndex = 1;
+            cmbBranch.Size = new System.Drawing.Size(180, 28);
+            cmbBranch.TabIndex = 2;
             //
             // lblFrom
             //
             lblFrom.AutoSize = true;
-            lblFrom.Location = new System.Drawing.Point(220, 20);
+            lblFrom.Font = new System.Drawing.Font("Segoe UI", 11F);
+            lblFrom.Location = new System.Drawing.Point(284, 66);
             lblFrom.Name = "lblFrom";
-            lblFrom.Size = new System.Drawing.Size(38, 15);
-            lblFrom.TabIndex = 2;
+            lblFrom.Size = new System.Drawing.Size(46, 20);
+            lblFrom.TabIndex = 3;
             lblFrom.Text = "From:";
             //
             // dtpStart
             //
+            dtpStart.Font = new System.Drawing.Font("Segoe UI", 11F);
             dtpStart.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            dtpStart.Location = new System.Drawing.Point(262, 17);
+            dtpStart.Location = new System.Drawing.Point(336, 62);
             dtpStart.Name = "dtpStart";
-            dtpStart.Size = new System.Drawing.Size(110, 23);
-            dtpStart.TabIndex = 3;
+            dtpStart.Size = new System.Drawing.Size(140, 28);
+            dtpStart.TabIndex = 4;
             //
             // lblTo
             //
             lblTo.AutoSize = true;
-            lblTo.Location = new System.Drawing.Point(382, 20);
+            lblTo.Font = new System.Drawing.Font("Segoe UI", 11F);
+            lblTo.Location = new System.Drawing.Point(492, 66);
             lblTo.Name = "lblTo";
-            lblTo.Size = new System.Drawing.Size(22, 15);
-            lblTo.TabIndex = 4;
+            lblTo.Size = new System.Drawing.Size(28, 20);
+            lblTo.TabIndex = 5;
             lblTo.Text = "To:";
             //
             // dtpEnd
             //
+            dtpEnd.Font = new System.Drawing.Font("Segoe UI", 11F);
             dtpEnd.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            dtpEnd.Location = new System.Drawing.Point(408, 17);
+            dtpEnd.Location = new System.Drawing.Point(526, 62);
             dtpEnd.Name = "dtpEnd";
-            dtpEnd.Size = new System.Drawing.Size(110, 23);
-            dtpEnd.TabIndex = 5;
+            dtpEnd.Size = new System.Drawing.Size(140, 28);
+            dtpEnd.TabIndex = 6;
             //
             // btnLoad
             //
-            btnLoad.Location = new System.Drawing.Point(532, 16);
+            btnLoad.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnLoad.Location = new System.Drawing.Point(686, 60);
             btnLoad.Name = "btnLoad";
-            btnLoad.Size = new System.Drawing.Size(90, 25);
-            btnLoad.TabIndex = 6;
+            btnLoad.Size = new System.Drawing.Size(120, 32);
+            btnLoad.TabIndex = 7;
             btnLoad.Text = "Load";
             btnLoad.UseVisualStyleBackColor = true;
             btnLoad.Click += btnLoad_Click;
@@ -113,24 +131,24 @@ namespace SKC_Bakery_Supplies
                 | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvSales.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             dgvSales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvSales.Location = new System.Drawing.Point(20, 55);
+            dgvSales.Location = new System.Drawing.Point(20, 105);
             dgvSales.Name = "dgvSales";
             dgvSales.ReadOnly = true;
             dgvSales.RowHeadersVisible = false;
             dgvSales.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvSales.Size = new System.Drawing.Size(684, 250);
-            dgvSales.TabIndex = 7;
+            dgvSales.Size = new System.Drawing.Size(1240, 300);
+            dgvSales.TabIndex = 8;
             dgvSales.SelectionChanged += dgvSales_SelectionChanged;
             //
             // lblLinesHeader
             //
             lblLinesHeader.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             lblLinesHeader.AutoSize = true;
-            lblLinesHeader.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            lblLinesHeader.Location = new System.Drawing.Point(20, 315);
+            lblLinesHeader.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            lblLinesHeader.Location = new System.Drawing.Point(20, 416);
             lblLinesHeader.Name = "lblLinesHeader";
-            lblLinesHeader.Size = new System.Drawing.Size(103, 15);
-            lblLinesHeader.TabIndex = 8;
+            lblLinesHeader.Size = new System.Drawing.Size(140, 20);
+            lblLinesHeader.TabIndex = 9;
             lblLinesHeader.Text = "Selected Sale Items";
             //
             // dgvLines
@@ -141,30 +159,31 @@ namespace SKC_Bakery_Supplies
                 | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvLines.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             dgvLines.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvLines.Location = new System.Drawing.Point(20, 335);
+            dgvLines.Location = new System.Drawing.Point(20, 440);
             dgvLines.Name = "dgvLines";
             dgvLines.ReadOnly = true;
             dgvLines.RowHeadersVisible = false;
             dgvLines.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvLines.Size = new System.Drawing.Size(684, 160);
-            dgvLines.TabIndex = 9;
+            dgvLines.Size = new System.Drawing.Size(1240, 165);
+            dgvLines.TabIndex = 10;
             //
             // lblTotals
             //
             lblTotals.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left
                 | System.Windows.Forms.AnchorStyles.Right;
-            lblTotals.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            lblTotals.Location = new System.Drawing.Point(20, 505);
+            lblTotals.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            lblTotals.Location = new System.Drawing.Point(20, 612);
             lblTotals.Name = "lblTotals";
-            lblTotals.Size = new System.Drawing.Size(684, 20);
-            lblTotals.TabIndex = 10;
+            lblTotals.Size = new System.Drawing.Size(1240, 22);
+            lblTotals.TabIndex = 11;
             lblTotals.Text = "";
             //
             // frmBranchSalesReport
             //
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(724, 535);
+            ClientSize = new System.Drawing.Size(1280, 640);
+            Controls.Add(lblHeader);
             Controls.Add(lblBranch);
             Controls.Add(cmbBranch);
             Controls.Add(lblFrom);
@@ -176,9 +195,11 @@ namespace SKC_Bakery_Supplies
             Controls.Add(lblLinesHeader);
             Controls.Add(dgvLines);
             Controls.Add(lblTotals);
-            MinimumSize = new System.Drawing.Size(740, 500);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "frmBranchSalesReport";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Text = "Branch Sales Report";
             Load += frmBranchSalesReport_Load;
             ((System.ComponentModel.ISupportInitialize)dgvSales).EndInit();
@@ -189,6 +210,7 @@ namespace SKC_Bakery_Supplies
 
         #endregion
 
+        private System.Windows.Forms.Label lblHeader;
         private System.Windows.Forms.Label lblBranch;
         private System.Windows.Forms.ComboBox cmbBranch;
         private System.Windows.Forms.Label lblFrom;

@@ -27,24 +27,9 @@ namespace SKC_Bakery_Supplies
         private double printDailyTicketTotal = 0;
         private double printDailyGrandTotal = 0;
 
-        private Button btnEdit;
-
         public frmViewDeliveries()
         {
             InitializeComponent();
-
-            // Added in code rather than the Designer so we don't hand-edit ViewDeliveries.Designer.cs.
-            btnEdit = new Button
-            {
-                Location = new Point(8, 480),
-                Name = "btnEdit",
-                Size = new Size(104, 23),
-                Text = "Edit Ticket",
-                UseVisualStyleBackColor = true,
-                Enabled = false
-            };
-            btnEdit.Click += btnEdit_Click;
-            groupBox1.Controls.Add(btnEdit);
 
             // Only InTransit tickets can be edited or deleted; once a branch has accepted, the
             // ticket is locked (server rejects both), so disable the buttons to match.
