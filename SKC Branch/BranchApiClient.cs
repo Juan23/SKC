@@ -180,6 +180,53 @@ namespace SKC_Branch
             return JsonSerializer.Deserialize<List<SaleSyncResult>>(content, jsonOptions) ?? new List<SaleSyncResult>();
         }
 
+        // Branch-side sales history (same endpoints the office Branch Sales Report uses). The caller
+        // passes an inclusive end (e.g. end-of-day) since /api/sales filters sold_at <= end.
+        public static async Task<List<BranchSaleSummary>> GetBranchSalesAsync(string branch, DateTime start, DateTime end)
+        {
+            HttpResponseMessage response = await client.GetAsync(
+                $"{ApiBaseUrl}/api/sales?branch={Uri.EscapeDataString(branch)}&start={start:yyyy-MM-ddTHH:mm:ss}&end={end:yyyy-MM-ddTHH:mm:ss}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<BranchSaleSummary>>(content, jsonOptions) ?? new List<BranchSaleSummary>();
+            }
+
+            string errorDetails = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to fetch sales history. Code: {response.StatusCode}\nDetails: {errorDetails}");
+        }
+
+        public static async Task<List<BranchSaleLine>> GetBranchSaleLinesAsync(string branch, string clientSaleId)
+        {
+            HttpResponseMessage response = await client.GetAsync(
+                $"{ApiBaseUrl}/api/sales/{Uri.EscapeDataString(branch)}/{Uri.EscapeDataString(clientSaleId)}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<BranchSaleLine>>(content, jsonOptions) ?? new List<BranchSaleLine>();
+            }
+
+            string errorDetails = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to fetch sale detail. Code: {response.StatusCode}\nDetails: {errorDetails}");
+        }
+
+        // Voids a completed (already-synced) sale. The server restocks what it consumed and flags
+        // the sale; idempotent, so a retry is safe. Online-only - throws if unreachable.
+        public static async Task VoidSaleAsync(string branch, string clientSaleId, string voidedBy)
+        {
+            var response = await client.PostAsJsonAsync(
+                $"{ApiBaseUrl}/api/sales/{Uri.EscapeDataString(branch)}/{Uri.EscapeDataString(clientSaleId)}/void",
+                new { VoidedBy = voidedBy }, jsonOptions);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string errorDetails = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to void sale. Code: {response.StatusCode}\nDetails: {errorDetails}");
+            }
+        }
+
         public static async Task<bool> CheckHealthAsync()
         {
             try

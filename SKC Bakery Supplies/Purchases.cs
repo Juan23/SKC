@@ -219,12 +219,20 @@ namespace SKC_Bakery_Supplies
                 return;
             }
 
+            // Prevent a re-entrant double-click from firing a second submit while this one is in
+            // flight (mirrors frmProduction). Belt-and-suspenders with the reused transaction_id.
+            btnSubmitPurchase.Enabled = false;
+            try
+            {
             List<PurchaseLog> finalLogs = new List<PurchaseLog>();
             DateTime entryDate = dtpDate.Value.Date;
             string supplier = ToProperCase(txtSupplier.Text);
 
-            // Auto transaction ID
-            currentTransactionId = $"PUR-{entryDate:yyyyMMdd}-{Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper()}";
+            // Auto transaction ID - reused across a retry so a resubmit after a lost response
+            // dedups server-side into a no-op instead of creating duplicate lots. Cleared on a
+            // confirmed success below, so a genuinely new purchase still gets a fresh id.
+            if (string.IsNullOrEmpty(currentTransactionId))
+                currentTransactionId = $"PUR-{entryDate:yyyyMMdd}-{Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper()}";
 
             foreach (var draft in draftItems)
             {
@@ -272,6 +280,11 @@ namespace SKC_Bakery_Supplies
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Purchase Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            }
+            finally
+            {
+                btnSubmitPurchase.Enabled = true;
             }
         }
 

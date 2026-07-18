@@ -73,6 +73,29 @@ namespace SKC_Branch
         public string Detail { get; set; } = string.Empty;
     }
 
+    // ---- branch sales history (reads the same /api/sales endpoints the office report uses) ----
+
+    public class BranchSaleSummary
+    {
+        public int LocalId { get; set; }
+        public string ClientSaleId { get; set; } = string.Empty;
+        public string StaffName { get; set; } = string.Empty;
+        public DateTime SoldAt { get; set; }
+        public decimal TotalAmount { get; set; }
+        public bool HasShortfall { get; set; }
+        public bool Voided { get; set; }
+    }
+
+    public class BranchSaleLine
+    {
+        public string? SKU { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public int Qty { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal LineTotal { get; set; }
+        public int ShortfallQty { get; set; }
+    }
+
     public class RecipeLine
     {
         public string InputSku { get; set; } = string.Empty;

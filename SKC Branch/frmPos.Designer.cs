@@ -23,6 +23,7 @@ namespace SKC_Branch
             btnGoDeliveries = new System.Windows.Forms.Button();
             btnGoMyStock = new System.Windows.Forms.Button();
             btnGoProduction = new System.Windows.Forms.Button();
+            btnGoSalesHistory = new System.Windows.Forms.Button();
             lblSearch = new System.Windows.Forms.Label();
             txtSearch = new System.Windows.Forms.TextBox();
             numQty = new System.Windows.Forms.NumericUpDown();
@@ -70,18 +71,18 @@ namespace SKC_Branch
             btnGoDeliveries.Font = new System.Drawing.Font("Segoe UI", 10F);
             btnGoDeliveries.Location = new System.Drawing.Point(330, 15);
             btnGoDeliveries.Name = "btnGoDeliveries";
-            btnGoDeliveries.Size = new System.Drawing.Size(190, 40);
+            btnGoDeliveries.Size = new System.Drawing.Size(140, 40);
             btnGoDeliveries.TabIndex = 2;
-            btnGoDeliveries.Text = "Pending Deliveries";
+            btnGoDeliveries.Text = "Deliveries";
             btnGoDeliveries.UseVisualStyleBackColor = true;
             btnGoDeliveries.Click += btnGoDeliveries_Click;
             //
             // btnGoMyStock
             //
             btnGoMyStock.Font = new System.Drawing.Font("Segoe UI", 10F);
-            btnGoMyStock.Location = new System.Drawing.Point(530, 15);
+            btnGoMyStock.Location = new System.Drawing.Point(480, 15);
             btnGoMyStock.Name = "btnGoMyStock";
-            btnGoMyStock.Size = new System.Drawing.Size(190, 40);
+            btnGoMyStock.Size = new System.Drawing.Size(140, 40);
             btnGoMyStock.TabIndex = 3;
             btnGoMyStock.Text = "My Stock";
             btnGoMyStock.UseVisualStyleBackColor = true;
@@ -90,13 +91,24 @@ namespace SKC_Branch
             // btnGoProduction
             //
             btnGoProduction.Font = new System.Drawing.Font("Segoe UI", 10F);
-            btnGoProduction.Location = new System.Drawing.Point(730, 15);
+            btnGoProduction.Location = new System.Drawing.Point(630, 15);
             btnGoProduction.Name = "btnGoProduction";
-            btnGoProduction.Size = new System.Drawing.Size(190, 40);
+            btnGoProduction.Size = new System.Drawing.Size(140, 40);
             btnGoProduction.TabIndex = 4;
             btnGoProduction.Text = "Bake / Decorate";
             btnGoProduction.UseVisualStyleBackColor = true;
             btnGoProduction.Click += btnGoProduction_Click;
+            //
+            // btnGoSalesHistory
+            //
+            btnGoSalesHistory.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnGoSalesHistory.Location = new System.Drawing.Point(780, 15);
+            btnGoSalesHistory.Name = "btnGoSalesHistory";
+            btnGoSalesHistory.Size = new System.Drawing.Size(140, 40);
+            btnGoSalesHistory.TabIndex = 5;
+            btnGoSalesHistory.Text = "Sales History";
+            btnGoSalesHistory.UseVisualStyleBackColor = true;
+            btnGoSalesHistory.Click += btnGoSalesHistory_Click;
             //
             // lblSearch
             //
@@ -312,6 +324,7 @@ namespace SKC_Branch
             Controls.Add(btnGoDeliveries);
             Controls.Add(btnGoMyStock);
             Controls.Add(btnGoProduction);
+            Controls.Add(btnGoSalesHistory);
             Controls.Add(lblSearch);
             Controls.Add(txtSearch);
             Controls.Add(numQty);
@@ -350,6 +363,7 @@ namespace SKC_Branch
         private System.Windows.Forms.Button btnGoDeliveries;
         private System.Windows.Forms.Button btnGoMyStock;
         private System.Windows.Forms.Button btnGoProduction;
+        private System.Windows.Forms.Button btnGoSalesHistory;
         private System.Windows.Forms.Label lblSearch;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.NumericUpDown numQty;

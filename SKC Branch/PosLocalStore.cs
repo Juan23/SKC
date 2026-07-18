@@ -94,6 +94,11 @@ namespace SKC_Branch
         // Replaces cached price/stock with the server's authoritative snapshot.
         public static void RefreshCatalog(List<BranchStockItem> items)
         {
+            // An empty snapshot is never a real operating state (the server returns every active
+            // product, 0-stock included). Treat it as a bad pull and keep the last good cache
+            // rather than DELETE-ing it and blanking the counter until the next successful sync.
+            if (items == null || items.Count == 0) return;
+
             using var connection = new SqliteConnection(connectionString);
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -216,6 +221,17 @@ namespace SKC_Branch
                 new { clientSaleId }, transaction: transaction);
 
             transaction.Commit();
+        }
+
+        // Marks an already-synced sale as voided in the local log, after the server has
+        // accepted the void and restocked. Purely cosmetic for the day log - the server is
+        // the source of truth; the next office report reads the authoritative voided flag.
+        public static void MarkSaleVoided(string clientSaleId, string voidedBy)
+        {
+            using var connection = new SqliteConnection(connectionString);
+            connection.Execute(
+                "UPDATE sale_log SET Status = 'Voided', Detail = @detail WHERE ClientSaleId = @clientSaleId",
+                new { clientSaleId, detail = $"Voided by {voidedBy}" });
         }
 
         // ---- day log ----

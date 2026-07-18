@@ -206,6 +206,11 @@ namespace SKC_Bakery_Supplies
                 return;
             }
 
+            // Prevent a re-entrant double-click from firing a second submit while this one is in
+            // flight (mirrors frmProduction). Belt-and-suspenders with the reused transaction_id.
+            btnSubmitDelivery.Enabled = false;
+            try
+            {
             // Amending an existing ticket: delete the original here, right before submitting the
             // replacement, instead of when the screen was opened. If the admin backs out before
             // reaching this point, the original ticket is untouched. If the delete succeeds but the
@@ -240,7 +245,12 @@ namespace SKC_Bakery_Supplies
             string requesterName = cmbRequester.Text;
             string reasonText = txtReason.Text.Trim();
 
-            currentTransactionId = $"DEL-{DateTime.Now:yyyyMMdd}-{Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper()}";
+            // Reuse the same transaction_id across a retry: if a prior submit committed but the
+            // response was lost, resubmitting with the same id lets the server dedup it into a
+            // no-op instead of double-deducting Office stock. Cleared only on a confirmed success
+            // (below), so a genuinely new delivery still gets a fresh id.
+            if (string.IsNullOrEmpty(currentTransactionId))
+                currentTransactionId = $"DEL-{DateTime.Now:yyyyMMdd}-{Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper()}";
             string dateStr = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string targetBranch = cmbBranch.Text;
 
@@ -295,6 +305,11 @@ namespace SKC_Bakery_Supplies
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Delivery Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            }
+            finally
+            {
+                btnSubmitDelivery.Enabled = true;
             }
         }
 

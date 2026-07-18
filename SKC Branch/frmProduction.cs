@@ -11,6 +11,7 @@ namespace SKC_Branch
         private readonly string branchName;
         private List<BranchProduct> masterCatalog = new List<BranchProduct>();
         private List<Recipe> allRecipes = new List<Recipe>();
+        private string productionTransactionId = ""; // reused across a retry so a resubmit dedups server-side
 
         public frmProduction(string branchName)
         {
@@ -107,17 +108,32 @@ namespace SKC_Branch
                 return;
             }
 
-            string transactionId = $"PRD-{DateTime.Now:yyyyMMdd}-{Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper()}";
+            // Guard the phantom-loss case: a too-small multiplier can round output down to 0 while
+            // ingredients (rounded up) are still consumed. Confirm before recording a 0-output batch.
+            if ((int)numOutputQty.Value == 0)
+            {
+                var okZero = MessageBox.Show(
+                    "This batch produces 0 output at the current multiplier but still consumes ingredients " +
+                    "(usually the multiplier is too small). Record it anyway?",
+                    "Zero Output", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (okZero != DialogResult.Yes) return;
+            }
+
+            // Reuse the id across a retry so a resubmit after a lost response dedups server-side
+            // instead of double-consuming stock. Cleared on a confirmed success below.
+            if (string.IsNullOrEmpty(productionTransactionId))
+                productionTransactionId = $"PRD-{DateTime.Now:yyyyMMdd}-{Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper()}";
 
             btnSubmit.Enabled = false;
             try
             {
                 var result = await BranchApiClient.SubmitProductionAsync(
-                    branchName, recipe.RecipeId, txtStaff.Text.Trim(), numMultiplier.Value, (int)numOutputQty.Value, transactionId);
+                    branchName, recipe.RecipeId, txtStaff.Text.Trim(), numMultiplier.Value, (int)numOutputQty.Value, productionTransactionId);
 
                 MessageBox.Show($"Recorded. Produced {result.OutputQty} of {result.OutputSku}.", "Production Recorded",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                productionTransactionId = "";
                 txtStaff.Clear();
                 numMultiplier.Value = 1;
             }

@@ -21,6 +21,7 @@ namespace SKC_Branch
             dgvSales = new System.Windows.Forms.DataGridView();
             lblTotals = new System.Windows.Forms.Label();
             btnRefresh = new System.Windows.Forms.Button();
+            btnVoid = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)dgvSales).BeginInit();
             SuspendLayout();
             //
@@ -57,7 +58,7 @@ namespace SKC_Branch
             lblTotals.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
             lblTotals.Location = new System.Drawing.Point(20, 590);
             lblTotals.Name = "lblTotals";
-            lblTotals.Size = new System.Drawing.Size(1090, 30);
+            lblTotals.Size = new System.Drawing.Size(780, 30);
             lblTotals.TabIndex = 2;
             lblTotals.Text = "Total: 0.00";
             //
@@ -73,6 +74,18 @@ namespace SKC_Branch
             btnRefresh.UseVisualStyleBackColor = true;
             btnRefresh.Click += btnRefresh_Click;
             //
+            // btnVoid
+            //
+            btnVoid.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            btnVoid.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnVoid.Location = new System.Drawing.Point(990, 585);
+            btnVoid.Name = "btnVoid";
+            btnVoid.Size = new System.Drawing.Size(130, 40);
+            btnVoid.TabIndex = 4;
+            btnVoid.Text = "Void Sale";
+            btnVoid.UseVisualStyleBackColor = true;
+            btnVoid.Click += btnVoid_Click;
+            //
             // frmPosDayLog
             //
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -82,6 +95,7 @@ namespace SKC_Branch
             Controls.Add(dgvSales);
             Controls.Add(lblTotals);
             Controls.Add(btnRefresh);
+            Controls.Add(btnVoid);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "frmPosDayLog";
@@ -100,5 +114,6 @@ namespace SKC_Branch
         private System.Windows.Forms.DataGridView dgvSales;
         private System.Windows.Forms.Label lblTotals;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnVoid;
     }
 }

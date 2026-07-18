@@ -71,6 +71,12 @@ namespace SKC_Branch
             form.ShowDialog();
         }
 
+        private void btnGoSalesHistory_Click(object? sender, EventArgs e)
+        {
+            using var form = new frmBranchSalesHistory(branchName);
+            form.ShowDialog();
+        }
+
         private async void frmPos_Load(object sender, EventArgs e)
         {
             ReloadCatalogFromCache();
@@ -370,7 +376,7 @@ namespace SKC_Branch
 
         private void btnDayLog_Click(object sender, EventArgs e)
         {
-            using var form = new frmPosDayLog();
+            using var form = new frmPosDayLog(branchName);
             form.ShowDialog();
         }
 
