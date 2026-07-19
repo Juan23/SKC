@@ -5,12 +5,11 @@ using System.Linq;
 using Dapper;
 using Microsoft.Data.Sqlite;
 
-namespace SKC_Branch
+namespace SKC_Bakery_Supplies
 {
-    // A product row in the POS catalog cache. Sellable = Price > 0 AND Category is
-    // something a branch actually sells (never RawMaterial, even if priced - raw
-    // materials only ever sell from the office POS). The owner prices what's sellable
-    // and leaves raw materials/intermediaries (flour, chiffon) at 0.
+    // A product row in the office POS catalog cache. Sellable = Price > 0 AND Category is
+    // RawMaterial or Miscellaneous - the office counter sells raw materials and misc goods,
+    // never BakedGood/DecoratedGood (those only ever sell from a branch POS).
     public class CachedProduct
     {
         public string SKU { get; set; } = string.Empty;
@@ -36,14 +35,14 @@ namespace SKC_Branch
         public string Detail { get; set; } = string.Empty;
     }
 
-    // The POS's offline-first local store: a catalog/price/stock cache refreshed on every
-    // sync, a durable queue of unsynced sales, and a log of what already synced. Lives in
-    // %APPDATA%\SKC Branch\pos.db next to config.json. Same SQLite+Dapper combo as the
-    // legacy SKC.DataEngine, but written fresh here per the no-shared-code convention.
+    // The office POS's offline-first local store: a catalog/price/stock cache refreshed on
+    // every sync, a durable queue of unsynced sales, and a log of what already synced. Lives
+    // in %APPDATA%\SKC Bakery Supplies\pos.db. Same SQLite+Dapper combo as SKC Branch's
+    // PosLocalStore, written fresh here per the no-shared-code convention.
     public static class PosLocalStore
     {
         private static readonly string DbDir =
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SKC Branch");
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SKC Bakery Supplies");
         private static readonly string connectionString =
             $"Data Source={Path.Combine(DbDir, "pos.db")}";
 
@@ -92,7 +91,7 @@ namespace SKC_Branch
         // ---- catalog cache ----
 
         // Replaces cached price/stock with the server's authoritative snapshot.
-        public static void RefreshCatalog(List<BranchStockItem> items)
+        public static void RefreshCatalog(List<BakeryProduct> items)
         {
             // An empty snapshot is never a real operating state (the server returns every active
             // product, 0-stock included). Treat it as a bad pull and keep the last good cache
@@ -116,7 +115,7 @@ namespace SKC_Branch
         {
             using var connection = new SqliteConnection(connectionString);
             return connection.Query<CachedProduct>(
-                "SELECT SKU, Brand, BaseName, Price, Category, Stock FROM catalog_cache WHERE Price > 0 AND Category != 'RawMaterial' ORDER BY BaseName").ToList();
+                "SELECT SKU, Brand, BaseName, Price, Category, Stock FROM catalog_cache WHERE Price > 0 AND Category IN ('RawMaterial', 'Miscellaneous') ORDER BY BaseName").ToList();
         }
 
         public static bool HasCatalog()
@@ -182,8 +181,8 @@ namespace SKC_Branch
                     // Local-kind DateTime round-trips through the wire with "+08:00", the
                     // UTC droplet converts it on deserialize, and the sale lands in
                     // pos_sales.sold_at (TIMESTAMP WITHOUT TIME ZONE) shifted ~8h earlier -
-                    // confirmed live: a sale pushed with an offset came back 8h off, one
-                    // pushed without an offset came back exact.
+                    // confirmed live on the branch POS: a sale pushed with an offset came
+                    // back 8h off, one pushed without an offset came back exact.
                     SoldAt = DateTime.SpecifyKind(
                         DateTime.Parse(h.SoldAt, null, System.Globalization.DateTimeStyles.RoundtripKind),
                         DateTimeKind.Unspecified),

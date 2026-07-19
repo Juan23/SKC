@@ -88,6 +88,41 @@ namespace SKC_Bakery_Supplies
             throw new Exception($"Failed to fetch sale lines. Code: {response.StatusCode}\nDetails: {errorDetails}");
         }
 
+        // -----------------------------------------------------------
+        // OFFICE POS (offline-first sales - see PosSyncEngine)
+        // -----------------------------------------------------------
+
+        // Pushes queued POS sales. The server is idempotent by ClientSaleId, so re-pushing
+        // after a lost response is safe - AlreadySynced comes back instead of a double-deduct.
+        public static async Task<List<SaleSyncResult>> PushSalesAsync(List<PosSaleDto> sales)
+        {
+            var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/sales", sales, jsonOptions);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string errorDetails = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to push sales. Code: {response.StatusCode}\nDetails: {errorDetails}");
+            }
+
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<SaleSyncResult>>(content, jsonOptions) ?? new List<SaleSyncResult>();
+        }
+
+        // Voids a completed (already-synced) sale. The server restocks what it consumed and flags
+        // the sale; idempotent, so a retry is safe. Online-only - throws if unreachable.
+        public static async Task VoidSaleAsync(string branch, string clientSaleId, string voidedBy)
+        {
+            var response = await client.PostAsJsonAsync(
+                $"{ApiBaseUrl}/api/sales/{Uri.EscapeDataString(branch)}/{Uri.EscapeDataString(clientSaleId)}/void",
+                new { VoidedBy = voidedBy }, jsonOptions);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string errorDetails = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to void sale. Code: {response.StatusCode}\nDetails: {errorDetails}");
+            }
+        }
+
         public static async Task AddProductAsync(object product)
         {
             var response = await client.PostAsJsonAsync($"{ApiBaseUrl}/api/inventory", product, jsonOptions);

@@ -41,6 +41,25 @@ namespace SKC_Bakery_Supplies
             };
             btnBranchSales.Click += btnBranchSales_Click;
             groupBox1.Controls.Add(btnBranchSales);
+
+            // Office counter POS - lives in the "MAIN OFFICE" group next to Sync Reports.
+            // Same code-only convention as above.
+            var btnPos = new Button
+            {
+                Location = new Point(8, 48),
+                Name = "btnPos",
+                Size = new Size(96, 23),
+                Text = "POS",
+                UseVisualStyleBackColor = true
+            };
+            btnPos.Click += btnPos_Click;
+            groupBox2.Controls.Add(btnPos);
+        }
+
+        private void btnPos_Click(object? sender, EventArgs e)
+        {
+            using var posScreen = new frmPos();
+            posScreen.ShowDialog();
         }
 
         private void btnBranchSales_Click(object? sender, EventArgs e)

@@ -48,8 +48,9 @@ namespace SKC_Admin
         {
             cmbKind.Items.AddRange(new object[] { "Baking", "Decorating" });
 
-            // Output must be something production creates, never a raw material.
-            cmbOutputSku.DataSource = catalog.Where(p => p.Category != "RawMaterial").ToList();
+            // Output must be something production creates, never a raw material or a
+            // purchased-as-is Miscellaneous item (candles, cellophane).
+            cmbOutputSku.DataSource = catalog.Where(p => p.Category != "RawMaterial" && p.Category != "Miscellaneous").ToList();
             cmbOutputSku.DisplayMember = "Display";
             cmbOutputSku.ValueMember = "SKU";
 

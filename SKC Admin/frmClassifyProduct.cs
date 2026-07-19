@@ -13,7 +13,7 @@ namespace SKC_Admin
             InitializeComponent();
 
             lblItem.Text = $"{product.Display} ({product.SKU})";
-            cmbCategory.Items.AddRange(new object[] { "RawMaterial", "BakedGood", "DecoratedGood" });
+            cmbCategory.Items.AddRange(new object[] { "RawMaterial", "BakedGood", "DecoratedGood", "Miscellaneous" });
             cmbCategory.SelectedItem = product.Category;
             txtUom.Text = product.Uom ?? "";
             numPackMultiplier.Value = product.PackMultiplier <= 0 ? 1 : product.PackMultiplier;
