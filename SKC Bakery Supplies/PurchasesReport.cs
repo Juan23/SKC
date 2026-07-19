@@ -56,6 +56,10 @@ namespace SKC_Bakery_Supplies
             List<PurchaseTicketSummary> tickets = await CentralApiClient.GetPurchaseTicketsAsync(dtpStart.Value.Date, dtpEnd.Value.Date);
             dgvTickets.DataSource = tickets;
 
+            // N2 (comma-grouped, 2 decimals) - same currency format used everywhere else in this app.
+            if (dgvTickets.Columns["TotalAmount"] != null)
+                dgvTickets.Columns["TotalAmount"].DefaultCellStyle.Format = "N2";
+
             // Clear Grid 2 until a new selection is made
             dgvDetails.DataSource = null;
             dgvTickets.ClearSelection(); // remove selection so when user clicks, it triggers "changed"
@@ -68,11 +72,26 @@ namespace SKC_Bakery_Supplies
             {
                 // Fetch the exact breakdown for this specific ticket
                 List<PurchaseLog> details = await CentralApiClient.GetPurchaseDetailsAsync(selectedTicket.TransactionId);
-                dgvDetails.DataSource = details;
 
-                // Hide system IDs from the user's view in Grid 2
-                if (dgvDetails.Columns["Id"] != null) dgvDetails.Columns["Id"].Visible = false;
-                if (dgvDetails.Columns["TransactionId"] != null) dgvDetails.Columns["TransactionId"].Visible = false;
+                // Date/Supplier already shown in Grid 1 (the ticket); SKU is dropped in favor of the
+                // readable item name, same lookup RenderPurchaseSlip already uses for the reprint.
+                dgvDetails.DataSource = details.Select(item =>
+                {
+                    var product = masterCatalog.FirstOrDefault(p => p.SKU == item.SKU);
+                    return new PurchaseDetailDisplay
+                    {
+                        Item = product != null ? $"{product.Brand} {product.BaseName}" : item.SKU,
+                        Qty = item.Qty,
+                        UnitCost = item.UnitCost,
+                        Total = item.Qty * item.UnitCost
+                    };
+                }).ToList();
+
+                // Same N2 currency format as Grid 1's TotalAmount column.
+                if (dgvDetails.Columns["UnitCost"] != null)
+                    dgvDetails.Columns["UnitCost"].DefaultCellStyle.Format = "N2";
+                if (dgvDetails.Columns["Total"] != null)
+                    dgvDetails.Columns["Total"].DefaultCellStyle.Format = "N2";
             }
         }
 
@@ -214,6 +233,21 @@ namespace SKC_Bakery_Supplies
             g.DrawString("Prepared By: ___________________", regularFont, brush, margin, y);
 
             e.HasMorePages = false;
+        }
+
+        private class PurchaseDetailDisplay
+        {
+            [DisplayName("Item")]
+            public string Item { get; set; } = string.Empty;
+
+            [DisplayName("Qty")]
+            public int Qty { get; set; }
+
+            [DisplayName("Unit Cost")]
+            public decimal UnitCost { get; set; }
+
+            [DisplayName("Total")]
+            public decimal Total { get; set; }
         }
     }
 }
