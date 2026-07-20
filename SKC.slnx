@@ -2,4 +2,5 @@
   <Project Path="SKC Bakery Supplies/SKC Bakery Supplies.csproj" Id="12e5a5e3-a326-4734-8db7-2490ecf9329e" />
   <Project Path="SKC Branch/SKC Branch.csproj" />
   <Project Path="SKC Admin/SKC Admin.csproj" />
+  <Project Path="SKC Admin CLI/SKC Admin CLI.csproj" />
 </Solution>

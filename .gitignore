@@ -15,3 +15,8 @@ x86/
 *.db-shm
 *.db-wal
 *.sqlite
+
+# Workbooks / CSVs the Admin CLI writes. It saves to the current directory, which is the repo
+# when it's run with `dotnet run --project`, so these land in the source tree by accident.
+*.xlsx
+*.csv
