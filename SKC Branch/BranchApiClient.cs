@@ -14,14 +14,57 @@ namespace SKC_Branch
         public DeliveryChangedException(string message) : base(message) { }
     }
 
+    // Thrown when an accept returns 409: the ticket is already Accepted, so this branch's stock was
+    // already credited (a double-click, a retry after a lost response, or another device on this
+    // branch got there first). The UI treats it as success, not an error - see frmMain.
+    public class AlreadyAcceptedException : Exception
+    {
+        public AlreadyAcceptedException(string message) : base(message) { }
+    }
+
+    // Raised when the server can't be reached at all - no connection, no route, or a timed-out
+    // request. Distinct from an HTTP error response (which means we DID reach the server): this is
+    // the "you're offline" case and its Message is safe to show verbatim. Nothing the caller had
+    // entered is touched - the screen just catches this and reports it.
+    public class OfflineException : Exception
+    {
+        public OfflineException(Exception inner)
+            : base("Can't reach the server - this device looks offline. Nothing you entered was lost; "
+                 + "check the connection and try again.", inner) { }
+    }
+
+    // Translates transport failures (connection refused, DNS/route failure) and request timeouts
+    // into one friendly OfflineException, so every endpoint method reports the same clean message
+    // instead of a raw HttpRequestException/TaskCanceledException. No caller passes a cancellation
+    // token, so a cancellation observed here is always the HttpClient timeout elapsing.
+    internal class OfflineTranslatingHandler : DelegatingHandler
+    {
+        public OfflineTranslatingHandler(HttpMessageHandler inner) : base(inner) { }
+
+        protected override async Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await base.SendAsync(request, cancellationToken);
+            }
+            catch (HttpRequestException ex) { throw new OfflineException(ex); }
+            catch (OperationCanceledException ex) { throw new OfflineException(ex); }
+        }
+    }
+
     public static class BranchApiClient
     {
         private static readonly string ApiBaseUrl = "http://100.84.79.35:7290"; // droplet
         // private static readonly string ApiBaseUrl = "http://localhost:53756";
 
-        private static readonly HttpClient client = new HttpClient
+        // Wrapped in OfflineTranslatingHandler so a connection failure or a 10s timeout surfaces as
+        // a friendly OfflineException instead of a raw exception. 10s (down from 30) because the
+        // payloads are tiny - if we can't reach the droplet we know almost immediately, and staff
+        // shouldn't stare at a frozen button for half a minute.
+        private static readonly HttpClient client = new HttpClient(new OfflineTranslatingHandler(new HttpClientHandler()))
         {
-            Timeout = TimeSpan.FromSeconds(30)
+            Timeout = TimeSpan.FromSeconds(10)
         };
 
         private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
@@ -81,7 +124,10 @@ namespace SKC_Branch
 
             if (response.StatusCode == HttpStatusCode.Conflict)
             {
-                throw new Exception("This delivery has already been accepted.");
+                // Already accepted = this branch already has the stock. Not a failure - signal it
+                // distinctly so the UI reports success and just refreshes the list off the screen.
+                throw new AlreadyAcceptedException(
+                    "This delivery was already accepted - the items are already in your stock.");
             }
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -210,6 +256,25 @@ namespace SKC_Branch
 
             string errorDetails = await response.Content.ReadAsStringAsync();
             throw new Exception($"Failed to fetch sale detail. Code: {response.StatusCode}\nDetails: {errorDetails}");
+        }
+
+        // Flat line-level sales for a date range (one row per item per sale), for the end-of-day
+        // CSV export. One call for the whole range - the per-sale detail endpoint above would need
+        // one round trip per sale. Same inclusive-end convention as GetBranchSalesAsync.
+        public static async Task<List<BranchSaleLineExport>> GetBranchSaleLinesRangeAsync(
+            string branch, DateTime start, DateTime end)
+        {
+            HttpResponseMessage response = await client.GetAsync(
+                $"{ApiBaseUrl}/api/sales/lines?branch={Uri.EscapeDataString(branch)}&start={start:yyyy-MM-ddTHH:mm:ss}&end={end:yyyy-MM-ddTHH:mm:ss}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<BranchSaleLineExport>>(content, jsonOptions) ?? new List<BranchSaleLineExport>();
+            }
+
+            string errorDetails = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to fetch sale lines. Code: {response.StatusCode}\nDetails: {errorDetails}");
         }
 
         // Voids a completed (already-synced) sale. The server restocks what it consumed and flags

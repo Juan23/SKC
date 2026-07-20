@@ -129,23 +129,22 @@ namespace SKC_Bakery_Supplies
             txtNewSKU.Text = string.Join("-", parts);
         }
 
+        // First 4 alphanumerics of the brand (e.g., "Beryl's" -> "bery"); "" when there's no brand.
         private string FormatBrand(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return "";
             string clean = new string(input.Where(char.IsLetterOrDigit).ToArray()).ToLower();
-            return clean.Length >= 3 ? clean.Substring(0, 3) : clean;
+            return clean.Length >= 4 ? clean.Substring(0, 4) : clean;
         }
 
+        // Base name squashed to its first 8 alphanumerics (e.g., "Dark Chocolate" -> "darkchoc").
+        // Far more entropy than the old word-initials ("dc"), so stems rarely collide - and the save
+        // path (btnSaveNew_Click) auto-appends -2, -3, ... to settle whatever still does.
         private string FormatBaseName(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return "";
-            var words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            string initials = "";
-            foreach (var word in words)
-            {
-                if (char.IsLetterOrDigit(word[0])) initials += word[0];
-            }
-            return initials.ToLower();
+            string clean = new string(input.Where(char.IsLetterOrDigit).ToArray()).ToLower();
+            return clean.Length >= 8 ? clean.Substring(0, 8) : clean;
         }
 
         /*
@@ -176,28 +175,57 @@ namespace SKC_Bakery_Supplies
                 IsActive = true
             };
 
+            // Disable the trigger while a save is in flight so a double-click can't fire a second,
+            // concurrent submit - which the retry loop would otherwise absorb as a "collision" and
+            // silently save as a duplicate -2 row.
+            btnSaveNew.Enabled = false;
             try
             {
-                await CentralApiClient.AddProductAsync(newProduct);
+                // The generated SKU is a readable stem, not a guaranteed-unique key. Instead of bouncing
+                // a collision back to be hand-fixed, transparently append -2, -3, ... until the server
+                // accepts one. The 23505 PK violation is the source of truth.
+                string baseSku = newProduct.SKU;
+                for (int suffix = 1; suffix <= 99; suffix++)
+                {
+                    newProduct.SKU = suffix == 1 ? baseSku : $"{baseSku}-{suffix}";
+                    try
+                    {
+                        await CentralApiClient.AddProductAsync(newProduct);
 
-                // 1. Refresh the grid instantly
-                LoadGrid();
+                        // A suffix means an item with this stem already existed. Rare now (wide stems),
+                        // so surface it: tells the admin the real SKU and lets them catch a true dupe.
+                        if (suffix > 1)
+                            MessageBox.Show($"A product with a similar SKU already existed, so this was saved as \"{newProduct.SKU}\". Please double-check it isn't a duplicate.",
+                                "SKU Auto-Numbered", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // 2. Wipe the Quick Add board clean for the next item
-                txtNewBrand.Clear();
-                txtNewBaseName.Clear();
-                txtNewSKU.Clear();
-                numNewPrice.Value = 0;
+                        // Refresh the grid instantly
+                        LoadGrid();
 
-                txtNewBrand.Focus();
+                        // Wipe the Quick Add board clean for the next item
+                        txtNewBrand.Clear();
+                        txtNewBaseName.Clear();
+                        txtNewSKU.Clear();
+                        numNewPrice.Value = 0;
+
+                        txtNewBrand.Focus();
+                        return;
+                    }
+                    catch (Exception ex) when (ex.Message == "Duplicate SKU")
+                    {
+                        // taken - fall through to the next suffix
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error");
+                        return;
+                    }
+                }
+
+                MessageBox.Show("Could not generate a unique SKU after 99 attempts. Please set one manually.", "Duplicate SKU");
             }
-            catch (Exception ex) when (ex.Message == "Duplicate SKU")
+            finally
             {
-                MessageBox.Show("A product with this generated SKU already exists. Please manually modify the SKU to make it unique (e.g., add a -2).", "Duplicate SKU");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error");
+                btnSaveNew.Enabled = true;
             }
         }
 

@@ -36,6 +36,7 @@ namespace SKC_Branch
             // lblPrompt
             //
             lblPrompt.AutoSize = true;
+            lblPrompt.Font = new Font("Segoe UI", 10F);
             lblPrompt.Location = new Point(20, 20);
             lblPrompt.Name = "lblPrompt";
             lblPrompt.Size = new Size(220, 20);
@@ -45,6 +46,7 @@ namespace SKC_Branch
             // cmbBranch
             //
             cmbBranch.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbBranch.Font = new Font("Segoe UI", 10F);
             cmbBranch.FormattingEnabled = true;
             cmbBranch.Location = new Point(20, 50);
             cmbBranch.Name = "cmbBranch";
@@ -54,19 +56,25 @@ namespace SKC_Branch
             //
             // btnOk
             //
+            btnOk.BackColor = Color.SeaGreen;
             btnOk.Enabled = false;
+            btnOk.FlatStyle = FlatStyle.Flat;
+            btnOk.Font = new Font("Segoe UI", 10F);
+            btnOk.ForeColor = Color.White;
             btnOk.Location = new Point(20, 95);
             btnOk.Name = "btnOk";
             btnOk.Size = new Size(280, 35);
             btnOk.TabIndex = 2;
             btnOk.Text = "OK";
-            btnOk.UseVisualStyleBackColor = true;
+            btnOk.UseVisualStyleBackColor = false;
             btnOk.Click += btnOk_Click;
             //
             // frmBranchPicker
             //
+            AcceptButton = btnOk;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.WhiteSmoke;
             ClientSize = new Size(320, 150);
             Controls.Add(btnOk);
             Controls.Add(cmbBranch);

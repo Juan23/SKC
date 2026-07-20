@@ -27,6 +27,7 @@ namespace SKC_Branch
             //
             lblHeader.AutoSize = true;
             lblHeader.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            lblHeader.ForeColor = System.Drawing.Color.FromArgb(45, 52, 64);
             lblHeader.Location = new System.Drawing.Point(20, 15);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new System.Drawing.Size(180, 32);
@@ -36,13 +37,16 @@ namespace SKC_Branch
             // btnRefresh
             //
             btnRefresh.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnRefresh.BackColor = System.Drawing.Color.White;
+            btnRefresh.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRefresh.Font = new System.Drawing.Font("Segoe UI", 10F);
             btnRefresh.Location = new System.Drawing.Point(1130, 15);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new System.Drawing.Size(130, 40);
             btnRefresh.TabIndex = 1;
             btnRefresh.Text = "Refresh";
-            btnRefresh.UseVisualStyleBackColor = true;
+            btnRefresh.UseVisualStyleBackColor = false;
             btnRefresh.Click += btnRefresh_Click;
             //
             // dgvHistory
@@ -51,6 +55,7 @@ namespace SKC_Branch
             dgvHistory.AllowUserToDeleteRows = false;
             dgvHistory.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dgvHistory.BackgroundColor = System.Drawing.Color.White;
             dgvHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvHistory.Location = new System.Drawing.Point(20, 70);
             dgvHistory.Name = "dgvHistory";
@@ -64,6 +69,7 @@ namespace SKC_Branch
             //
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.WhiteSmoke;
             ClientSize = new System.Drawing.Size(1280, 640);
             Controls.Add(dgvHistory);
             Controls.Add(btnRefresh);

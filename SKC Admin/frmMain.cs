@@ -16,19 +16,6 @@ namespace SKC_Admin
 
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             Text = $"SKC Admin  (v{version?.ToString(3)})";
-
-            // Added in code rather than the Designer so we don't hand-edit frmMain.Designer.cs
-            // (workspace convention - see SKC Bakery Supplies/.claudesettings.json).
-            var btnSetPrice = new Button
-            {
-                Location = new System.Drawing.Point(307, 6),
-                Name = "btnSetPrice",
-                Size = new System.Drawing.Size(120, 28),
-                Text = "Set Price...",
-                UseVisualStyleBackColor = true
-            };
-            btnSetPrice.Click += btnSetPrice_Click;
-            pnlProductActions.Controls.Add(btnSetPrice);
         }
 
         private async void frmMain_Load(object sender, EventArgs e)

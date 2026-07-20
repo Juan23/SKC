@@ -123,6 +123,12 @@ namespace SKC_Branch
                 MessageBox.Show($"Delivery {selected.TransactionId} accepted.", "Accepted",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+            catch (AlreadyAcceptedException ex)
+            {
+                // The stock is already in - a retry after a lost response, or a double-accept. Report
+                // it as done (not a scary failure); the refresh below drops it from the pending list.
+                MessageBox.Show(ex.Message, "Already Accepted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             catch (DeliveryChangedException ex)
             {
                 MessageBox.Show(ex.Message, "Delivery Changed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -131,8 +137,17 @@ namespace SKC_Branch
             {
                 MessageBox.Show(ex.Message, "Accept Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+            finally
+            {
+                // Never leave Accept stuck disabled: on an offline failure the refresh below also
+                // fails and wouldn't re-enable it, trapping the user until they hit Refresh. The
+                // refresh re-tunes this to pending.Count > 0 on success.
+                btnAccept.Enabled = true;
+            }
 
-            await RefreshPendingAsync();
+            // suppressErrors: the accept above already reported its own outcome (including offline);
+            // a failed refresh here shouldn't stack a second "could not load" dialog on top.
+            await RefreshPendingAsync(suppressErrors: true);
         }
 
         private static string PromptForName()

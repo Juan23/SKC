@@ -58,6 +58,7 @@
             //
             lblHeader.AutoSize = true;
             lblHeader.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblHeader.ForeColor = Color.FromArgb(45, 52, 64);
             lblHeader.Location = new Point(20, 15);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new Size(180, 32);
@@ -158,12 +159,15 @@
             //
             // btnAddItem
             //
+            btnAddItem.BackColor = Color.SeaGreen;
+            btnAddItem.FlatStyle = FlatStyle.Flat;
+            btnAddItem.ForeColor = Color.White;
             btnAddItem.Location = new Point(16, 262);
             btnAddItem.Name = "btnAddItem";
             btnAddItem.Size = new Size(288, 40);
             btnAddItem.TabIndex = 10;
             btnAddItem.Text = "Add Item";
-            btnAddItem.UseVisualStyleBackColor = true;
+            btnAddItem.UseVisualStyleBackColor = false;
             btnAddItem.Click += btnAddItem_Click;
             //
             // chkByPack
@@ -234,6 +238,7 @@
             dgvPurchaseItems.AllowUserToAddRows = false;
             dgvPurchaseItems.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvPurchaseItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvPurchaseItems.BackgroundColor = Color.White;
             dgvPurchaseItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvPurchaseItems.EditMode = DataGridViewEditMode.EditProgrammatically;
             dgvPurchaseItems.Location = new Point(20, 70);
@@ -245,14 +250,17 @@
             //
             // btnSubmitPurchase
             //
-            btnSubmitPurchase.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnSubmitPurchase.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnSubmitPurchase.BackColor = Color.SeaGreen;
+            btnSubmitPurchase.FlatStyle = FlatStyle.Flat;
             btnSubmitPurchase.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            btnSubmitPurchase.Location = new Point(760, 592);
+            btnSubmitPurchase.ForeColor = Color.White;
+            btnSubmitPurchase.Location = new Point(720, 592);
             btnSubmitPurchase.Name = "btnSubmitPurchase";
-            btnSubmitPurchase.Size = new Size(120, 40);
+            btnSubmitPurchase.Size = new Size(160, 40);
             btnSubmitPurchase.TabIndex = 3;
-            btnSubmitPurchase.Text = "Submit";
-            btnSubmitPurchase.UseVisualStyleBackColor = true;
+            btnSubmitPurchase.Text = "Submit Purchase";
+            btnSubmitPurchase.UseVisualStyleBackColor = false;
             btnSubmitPurchase.Click += btnSubmitPurchase_Click;
             //
             // lblRunningTotal
@@ -270,6 +278,7 @@
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.WhiteSmoke;
             ClientSize = new Size(1280, 640);
             Controls.Add(lblRunningTotal);
             Controls.Add(btnSubmitPurchase);

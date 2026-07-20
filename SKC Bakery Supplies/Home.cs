@@ -16,44 +16,6 @@ namespace SKC_Bakery_Supplies
 
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             Text = $"SKC Bakery Supplies  (v{version?.ToString(3)})";
-
-            // Added in code rather than the Designer so we don't hand-edit Home.Designer.cs.
-            var btnBranchInventoryReport = new Button
-            {
-                Location = new Point(8, 96),
-                Name = "btnBranchInventoryReport",
-                Size = new Size(75, 23),
-                Text = "Branch Stock",
-                UseVisualStyleBackColor = true
-            };
-            btnBranchInventoryReport.Click += btnBranchInventoryReport_Click;
-            grpInventory.Controls.Add(btnBranchInventoryReport);
-
-            // POS sales synced up from the branches - lives in the "Reports" group
-            // (free slot under Print Report). Same code-only convention as above.
-            var btnBranchSales = new Button
-            {
-                Location = new Point(8, 48),
-                Name = "btnBranchSales",
-                Size = new Size(75, 23),
-                Text = "Branch Sales",
-                UseVisualStyleBackColor = true
-            };
-            btnBranchSales.Click += btnBranchSales_Click;
-            groupBox1.Controls.Add(btnBranchSales);
-
-            // Office counter POS - lives in the "MAIN OFFICE" group next to Sync Reports.
-            // Same code-only convention as above.
-            var btnPos = new Button
-            {
-                Location = new Point(8, 48),
-                Name = "btnPos",
-                Size = new Size(96, 23),
-                Text = "POS",
-                UseVisualStyleBackColor = true
-            };
-            btnPos.Click += btnPos_Click;
-            groupBox2.Controls.Add(btnPos);
         }
 
         private void btnPos_Click(object? sender, EventArgs e)

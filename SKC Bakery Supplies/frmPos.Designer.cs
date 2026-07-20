@@ -65,13 +65,16 @@ namespace SKC_Bakery_Supplies
             //
             // btnGoSalesHistory
             //
+            btnGoSalesHistory.BackColor = System.Drawing.Color.White;
+            btnGoSalesHistory.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnGoSalesHistory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnGoSalesHistory.Font = new System.Drawing.Font("Segoe UI", 10F);
             btnGoSalesHistory.Location = new System.Drawing.Point(330, 15);
             btnGoSalesHistory.Name = "btnGoSalesHistory";
             btnGoSalesHistory.Size = new System.Drawing.Size(140, 40);
             btnGoSalesHistory.TabIndex = 2;
             btnGoSalesHistory.Text = "Sales History";
-            btnGoSalesHistory.UseVisualStyleBackColor = true;
+            btnGoSalesHistory.UseVisualStyleBackColor = false;
             btnGoSalesHistory.Click += btnGoSalesHistory_Click;
             //
             // lblSearch
@@ -123,6 +126,7 @@ namespace SKC_Bakery_Supplies
             dgvCart.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
                 | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvCart.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dgvCart.BackgroundColor = System.Drawing.Color.White;
             dgvCart.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvCart.Font = new System.Drawing.Font("Segoe UI", 12F);
             dgvCart.Location = new System.Drawing.Point(20, 115);
@@ -136,49 +140,61 @@ namespace SKC_Bakery_Supplies
             // btnDiscount
             //
             btnDiscount.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnDiscount.BackColor = System.Drawing.Color.White;
+            btnDiscount.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnDiscount.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnDiscount.Font = new System.Drawing.Font("Segoe UI", 10F);
             btnDiscount.Location = new System.Drawing.Point(940, 15);
             btnDiscount.Name = "btnDiscount";
             btnDiscount.Size = new System.Drawing.Size(320, 40);
             btnDiscount.TabIndex = 10;
             btnDiscount.Text = "Discount...";
-            btnDiscount.UseVisualStyleBackColor = true;
+            btnDiscount.UseVisualStyleBackColor = false;
             btnDiscount.Click += btnDiscount_Click;
             //
             // btnRemoveLine
             //
             btnRemoveLine.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnRemoveLine.BackColor = System.Drawing.Color.Firebrick;
+            btnRemoveLine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRemoveLine.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnRemoveLine.ForeColor = System.Drawing.Color.White;
             btnRemoveLine.Location = new System.Drawing.Point(940, 65);
             btnRemoveLine.Name = "btnRemoveLine";
             btnRemoveLine.Size = new System.Drawing.Size(320, 40);
             btnRemoveLine.TabIndex = 11;
             btnRemoveLine.Text = "Remove Selected Line";
-            btnRemoveLine.UseVisualStyleBackColor = true;
+            btnRemoveLine.UseVisualStyleBackColor = false;
             btnRemoveLine.Click += btnRemoveLine_Click;
             //
             // btnDayLog
             //
             btnDayLog.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnDayLog.BackColor = System.Drawing.Color.White;
+            btnDayLog.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnDayLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnDayLog.Font = new System.Drawing.Font("Segoe UI", 10F);
             btnDayLog.Location = new System.Drawing.Point(940, 115);
             btnDayLog.Name = "btnDayLog";
             btnDayLog.Size = new System.Drawing.Size(320, 40);
             btnDayLog.TabIndex = 12;
             btnDayLog.Text = "Today's Sales...";
-            btnDayLog.UseVisualStyleBackColor = true;
+            btnDayLog.UseVisualStyleBackColor = false;
             btnDayLog.Click += btnDayLog_Click;
             //
             // btnSyncNow
             //
             btnSyncNow.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnSyncNow.BackColor = System.Drawing.Color.White;
+            btnSyncNow.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnSyncNow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnSyncNow.Font = new System.Drawing.Font("Segoe UI", 10F);
             btnSyncNow.Location = new System.Drawing.Point(940, 165);
             btnSyncNow.Name = "btnSyncNow";
             btnSyncNow.Size = new System.Drawing.Size(320, 40);
             btnSyncNow.TabIndex = 13;
             btnSyncNow.Text = "Sync Now";
-            btnSyncNow.UseVisualStyleBackColor = true;
+            btnSyncNow.UseVisualStyleBackColor = false;
             btnSyncNow.Click += btnSyncNow_Click;
             //
             // lblTotalCaption
@@ -239,13 +255,16 @@ namespace SKC_Bakery_Supplies
             // btnComplete
             //
             btnComplete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            btnComplete.BackColor = System.Drawing.Color.SeaGreen;
+            btnComplete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnComplete.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            btnComplete.ForeColor = System.Drawing.Color.White;
             btnComplete.Location = new System.Drawing.Point(940, 495);
             btnComplete.Name = "btnComplete";
             btnComplete.Size = new System.Drawing.Size(320, 80);
             btnComplete.TabIndex = 19;
             btnComplete.Text = "COMPLETE SALE";
-            btnComplete.UseVisualStyleBackColor = true;
+            btnComplete.UseVisualStyleBackColor = false;
             btnComplete.Click += btnComplete_Click;
             //
             // lblLastSale
@@ -281,6 +300,7 @@ namespace SKC_Bakery_Supplies
             //
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.WhiteSmoke;
             ClientSize = new System.Drawing.Size(1280, 640);
             Controls.Add(lstSearch);
             Controls.Add(lblStaff);

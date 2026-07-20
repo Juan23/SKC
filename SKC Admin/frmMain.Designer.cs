@@ -21,6 +21,7 @@ namespace SKC_Admin
             tabProducts = new System.Windows.Forms.TabPage();
             dgvProducts = new System.Windows.Forms.DataGridView();
             pnlProductActions = new System.Windows.Forms.Panel();
+            btnSetPrice = new System.Windows.Forms.Button();
             btnClassify = new System.Windows.Forms.Button();
             btnRefreshProducts = new System.Windows.Forms.Button();
             tabRecipes = new System.Windows.Forms.TabPage();
@@ -79,6 +80,7 @@ namespace SKC_Admin
             //
             // pnlProductActions
             //
+            pnlProductActions.Controls.Add(btnSetPrice);
             pnlProductActions.Controls.Add(btnClassify);
             pnlProductActions.Controls.Add(btnRefreshProducts);
             pnlProductActions.Dock = System.Windows.Forms.DockStyle.Top;
@@ -89,22 +91,41 @@ namespace SKC_Admin
             //
             // btnClassify
             //
+            btnClassify.BackColor = System.Drawing.Color.White;
+            btnClassify.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnClassify.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnClassify.Location = new System.Drawing.Point(130, 6);
             btnClassify.Name = "btnClassify";
             btnClassify.Size = new System.Drawing.Size(160, 28);
             btnClassify.TabIndex = 1;
             btnClassify.Text = "Set Category / UoM...";
-            btnClassify.UseVisualStyleBackColor = true;
+            btnClassify.UseVisualStyleBackColor = false;
             btnClassify.Click += btnClassify_Click;
+            //
+            // btnSetPrice
+            //
+            btnSetPrice.BackColor = System.Drawing.Color.White;
+            btnSetPrice.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnSetPrice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnSetPrice.Location = new System.Drawing.Point(306, 6);
+            btnSetPrice.Name = "btnSetPrice";
+            btnSetPrice.Size = new System.Drawing.Size(120, 28);
+            btnSetPrice.TabIndex = 2;
+            btnSetPrice.Text = "Set Price...";
+            btnSetPrice.UseVisualStyleBackColor = false;
+            btnSetPrice.Click += btnSetPrice_Click;
             //
             // btnRefreshProducts
             //
+            btnRefreshProducts.BackColor = System.Drawing.Color.White;
+            btnRefreshProducts.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnRefreshProducts.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRefreshProducts.Location = new System.Drawing.Point(3, 6);
             btnRefreshProducts.Name = "btnRefreshProducts";
             btnRefreshProducts.Size = new System.Drawing.Size(110, 28);
             btnRefreshProducts.TabIndex = 0;
             btnRefreshProducts.Text = "Refresh";
-            btnRefreshProducts.UseVisualStyleBackColor = true;
+            btnRefreshProducts.UseVisualStyleBackColor = false;
             btnRefreshProducts.Click += btnRefreshProducts_Click;
             //
             // tabRecipes
@@ -148,42 +169,54 @@ namespace SKC_Admin
             //
             // btnDeactivateRecipe
             //
+            btnDeactivateRecipe.BackColor = System.Drawing.Color.Firebrick;
+            btnDeactivateRecipe.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnDeactivateRecipe.ForeColor = System.Drawing.Color.White;
             btnDeactivateRecipe.Location = new System.Drawing.Point(360, 6);
             btnDeactivateRecipe.Name = "btnDeactivateRecipe";
             btnDeactivateRecipe.Size = new System.Drawing.Size(110, 28);
             btnDeactivateRecipe.TabIndex = 3;
             btnDeactivateRecipe.Text = "Deactivate";
-            btnDeactivateRecipe.UseVisualStyleBackColor = true;
+            btnDeactivateRecipe.UseVisualStyleBackColor = false;
             btnDeactivateRecipe.Click += btnDeactivateRecipe_Click;
             //
             // btnEditRecipe
             //
+            btnEditRecipe.BackColor = System.Drawing.Color.White;
+            btnEditRecipe.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnEditRecipe.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnEditRecipe.Location = new System.Drawing.Point(244, 6);
             btnEditRecipe.Name = "btnEditRecipe";
             btnEditRecipe.Size = new System.Drawing.Size(110, 28);
             btnEditRecipe.TabIndex = 2;
             btnEditRecipe.Text = "Edit...";
-            btnEditRecipe.UseVisualStyleBackColor = true;
+            btnEditRecipe.UseVisualStyleBackColor = false;
             btnEditRecipe.Click += btnEditRecipe_Click;
             //
             // btnNewRecipe
             //
+            btnNewRecipe.BackColor = System.Drawing.Color.White;
+            btnNewRecipe.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnNewRecipe.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnNewRecipe.Location = new System.Drawing.Point(128, 6);
             btnNewRecipe.Name = "btnNewRecipe";
             btnNewRecipe.Size = new System.Drawing.Size(110, 28);
             btnNewRecipe.TabIndex = 1;
             btnNewRecipe.Text = "New Recipe...";
-            btnNewRecipe.UseVisualStyleBackColor = true;
+            btnNewRecipe.UseVisualStyleBackColor = false;
             btnNewRecipe.Click += btnNewRecipe_Click;
             //
             // btnRefreshRecipes
             //
+            btnRefreshRecipes.BackColor = System.Drawing.Color.White;
+            btnRefreshRecipes.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnRefreshRecipes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRefreshRecipes.Location = new System.Drawing.Point(3, 6);
             btnRefreshRecipes.Name = "btnRefreshRecipes";
             btnRefreshRecipes.Size = new System.Drawing.Size(110, 28);
             btnRefreshRecipes.TabIndex = 0;
             btnRefreshRecipes.Text = "Refresh";
-            btnRefreshRecipes.UseVisualStyleBackColor = true;
+            btnRefreshRecipes.UseVisualStyleBackColor = false;
             btnRefreshRecipes.Click += btnRefreshRecipes_Click;
             //
             // frmMain
@@ -213,6 +246,7 @@ namespace SKC_Admin
         private System.Windows.Forms.TabPage tabProducts;
         private System.Windows.Forms.DataGridView dgvProducts;
         private System.Windows.Forms.Panel pnlProductActions;
+        private System.Windows.Forms.Button btnSetPrice;
         private System.Windows.Forms.Button btnClassify;
         private System.Windows.Forms.Button btnRefreshProducts;
         private System.Windows.Forms.TabPage tabRecipes;

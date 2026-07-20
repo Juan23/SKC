@@ -33,100 +33,119 @@ namespace SKC_Bakery_Supplies
             //
             // lblItem
             //
-            lblItem.AutoSize = true;
-            lblItem.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblItem.Location = new Point(12, 12);
+            lblItem.AutoEllipsis = true;
+            lblItem.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblItem.ForeColor = Color.FromArgb(45, 52, 64);
+            lblItem.Location = new Point(20, 15);
             lblItem.Name = "lblItem";
-            lblItem.Size = new Size(38, 15);
+            lblItem.Size = new Size(380, 25);
             lblItem.TabIndex = 0;
             lblItem.Text = "Item";
             //
             // lblSystemQty
             //
             lblSystemQty.AutoSize = true;
-            lblSystemQty.Location = new Point(12, 40);
+            lblSystemQty.Font = new Font("Segoe UI", 10F);
+            lblSystemQty.Location = new Point(20, 50);
             lblSystemQty.Name = "lblSystemQty";
-            lblSystemQty.Size = new Size(90, 15);
+            lblSystemQty.Size = new Size(100, 19);
             lblSystemQty.TabIndex = 1;
             lblSystemQty.Text = "System Qty: 0";
             //
             // lblActualQty
             //
             lblActualQty.AutoSize = true;
-            lblActualQty.Location = new Point(12, 76);
+            lblActualQty.Font = new Font("Segoe UI", 10F);
+            lblActualQty.Location = new Point(20, 85);
             lblActualQty.Name = "lblActualQty";
-            lblActualQty.Size = new Size(97, 15);
+            lblActualQty.Size = new Size(135, 19);
             lblActualQty.TabIndex = 2;
             lblActualQty.Text = "Actual Counted Qty";
             //
             // numActualQty
             //
-            numActualQty.Location = new Point(12, 94);
+            numActualQty.Font = new Font("Segoe UI", 10F);
+            numActualQty.Location = new Point(20, 107);
             numActualQty.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             numActualQty.Name = "numActualQty";
-            numActualQty.Size = new Size(120, 23);
+            numActualQty.Size = new Size(130, 25);
             numActualQty.TabIndex = 3;
             //
             // lblUnitCost
             //
             lblUnitCost.AutoSize = true;
-            lblUnitCost.Location = new Point(148, 76);
-            lblUnitCost.MaximumSize = new Size(260, 0);
+            lblUnitCost.Font = new Font("Segoe UI", 10F);
+            lblUnitCost.Location = new Point(20, 147);
+            lblUnitCost.MaximumSize = new Size(380, 0);
             lblUnitCost.Name = "lblUnitCost";
-            lblUnitCost.Size = new Size(250, 30);
+            lblUnitCost.Size = new Size(370, 38);
             lblUnitCost.TabIndex = 4;
             lblUnitCost.Text = "Unit Cost (only used if raising stock; leave 0 to use last purchase cost)";
             //
             // numUnitCost
             //
             numUnitCost.DecimalPlaces = 2;
-            numUnitCost.Location = new Point(148, 110);
+            numUnitCost.Font = new Font("Segoe UI", 10F);
+            numUnitCost.Location = new Point(20, 192);
             numUnitCost.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             numUnitCost.Name = "numUnitCost";
-            numUnitCost.Size = new Size(120, 23);
+            numUnitCost.Size = new Size(130, 25);
             numUnitCost.TabIndex = 5;
             //
             // lblReason
             //
             lblReason.AutoSize = true;
-            lblReason.Location = new Point(12, 140);
+            lblReason.Font = new Font("Segoe UI", 10F);
+            lblReason.Location = new Point(20, 232);
             lblReason.Name = "lblReason";
-            lblReason.Size = new Size(49, 15);
+            lblReason.Size = new Size(56, 19);
             lblReason.TabIndex = 6;
             lblReason.Text = "Reason";
             //
             // txtReason
             //
-            txtReason.Location = new Point(12, 158);
+            txtReason.Font = new Font("Segoe UI", 10F);
+            txtReason.Location = new Point(20, 254);
             txtReason.Name = "txtReason";
-            txtReason.Size = new Size(360, 23);
+            txtReason.Size = new Size(380, 25);
             txtReason.TabIndex = 7;
             //
             // btnSave
             //
-            btnSave.Location = new Point(216, 194);
+            btnSave.BackColor = Color.SeaGreen;
+            btnSave.FlatStyle = FlatStyle.Flat;
+            btnSave.Font = new Font("Segoe UI", 10F);
+            btnSave.ForeColor = Color.White;
+            btnSave.Location = new Point(190, 296);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(75, 23);
+            btnSave.Size = new Size(100, 32);
             btnSave.TabIndex = 8;
             btnSave.Text = "Save";
-            btnSave.UseVisualStyleBackColor = true;
+            btnSave.UseVisualStyleBackColor = false;
             btnSave.Click += btnSave_Click;
             //
             // btnCancel
             //
-            btnCancel.Location = new Point(297, 194);
+            btnCancel.BackColor = Color.White;
+            btnCancel.FlatAppearance.BorderColor = Color.Silver;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.Font = new Font("Segoe UI", 10F);
+            btnCancel.Location = new Point(300, 296);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(75, 23);
+            btnCancel.Size = new Size(100, 32);
             btnCancel.TabIndex = 9;
             btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             //
             // frmAdjustInventory
             //
+            AcceptButton = btnSave;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(384, 229);
+            BackColor = Color.WhiteSmoke;
+            CancelButton = btnCancel;
+            ClientSize = new Size(420, 348);
             Controls.Add(lblItem);
             Controls.Add(lblSystemQty);
             Controls.Add(lblActualQty);
@@ -137,7 +156,11 @@ namespace SKC_Bakery_Supplies
             Controls.Add(txtReason);
             Controls.Add(btnSave);
             Controls.Add(btnCancel);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "frmAdjustInventory";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Adjust Stock";
             ((System.ComponentModel.ISupportInitialize)numActualQty).EndInit();
             ((System.ComponentModel.ISupportInitialize)numUnitCost).EndInit();

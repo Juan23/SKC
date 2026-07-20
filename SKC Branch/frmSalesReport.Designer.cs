@@ -1,6 +1,6 @@
 namespace SKC_Branch
 {
-    partial class frmBranchSalesHistory
+    partial class frmSalesReport
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -22,12 +22,15 @@ namespace SKC_Branch
             dtpStart = new System.Windows.Forms.DateTimePicker();
             lblTo = new System.Windows.Forms.Label();
             dtpEnd = new System.Windows.Forms.DateTimePicker();
+            btnToday = new System.Windows.Forms.Button();
             btnLoad = new System.Windows.Forms.Button();
+            btnPrint = new System.Windows.Forms.Button();
+            btnExportCsv = new System.Windows.Forms.Button();
+            lblOffline = new System.Windows.Forms.Label();
+            lblStale = new System.Windows.Forms.Label();
             dgvSales = new System.Windows.Forms.DataGridView();
-            dgvLines = new System.Windows.Forms.DataGridView();
             lblTotals = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)dgvSales).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dgvLines).BeginInit();
             SuspendLayout();
             //
             // lblHeader
@@ -37,9 +40,9 @@ namespace SKC_Branch
             lblHeader.ForeColor = System.Drawing.Color.FromArgb(45, 52, 64);
             lblHeader.Location = new System.Drawing.Point(20, 15);
             lblHeader.Name = "lblHeader";
-            lblHeader.Size = new System.Drawing.Size(150, 32);
+            lblHeader.Size = new System.Drawing.Size(260, 32);
             lblHeader.TabIndex = 0;
-            lblHeader.Text = "Sales History";
+            lblHeader.Text = "Sales Report";
             //
             // lblFrom
             //
@@ -59,6 +62,7 @@ namespace SKC_Branch
             dtpStart.Name = "dtpStart";
             dtpStart.Size = new System.Drawing.Size(150, 25);
             dtpStart.TabIndex = 2;
+            dtpStart.ValueChanged += DateChanged;
             //
             // lblTo
             //
@@ -78,6 +82,21 @@ namespace SKC_Branch
             dtpEnd.Name = "dtpEnd";
             dtpEnd.Size = new System.Drawing.Size(150, 25);
             dtpEnd.TabIndex = 4;
+            dtpEnd.ValueChanged += DateChanged;
+            //
+            // btnToday
+            //
+            btnToday.BackColor = System.Drawing.Color.White;
+            btnToday.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnToday.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnToday.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnToday.Location = new System.Drawing.Point(440, 56);
+            btnToday.Name = "btnToday";
+            btnToday.Size = new System.Drawing.Size(120, 32);
+            btnToday.TabIndex = 5;
+            btnToday.Text = "Today";
+            btnToday.UseVisualStyleBackColor = false;
+            btnToday.Click += btnToday_Click;
             //
             // btnLoad
             //
@@ -85,20 +104,70 @@ namespace SKC_Branch
             btnLoad.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnLoad.Font = new System.Drawing.Font("Segoe UI", 10F);
-            btnLoad.Location = new System.Drawing.Point(440, 56);
+            btnLoad.Location = new System.Drawing.Point(570, 56);
             btnLoad.Name = "btnLoad";
             btnLoad.Size = new System.Drawing.Size(120, 32);
-            btnLoad.TabIndex = 5;
+            btnLoad.TabIndex = 6;
             btnLoad.Text = "Load";
             btnLoad.UseVisualStyleBackColor = false;
             btnLoad.Click += btnLoad_Click;
+            //
+            // btnPrint
+            //
+            btnPrint.BackColor = System.Drawing.Color.White;
+            btnPrint.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnPrint.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnPrint.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnPrint.Location = new System.Drawing.Point(700, 56);
+            btnPrint.Name = "btnPrint";
+            btnPrint.Size = new System.Drawing.Size(120, 32);
+            btnPrint.TabIndex = 7;
+            btnPrint.Text = "Print...";
+            btnPrint.UseVisualStyleBackColor = false;
+            btnPrint.Click += btnPrint_Click;
+            //
+            // btnExportCsv
+            //
+            btnExportCsv.BackColor = System.Drawing.Color.White;
+            btnExportCsv.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnExportCsv.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnExportCsv.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnExportCsv.Location = new System.Drawing.Point(830, 56);
+            btnExportCsv.Name = "btnExportCsv";
+            btnExportCsv.Size = new System.Drawing.Size(150, 32);
+            btnExportCsv.TabIndex = 8;
+            btnExportCsv.Text = "Save for Excel...";
+            btnExportCsv.UseVisualStyleBackColor = false;
+            btnExportCsv.Click += btnExportCsv_Click;
+            //
+            // lblOffline
+            //
+            lblOffline.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            lblOffline.ForeColor = System.Drawing.Color.Firebrick;
+            lblOffline.Location = new System.Drawing.Point(995, 62);
+            lblOffline.Name = "lblOffline";
+            lblOffline.Size = new System.Drawing.Size(265, 25);
+            lblOffline.TabIndex = 9;
+            lblOffline.Text = "";
+            lblOffline.Visible = false;
+            //
+            // lblStale
+            //
+            lblStale.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            lblStale.ForeColor = System.Drawing.Color.Firebrick;
+            lblStale.Location = new System.Drawing.Point(995, 22);
+            lblStale.Name = "lblStale";
+            lblStale.Size = new System.Drawing.Size(265, 25);
+            lblStale.TabIndex = 12;
+            lblStale.Text = "";
+            lblStale.Visible = false;
             //
             // dgvSales
             //
             dgvSales.AllowUserToAddRows = false;
             dgvSales.AllowUserToDeleteRows = false;
             dgvSales.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left;
+                | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvSales.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             dgvSales.BackgroundColor = System.Drawing.Color.White;
             dgvSales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -107,26 +176,8 @@ namespace SKC_Branch
             dgvSales.ReadOnly = true;
             dgvSales.RowHeadersVisible = false;
             dgvSales.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvSales.Size = new System.Drawing.Size(740, 460);
-            dgvSales.TabIndex = 6;
-            dgvSales.SelectionChanged += dgvSales_SelectionChanged;
-            //
-            // dgvLines
-            //
-            dgvLines.AllowUserToAddRows = false;
-            dgvLines.AllowUserToDeleteRows = false;
-            dgvLines.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            dgvLines.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            dgvLines.BackgroundColor = System.Drawing.Color.White;
-            dgvLines.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvLines.Location = new System.Drawing.Point(775, 100);
-            dgvLines.Name = "dgvLines";
-            dgvLines.ReadOnly = true;
-            dgvLines.RowHeadersVisible = false;
-            dgvLines.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvLines.Size = new System.Drawing.Size(485, 460);
-            dgvLines.TabIndex = 7;
+            dgvSales.Size = new System.Drawing.Size(1240, 460);
+            dgvSales.TabIndex = 10;
             //
             // lblTotals
             //
@@ -134,11 +185,11 @@ namespace SKC_Branch
             lblTotals.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
             lblTotals.Location = new System.Drawing.Point(20, 575);
             lblTotals.Name = "lblTotals";
-            lblTotals.Size = new System.Drawing.Size(900, 30);
-            lblTotals.TabIndex = 8;
+            lblTotals.Size = new System.Drawing.Size(1240, 30);
+            lblTotals.TabIndex = 11;
             lblTotals.Text = "";
             //
-            // frmBranchSalesHistory
+            // frmSalesReport
             //
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -149,19 +200,22 @@ namespace SKC_Branch
             Controls.Add(dtpStart);
             Controls.Add(lblTo);
             Controls.Add(dtpEnd);
+            Controls.Add(btnToday);
             Controls.Add(btnLoad);
+            Controls.Add(btnPrint);
+            Controls.Add(btnExportCsv);
+            Controls.Add(lblOffline);
+            Controls.Add(lblStale);
             Controls.Add(dgvSales);
-            Controls.Add(dgvLines);
             Controls.Add(lblTotals);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             MaximizeBox = false;
-            Name = "frmBranchSalesHistory";
+            Name = "frmSalesReport";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            Text = "Sales History";
-            Load += frmBranchSalesHistory_Load;
+            Text = "Sales Report";
+            Load += frmSalesReport_Load;
             ((System.ComponentModel.ISupportInitialize)dgvSales).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dgvLines).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -173,9 +227,13 @@ namespace SKC_Branch
         private System.Windows.Forms.DateTimePicker dtpStart;
         private System.Windows.Forms.Label lblTo;
         private System.Windows.Forms.DateTimePicker dtpEnd;
+        private System.Windows.Forms.Button btnToday;
         private System.Windows.Forms.Button btnLoad;
+        private System.Windows.Forms.Button btnPrint;
+        private System.Windows.Forms.Button btnExportCsv;
+        private System.Windows.Forms.Label lblOffline;
+        private System.Windows.Forms.Label lblStale;
         private System.Windows.Forms.DataGridView dgvSales;
-        private System.Windows.Forms.DataGridView dgvLines;
         private System.Windows.Forms.Label lblTotals;
     }
 }

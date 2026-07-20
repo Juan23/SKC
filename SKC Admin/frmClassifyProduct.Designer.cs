@@ -33,6 +33,7 @@ namespace SKC_Admin
             //
             lblItem.AutoSize = true;
             lblItem.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            lblItem.ForeColor = System.Drawing.Color.FromArgb(45, 52, 64);
             lblItem.Location = new System.Drawing.Point(20, 15);
             lblItem.Name = "lblItem";
             lblItem.Size = new System.Drawing.Size(60, 23);
@@ -51,9 +52,9 @@ namespace SKC_Admin
             // cmbCategory
             //
             cmbCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbCategory.Location = new System.Drawing.Point(140, 57);
+            cmbCategory.Location = new System.Drawing.Point(150, 57);
             cmbCategory.Name = "cmbCategory";
-            cmbCategory.Size = new System.Drawing.Size(200, 23);
+            cmbCategory.Size = new System.Drawing.Size(210, 23);
             cmbCategory.TabIndex = 2;
             //
             // lblUom
@@ -67,10 +68,10 @@ namespace SKC_Admin
             //
             // txtUom
             //
-            txtUom.Location = new System.Drawing.Point(140, 97);
+            txtUom.Location = new System.Drawing.Point(150, 97);
             txtUom.Name = "txtUom";
             txtUom.PlaceholderText = "e.g. Sack (25kg)";
-            txtUom.Size = new System.Drawing.Size(200, 23);
+            txtUom.Size = new System.Drawing.Size(210, 23);
             txtUom.TabIndex = 4;
             //
             // lblPackMultiplier
@@ -85,38 +86,47 @@ namespace SKC_Admin
             // numPackMultiplier
             //
             numPackMultiplier.DecimalPlaces = 4;
-            numPackMultiplier.Location = new System.Drawing.Point(140, 137);
+            numPackMultiplier.Location = new System.Drawing.Point(150, 137);
             numPackMultiplier.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             numPackMultiplier.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numPackMultiplier.Name = "numPackMultiplier";
-            numPackMultiplier.Size = new System.Drawing.Size(200, 23);
+            numPackMultiplier.Size = new System.Drawing.Size(210, 23);
             numPackMultiplier.TabIndex = 6;
             numPackMultiplier.Value = new decimal(new int[] { 1, 0, 0, 0 });
             //
             // btnSave
             //
-            btnSave.Location = new System.Drawing.Point(140, 180);
+            btnSave.BackColor = System.Drawing.Color.SeaGreen;
+            btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnSave.ForeColor = System.Drawing.Color.White;
+            btnSave.Location = new System.Drawing.Point(150, 182);
             btnSave.Name = "btnSave";
-            btnSave.Size = new System.Drawing.Size(95, 30);
+            btnSave.Size = new System.Drawing.Size(100, 32);
             btnSave.TabIndex = 7;
             btnSave.Text = "Save";
-            btnSave.UseVisualStyleBackColor = true;
+            btnSave.UseVisualStyleBackColor = false;
             btnSave.Click += btnSave_Click;
             //
             // btnCancel
             //
+            btnCancel.BackColor = System.Drawing.Color.White;
             btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            btnCancel.Location = new System.Drawing.Point(245, 180);
+            btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnCancel.Location = new System.Drawing.Point(260, 182);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new System.Drawing.Size(95, 30);
+            btnCancel.Size = new System.Drawing.Size(100, 32);
             btnCancel.TabIndex = 8;
             btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.UseVisualStyleBackColor = false;
             //
             // frmClassifyProduct
             //
+            AcceptButton = btnSave;
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.WhiteSmoke;
+            CancelButton = btnCancel;
             ClientSize = new System.Drawing.Size(380, 235);
             Controls.Add(btnCancel);
             Controls.Add(btnSave);

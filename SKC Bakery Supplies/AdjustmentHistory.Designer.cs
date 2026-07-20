@@ -31,6 +31,7 @@ namespace SKC_Bakery_Supplies
             //
             lblHeader.AutoSize = true;
             lblHeader.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblHeader.ForeColor = Color.FromArgb(45, 52, 64);
             lblHeader.Location = new Point(20, 15);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new Size(240, 32);
@@ -40,7 +41,7 @@ namespace SKC_Bakery_Supplies
             // lblStart
             //
             lblStart.AutoSize = true;
-            lblStart.Font = new Font("Segoe UI", 11F);
+            lblStart.Font = new Font("Segoe UI", 10F);
             lblStart.Location = new Point(20, 60);
             lblStart.Name = "lblStart";
             lblStart.Size = new Size(76, 20);
@@ -49,7 +50,7 @@ namespace SKC_Bakery_Supplies
             //
             // dtpStart
             //
-            dtpStart.Font = new Font("Segoe UI", 11F);
+            dtpStart.Font = new Font("Segoe UI", 10F);
             dtpStart.Location = new Point(20, 82);
             dtpStart.Name = "dtpStart";
             dtpStart.Size = new Size(180, 28);
@@ -58,7 +59,7 @@ namespace SKC_Bakery_Supplies
             // lblEnd
             //
             lblEnd.AutoSize = true;
-            lblEnd.Font = new Font("Segoe UI", 11F);
+            lblEnd.Font = new Font("Segoe UI", 10F);
             lblEnd.Location = new Point(220, 60);
             lblEnd.Name = "lblEnd";
             lblEnd.Size = new Size(70, 20);
@@ -67,7 +68,7 @@ namespace SKC_Bakery_Supplies
             //
             // dtpEnd
             //
-            dtpEnd.Font = new Font("Segoe UI", 11F);
+            dtpEnd.Font = new Font("Segoe UI", 10F);
             dtpEnd.Location = new Point(220, 82);
             dtpEnd.Name = "dtpEnd";
             dtpEnd.Size = new Size(180, 28);
@@ -75,13 +76,16 @@ namespace SKC_Bakery_Supplies
             //
             // btnLoad
             //
+            btnLoad.BackColor = Color.White;
+            btnLoad.FlatAppearance.BorderColor = Color.Silver;
+            btnLoad.FlatStyle = FlatStyle.Flat;
             btnLoad.Font = new Font("Segoe UI", 10F);
             btnLoad.Location = new Point(420, 80);
             btnLoad.Name = "btnLoad";
             btnLoad.Size = new Size(120, 32);
             btnLoad.TabIndex = 5;
             btnLoad.Text = "Search";
-            btnLoad.UseVisualStyleBackColor = true;
+            btnLoad.UseVisualStyleBackColor = false;
             btnLoad.Click += btnLoad_Click;
             //
             // dgvAdjustments
@@ -89,6 +93,7 @@ namespace SKC_Bakery_Supplies
             dgvAdjustments.AllowUserToAddRows = false;
             dgvAdjustments.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvAdjustments.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvAdjustments.BackgroundColor = Color.White;
             dgvAdjustments.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvAdjustments.Location = new Point(20, 125);
             dgvAdjustments.Name = "dgvAdjustments";
@@ -102,6 +107,7 @@ namespace SKC_Bakery_Supplies
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.WhiteSmoke;
             ClientSize = new Size(1280, 640);
             Controls.Add(dgvAdjustments);
             Controls.Add(btnLoad);

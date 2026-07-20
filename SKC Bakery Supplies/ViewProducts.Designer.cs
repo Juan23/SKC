@@ -54,6 +54,7 @@
             //
             lblHeader.AutoSize = true;
             lblHeader.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblHeader.ForeColor = Color.FromArgb(45, 52, 64);
             lblHeader.Location = new Point(20, 15);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new Size(120, 32);
@@ -77,6 +78,7 @@
             dgvProducts.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvProducts.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvProducts.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
+            dgvProducts.BackgroundColor = Color.White;
             dgvProducts.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvProducts.Location = new Point(20, 100);
             dgvProducts.Name = "dgvProducts";
@@ -89,49 +91,61 @@
             // btnAdjustStock
             //
             btnAdjustStock.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnAdjustStock.BackColor = Color.White;
+            btnAdjustStock.FlatAppearance.BorderColor = Color.Silver;
+            btnAdjustStock.FlatStyle = FlatStyle.Flat;
             btnAdjustStock.Font = new Font("Segoe UI", 10F);
             btnAdjustStock.Location = new Point(20, 588);
             btnAdjustStock.Name = "btnAdjustStock";
             btnAdjustStock.Size = new Size(120, 40);
             btnAdjustStock.TabIndex = 3;
             btnAdjustStock.Text = "Adjust";
-            btnAdjustStock.UseVisualStyleBackColor = true;
+            btnAdjustStock.UseVisualStyleBackColor = false;
             btnAdjustStock.Click += btnAdjustStock_Click;
             //
             // btnEdit
             //
             btnEdit.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnEdit.BackColor = Color.White;
+            btnEdit.FlatAppearance.BorderColor = Color.Silver;
+            btnEdit.FlatStyle = FlatStyle.Flat;
             btnEdit.Font = new Font("Segoe UI", 10F);
             btnEdit.Location = new Point(150, 588);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(120, 40);
             btnEdit.TabIndex = 4;
             btnEdit.Text = "Edit";
-            btnEdit.UseVisualStyleBackColor = true;
+            btnEdit.UseVisualStyleBackColor = false;
             btnEdit.Click += btnEdit_Click;
             //
             // btnDelete
             //
             btnDelete.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnDelete.BackColor = Color.Firebrick;
+            btnDelete.FlatStyle = FlatStyle.Flat;
             btnDelete.Font = new Font("Segoe UI", 10F);
+            btnDelete.ForeColor = Color.White;
             btnDelete.Location = new Point(280, 588);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(120, 40);
             btnDelete.TabIndex = 5;
             btnDelete.Text = "Delete";
-            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.UseVisualStyleBackColor = false;
             btnDelete.Click += btnDelete_Click;
             //
             // btnPrintInventory
             //
             btnPrintInventory.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnPrintInventory.BackColor = Color.White;
+            btnPrintInventory.FlatAppearance.BorderColor = Color.Silver;
+            btnPrintInventory.FlatStyle = FlatStyle.Flat;
             btnPrintInventory.Font = new Font("Segoe UI", 10F);
             btnPrintInventory.Location = new Point(410, 588);
             btnPrintInventory.Name = "btnPrintInventory";
             btnPrintInventory.Size = new Size(160, 40);
             btnPrintInventory.TabIndex = 6;
             btnPrintInventory.Text = "Print Inventory";
-            btnPrintInventory.UseVisualStyleBackColor = true;
+            btnPrintInventory.UseVisualStyleBackColor = false;
             btnPrintInventory.Click += btnPrintInventory_Click;
             //
             // grpQuickAddProduct
@@ -156,12 +170,15 @@
             //
             // btnSaveNew
             //
+            btnSaveNew.BackColor = Color.SeaGreen;
+            btnSaveNew.FlatStyle = FlatStyle.Flat;
+            btnSaveNew.ForeColor = Color.White;
             btnSaveNew.Location = new Point(16, 220);
             btnSaveNew.Name = "btnSaveNew";
             btnSaveNew.Size = new Size(284, 40);
             btnSaveNew.TabIndex = 4;
             btnSaveNew.Text = "Add Item";
-            btnSaveNew.UseVisualStyleBackColor = true;
+            btnSaveNew.UseVisualStyleBackColor = false;
             btnSaveNew.Click += btnSaveNew_Click;
             //
             // Price
@@ -235,6 +252,7 @@
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.WhiteSmoke;
             ClientSize = new Size(1280, 640);
             Controls.Add(btnPrintInventory);
             Controls.Add(grpQuickAddProduct);

@@ -47,6 +47,7 @@
             //
             lblHeader.AutoSize = true;
             lblHeader.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblHeader.ForeColor = Color.FromArgb(45, 52, 64);
             lblHeader.Location = new Point(20, 15);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new Size(150, 32);
@@ -58,6 +59,7 @@
             dgvTickets.AllowUserToAddRows = false;
             dgvTickets.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvTickets.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvTickets.BackgroundColor = Color.White;
             dgvTickets.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvTickets.Location = new Point(20, 70);
             dgvTickets.Name = "dgvTickets";
@@ -89,43 +91,55 @@
             //
             // btnPrintDaily
             //
+            btnPrintDaily.BackColor = Color.White;
+            btnPrintDaily.FlatAppearance.BorderColor = Color.Silver;
+            btnPrintDaily.FlatStyle = FlatStyle.Flat;
             btnPrintDaily.Location = new Point(16, 290);
             btnPrintDaily.Name = "btnPrintDaily";
             btnPrintDaily.Size = new Size(260, 36);
             btnPrintDaily.TabIndex = 5;
             btnPrintDaily.Text = "Print Day Report";
-            btnPrintDaily.UseVisualStyleBackColor = true;
+            btnPrintDaily.UseVisualStyleBackColor = false;
             btnPrintDaily.Click += btnPrintDaily_Click;
             //
             // btnDelete
             //
+            btnDelete.BackColor = Color.Firebrick;
+            btnDelete.FlatStyle = FlatStyle.Flat;
+            btnDelete.ForeColor = Color.White;
             btnDelete.Location = new Point(16, 245);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(260, 36);
             btnDelete.TabIndex = 4;
             btnDelete.Text = "Delete";
-            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.UseVisualStyleBackColor = false;
             btnDelete.Click += btnDelete_Click;
             //
             // btnSearch
             //
+            btnSearch.BackColor = Color.White;
+            btnSearch.FlatAppearance.BorderColor = Color.Silver;
+            btnSearch.FlatStyle = FlatStyle.Flat;
             btnSearch.Location = new Point(16, 155);
             btnSearch.Name = "btnSearch";
             btnSearch.Size = new Size(260, 36);
             btnSearch.TabIndex = 2;
             btnSearch.Text = "Search";
-            btnSearch.UseVisualStyleBackColor = true;
+            btnSearch.UseVisualStyleBackColor = false;
             btnSearch.Click += btnSearch_Click;
             //
             // btnEdit
             //
+            btnEdit.BackColor = Color.White;
             btnEdit.Enabled = false;
+            btnEdit.FlatAppearance.BorderColor = Color.Silver;
+            btnEdit.FlatStyle = FlatStyle.Flat;
             btnEdit.Location = new Point(16, 200);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(260, 36);
             btnEdit.TabIndex = 3;
             btnEdit.Text = "Edit Ticket";
-            btnEdit.UseVisualStyleBackColor = true;
+            btnEdit.UseVisualStyleBackColor = false;
             btnEdit.Click += btnEdit_Click;
             //
             // label2
@@ -143,7 +157,6 @@
             dtpEnd.Name = "dtpEnd";
             dtpEnd.Size = new Size(260, 28);
             dtpEnd.TabIndex = 1;
-            dtpEnd.Value = new DateTime(2026, 7, 7, 18, 8, 23, 0);
             //
             // label1
             //
@@ -165,6 +178,7 @@
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.WhiteSmoke;
             ClientSize = new Size(1280, 640);
             Controls.Add(dgvTickets);
             Controls.Add(groupBox1);

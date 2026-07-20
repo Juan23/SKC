@@ -96,6 +96,24 @@ namespace SKC_Branch
         public int ShortfallQty { get; set; }
     }
 
+    // One sale line flattened with its parent sale's identity, as returned by
+    // GET /api/sales/lines. Backs the end-of-day CSV export only - the printed report
+    // stays sale-level. Voided lines are included and flagged, not filtered out.
+    public class BranchSaleLineExport
+    {
+        public int SaleNo { get; set; }
+        public string ClientSaleId { get; set; } = string.Empty;
+        public DateTime SoldAt { get; set; }
+        public string StaffName { get; set; } = string.Empty;
+        public bool Voided { get; set; }
+        public string? SKU { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public int Qty { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal LineTotal { get; set; }
+        public int ShortfallQty { get; set; }
+    }
+
     public class RecipeLine
     {
         public string InputSku { get; set; } = string.Empty;

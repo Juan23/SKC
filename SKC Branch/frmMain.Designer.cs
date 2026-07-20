@@ -42,6 +42,7 @@ namespace SKC_Branch
             //
             lblHeader.AutoSize = true;
             lblHeader.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblHeader.ForeColor = Color.FromArgb(45, 52, 64);
             lblHeader.Location = new Point(20, 15);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new Size(220, 32);
@@ -51,13 +52,16 @@ namespace SKC_Branch
             // btnRefresh
             //
             btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnRefresh.BackColor = Color.White;
+            btnRefresh.FlatAppearance.BorderColor = Color.Silver;
+            btnRefresh.FlatStyle = FlatStyle.Flat;
             btnRefresh.Font = new Font("Segoe UI", 10F);
             btnRefresh.Location = new Point(1130, 15);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new Size(130, 40);
             btnRefresh.TabIndex = 1;
             btnRefresh.Text = "Refresh";
-            btnRefresh.UseVisualStyleBackColor = true;
+            btnRefresh.UseVisualStyleBackColor = false;
             btnRefresh.Click += btnRefresh_Click;
             //
             // dgvPending
@@ -66,6 +70,7 @@ namespace SKC_Branch
             dgvPending.AllowUserToDeleteRows = false;
             dgvPending.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             dgvPending.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvPending.BackgroundColor = Color.White;
             dgvPending.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvPending.Location = new Point(20, 70);
             dgvPending.MultiSelect = false;
@@ -93,6 +98,7 @@ namespace SKC_Branch
             dgvLines.AllowUserToDeleteRows = false;
             dgvLines.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvLines.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvLines.BackgroundColor = Color.White;
             dgvLines.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvLines.Location = new Point(20, 340);
             dgvLines.MultiSelect = false;
@@ -106,19 +112,23 @@ namespace SKC_Branch
             // btnAccept
             //
             btnAccept.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btnAccept.BackColor = Color.SeaGreen;
+            btnAccept.FlatStyle = FlatStyle.Flat;
             btnAccept.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            btnAccept.ForeColor = Color.White;
             btnAccept.Location = new Point(20, 570);
             btnAccept.Name = "btnAccept";
             btnAccept.Size = new Size(1240, 55);
             btnAccept.TabIndex = 5;
             btnAccept.Text = "Accept Selected Delivery";
-            btnAccept.UseVisualStyleBackColor = true;
+            btnAccept.UseVisualStyleBackColor = false;
             btnAccept.Click += btnAccept_Click;
             //
             // frmMain
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.WhiteSmoke;
             ClientSize = new Size(1280, 640);
             Controls.Add(btnAccept);
             Controls.Add(dgvLines);

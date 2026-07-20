@@ -103,7 +103,7 @@ namespace SKC_Branch
             //
             lblOutputQty.AutoSize = true;
             lblOutputQty.Font = new System.Drawing.Font("Segoe UI", 10F);
-            lblOutputQty.Location = new System.Drawing.Point(320, 104);
+            lblOutputQty.Location = new System.Drawing.Point(340, 104);
             lblOutputQty.Name = "lblOutputQty";
             lblOutputQty.Size = new System.Drawing.Size(130, 23);
             lblOutputQty.TabIndex = 6;
@@ -112,7 +112,7 @@ namespace SKC_Branch
             // numOutputQty
             //
             numOutputQty.Font = new System.Drawing.Font("Segoe UI", 11F);
-            numOutputQty.Location = new System.Drawing.Point(460, 100);
+            numOutputQty.Location = new System.Drawing.Point(490, 100);
             numOutputQty.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             numOutputQty.Minimum = new decimal(new int[] { 0, 0, 0, 0 });
             numOutputQty.Name = "numOutputQty";
@@ -154,6 +154,7 @@ namespace SKC_Branch
             dgvPreview.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
                 | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvPreview.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dgvPreview.BackgroundColor = System.Drawing.Color.White;
             dgvPreview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvPreview.Location = new System.Drawing.Point(20, 215);
             dgvPreview.Name = "dgvPreview";
@@ -166,31 +167,38 @@ namespace SKC_Branch
             // btnHistory
             //
             btnHistory.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            btnHistory.BackColor = System.Drawing.Color.White;
+            btnHistory.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnHistory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnHistory.Font = new System.Drawing.Font("Segoe UI", 10F);
             btnHistory.Location = new System.Drawing.Point(20, 585);
             btnHistory.Name = "btnHistory";
             btnHistory.Size = new System.Drawing.Size(180, 40);
             btnHistory.TabIndex = 12;
             btnHistory.Text = "View History...";
-            btnHistory.UseVisualStyleBackColor = true;
+            btnHistory.UseVisualStyleBackColor = false;
             btnHistory.Click += btnHistory_Click;
             //
             // btnSubmit
             //
             btnSubmit.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            btnSubmit.BackColor = System.Drawing.Color.SeaGreen;
+            btnSubmit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnSubmit.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            btnSubmit.Location = new System.Drawing.Point(1060, 580);
+            btnSubmit.ForeColor = System.Drawing.Color.White;
+            btnSubmit.Location = new System.Drawing.Point(1060, 585);
             btnSubmit.Name = "btnSubmit";
-            btnSubmit.Size = new System.Drawing.Size(200, 45);
+            btnSubmit.Size = new System.Drawing.Size(200, 40);
             btnSubmit.TabIndex = 13;
             btnSubmit.Text = "Submit";
-            btnSubmit.UseVisualStyleBackColor = true;
+            btnSubmit.UseVisualStyleBackColor = false;
             btnSubmit.Click += btnSubmit_Click;
             //
             // frmProduction
             //
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.WhiteSmoke;
             ClientSize = new System.Drawing.Size(1280, 640);
             Controls.Add(lblKind);
             Controls.Add(cmbKind);

@@ -157,22 +157,28 @@ namespace SKC_Admin
             //
             // btnAddLine
             //
+            btnAddLine.BackColor = System.Drawing.Color.White;
+            btnAddLine.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnAddLine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnAddLine.Location = new System.Drawing.Point(15, 205);
             btnAddLine.Name = "btnAddLine";
             btnAddLine.Size = new System.Drawing.Size(95, 27);
             btnAddLine.TabIndex = 13;
             btnAddLine.Text = "Add Line";
-            btnAddLine.UseVisualStyleBackColor = true;
+            btnAddLine.UseVisualStyleBackColor = false;
             btnAddLine.Click += btnAddLine_Click;
             //
             // btnRemoveLine
             //
+            btnRemoveLine.BackColor = System.Drawing.Color.Firebrick;
+            btnRemoveLine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnRemoveLine.ForeColor = System.Drawing.Color.White;
             btnRemoveLine.Location = new System.Drawing.Point(116, 205);
             btnRemoveLine.Name = "btnRemoveLine";
             btnRemoveLine.Size = new System.Drawing.Size(120, 27);
             btnRemoveLine.TabIndex = 14;
             btnRemoveLine.Text = "Remove Selected";
-            btnRemoveLine.UseVisualStyleBackColor = true;
+            btnRemoveLine.UseVisualStyleBackColor = false;
             btnRemoveLine.Click += btnRemoveLine_Click;
             //
             // dgvLines
@@ -180,6 +186,7 @@ namespace SKC_Admin
             dgvLines.AllowUserToAddRows = false;
             dgvLines.AllowUserToDeleteRows = false;
             dgvLines.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dgvLines.BackgroundColor = System.Drawing.Color.White;
             dgvLines.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvLines.Location = new System.Drawing.Point(15, 240);
             dgvLines.Name = "dgvLines";
@@ -191,28 +198,37 @@ namespace SKC_Admin
             //
             // btnSave
             //
-            btnSave.Location = new System.Drawing.Point(280, 440);
+            btnSave.BackColor = System.Drawing.Color.SeaGreen;
+            btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnSave.ForeColor = System.Drawing.Color.White;
+            btnSave.Location = new System.Drawing.Point(260, 440);
             btnSave.Name = "btnSave";
-            btnSave.Size = new System.Drawing.Size(90, 30);
+            btnSave.Size = new System.Drawing.Size(100, 32);
             btnSave.TabIndex = 16;
             btnSave.Text = "Save";
-            btnSave.UseVisualStyleBackColor = true;
+            btnSave.UseVisualStyleBackColor = false;
             btnSave.Click += btnSave_Click;
             //
             // btnCancel
             //
+            btnCancel.BackColor = System.Drawing.Color.White;
             btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            btnCancel.Location = new System.Drawing.Point(380, 440);
+            btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnCancel.Location = new System.Drawing.Point(370, 440);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new System.Drawing.Size(90, 30);
+            btnCancel.Size = new System.Drawing.Size(100, 32);
             btnCancel.TabIndex = 17;
             btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.UseVisualStyleBackColor = false;
             //
             // frmRecipeEditor
             //
+            AcceptButton = btnSave;
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.WhiteSmoke;
+            CancelButton = btnCancel;
             ClientSize = new System.Drawing.Size(486, 485);
             Controls.Add(lblName);
             Controls.Add(txtName);

@@ -100,11 +100,15 @@ namespace SKC_Bakery_Supplies
                 return;
             }
 
+            // Match every whitespace-separated token against the combined brand+name+SKU text, so
+            // typing "brand basename" (the order shown in the dropdown) finds the item instead of
+            // failing because no single field contains the whole string. Token order doesn't matter.
+            var tokens = search.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             var matches = catalog.Where(p =>
-                (p.BaseName != null && p.BaseName.ToLower().Contains(search)) ||
-                (p.Brand != null && p.Brand.ToLower().Contains(search)) ||
-                (p.SKU != null && p.SKU.ToLower().Contains(search))
-            ).ToList();
+            {
+                string haystack = $"{p.Brand} {p.BaseName} {p.SKU}".ToLower();
+                return tokens.All(t => haystack.Contains(t));
+            }).ToList();
 
             if (matches.Any())
             {

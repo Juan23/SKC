@@ -34,6 +34,7 @@ namespace SKC_Bakery_Supplies
             //
             lblHeader.AutoSize = true;
             lblHeader.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            lblHeader.ForeColor = System.Drawing.Color.FromArgb(45, 52, 64);
             lblHeader.Location = new System.Drawing.Point(20, 15);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new System.Drawing.Size(150, 32);
@@ -80,13 +81,16 @@ namespace SKC_Bakery_Supplies
             //
             // btnLoad
             //
+            btnLoad.BackColor = System.Drawing.Color.White;
+            btnLoad.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnLoad.Font = new System.Drawing.Font("Segoe UI", 10F);
             btnLoad.Location = new System.Drawing.Point(440, 56);
             btnLoad.Name = "btnLoad";
-            btnLoad.Size = new System.Drawing.Size(110, 30);
+            btnLoad.Size = new System.Drawing.Size(120, 32);
             btnLoad.TabIndex = 5;
             btnLoad.Text = "Load";
-            btnLoad.UseVisualStyleBackColor = true;
+            btnLoad.UseVisualStyleBackColor = false;
             btnLoad.Click += btnLoad_Click;
             //
             // dgvSales
@@ -96,6 +100,7 @@ namespace SKC_Bakery_Supplies
             dgvSales.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
                 | System.Windows.Forms.AnchorStyles.Left;
             dgvSales.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dgvSales.BackgroundColor = System.Drawing.Color.White;
             dgvSales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvSales.Location = new System.Drawing.Point(20, 100);
             dgvSales.Name = "dgvSales";
@@ -111,8 +116,9 @@ namespace SKC_Bakery_Supplies
             dgvLines.AllowUserToAddRows = false;
             dgvLines.AllowUserToDeleteRows = false;
             dgvLines.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Right;
+                | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvLines.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dgvLines.BackgroundColor = System.Drawing.Color.White;
             dgvLines.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvLines.Location = new System.Drawing.Point(775, 100);
             dgvLines.Name = "dgvLines";
@@ -136,6 +142,7 @@ namespace SKC_Bakery_Supplies
             //
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.WhiteSmoke;
             ClientSize = new System.Drawing.Size(1280, 640);
             Controls.Add(lblHeader);
             Controls.Add(lblFrom);

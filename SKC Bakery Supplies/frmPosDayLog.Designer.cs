@@ -29,6 +29,7 @@ namespace SKC_Bakery_Supplies
             //
             lblHeader.AutoSize = true;
             lblHeader.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            lblHeader.ForeColor = System.Drawing.Color.FromArgb(45, 52, 64);
             lblHeader.Location = new System.Drawing.Point(20, 15);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new System.Drawing.Size(160, 32);
@@ -42,6 +43,7 @@ namespace SKC_Bakery_Supplies
             dgvSales.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
                 | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvSales.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dgvSales.BackgroundColor = System.Drawing.Color.White;
             dgvSales.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvSales.Location = new System.Drawing.Point(20, 60);
             dgvSales.Name = "dgvSales";
@@ -65,31 +67,38 @@ namespace SKC_Bakery_Supplies
             // btnRefresh
             //
             btnRefresh.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            btnRefresh.BackColor = System.Drawing.Color.White;
+            btnRefresh.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnRefresh.Font = new System.Drawing.Font("Segoe UI", 10F);
             btnRefresh.Location = new System.Drawing.Point(1130, 585);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new System.Drawing.Size(130, 40);
             btnRefresh.TabIndex = 3;
             btnRefresh.Text = "Refresh";
-            btnRefresh.UseVisualStyleBackColor = true;
+            btnRefresh.UseVisualStyleBackColor = false;
             btnRefresh.Click += btnRefresh_Click;
             //
             // btnVoid
             //
             btnVoid.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            btnVoid.BackColor = System.Drawing.Color.Firebrick;
+            btnVoid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnVoid.Font = new System.Drawing.Font("Segoe UI", 10F);
+            btnVoid.ForeColor = System.Drawing.Color.White;
             btnVoid.Location = new System.Drawing.Point(990, 585);
             btnVoid.Name = "btnVoid";
             btnVoid.Size = new System.Drawing.Size(130, 40);
             btnVoid.TabIndex = 4;
             btnVoid.Text = "Void Sale";
-            btnVoid.UseVisualStyleBackColor = true;
+            btnVoid.UseVisualStyleBackColor = false;
             btnVoid.Click += btnVoid_Click;
             //
             // frmPosDayLog
             //
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.WhiteSmoke;
             ClientSize = new System.Drawing.Size(1280, 640);
             Controls.Add(lblHeader);
             Controls.Add(dgvSales);

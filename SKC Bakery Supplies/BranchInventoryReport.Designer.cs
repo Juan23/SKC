@@ -42,6 +42,7 @@ namespace SKC_Bakery_Supplies
             //
             lblHeader.AutoSize = true;
             lblHeader.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            lblHeader.ForeColor = System.Drawing.Color.FromArgb(45, 52, 64);
             lblHeader.Location = new System.Drawing.Point(20, 15);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new System.Drawing.Size(220, 32);
@@ -51,7 +52,7 @@ namespace SKC_Bakery_Supplies
             // lblBranch
             //
             lblBranch.AutoSize = true;
-            lblBranch.Font = new System.Drawing.Font("Segoe UI", 11F);
+            lblBranch.Font = new System.Drawing.Font("Segoe UI", 10F);
             lblBranch.Location = new System.Drawing.Point(20, 66);
             lblBranch.Name = "lblBranch";
             lblBranch.Size = new System.Drawing.Size(58, 20);
@@ -61,7 +62,7 @@ namespace SKC_Bakery_Supplies
             // cmbBranch
             //
             cmbBranch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbBranch.Font = new System.Drawing.Font("Segoe UI", 11F);
+            cmbBranch.Font = new System.Drawing.Font("Segoe UI", 10F);
             cmbBranch.FormattingEnabled = true;
             cmbBranch.Location = new System.Drawing.Point(90, 62);
             cmbBranch.Name = "cmbBranch";
@@ -70,36 +71,44 @@ namespace SKC_Bakery_Supplies
             //
             // btnLoad
             //
+            btnLoad.BackColor = System.Drawing.Color.White;
+            btnLoad.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnLoad.Font = new System.Drawing.Font("Segoe UI", 10F);
             btnLoad.Location = new System.Drawing.Point(326, 60);
             btnLoad.Name = "btnLoad";
-            btnLoad.Size = new System.Drawing.Size(110, 32);
+            btnLoad.Size = new System.Drawing.Size(120, 32);
             btnLoad.TabIndex = 3;
             btnLoad.Text = "Load";
-            btnLoad.UseVisualStyleBackColor = true;
+            btnLoad.UseVisualStyleBackColor = false;
             btnLoad.Click += btnLoad_Click;
             //
             // btnAdjust
             //
+            btnAdjust.BackColor = System.Drawing.Color.White;
+            btnAdjust.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnAdjust.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnAdjust.Font = new System.Drawing.Font("Segoe UI", 10F);
-            btnAdjust.Location = new System.Drawing.Point(446, 60);
+            btnAdjust.Location = new System.Drawing.Point(456, 60);
             btnAdjust.Name = "btnAdjust";
             btnAdjust.Size = new System.Drawing.Size(140, 32);
             btnAdjust.TabIndex = 4;
             btnAdjust.Text = "Adjust Stock";
-            btnAdjust.UseVisualStyleBackColor = true;
+            btnAdjust.UseVisualStyleBackColor = false;
             btnAdjust.Click += btnAdjust_Click;
             //
             // btnPrint
             //
-            btnPrint.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnPrint.BackColor = System.Drawing.Color.White;
+            btnPrint.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            btnPrint.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnPrint.Font = new System.Drawing.Font("Segoe UI", 10F);
-            btnPrint.Location = new System.Drawing.Point(1140, 60);
+            btnPrint.Location = new System.Drawing.Point(606, 60);
             btnPrint.Name = "btnPrint";
             btnPrint.Size = new System.Drawing.Size(120, 32);
             btnPrint.TabIndex = 5;
             btnPrint.Text = "Print";
-            btnPrint.UseVisualStyleBackColor = true;
+            btnPrint.UseVisualStyleBackColor = false;
             btnPrint.Click += btnPrint_Click;
             //
             // dgvStock
@@ -108,6 +117,7 @@ namespace SKC_Bakery_Supplies
             dgvStock.AllowUserToDeleteRows = false;
             dgvStock.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             dgvStock.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dgvStock.BackgroundColor = System.Drawing.Color.White;
             dgvStock.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvStock.Location = new System.Drawing.Point(20, 105);
             dgvStock.Name = "dgvStock";
@@ -121,6 +131,7 @@ namespace SKC_Bakery_Supplies
             //
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.WhiteSmoke;
             ClientSize = new System.Drawing.Size(1280, 640);
             Controls.Add(dgvStock);
             Controls.Add(btnPrint);

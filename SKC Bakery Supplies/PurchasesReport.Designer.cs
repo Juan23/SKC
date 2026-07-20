@@ -47,6 +47,7 @@
             //
             lblHeader.AutoSize = true;
             lblHeader.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblHeader.ForeColor = Color.FromArgb(45, 52, 64);
             lblHeader.Location = new Point(20, 15);
             lblHeader.Name = "lblHeader";
             lblHeader.Size = new Size(220, 32);
@@ -72,22 +73,28 @@
             //
             // btnFilter
             //
+            btnFilter.BackColor = Color.White;
+            btnFilter.FlatAppearance.BorderColor = Color.Silver;
+            btnFilter.FlatStyle = FlatStyle.Flat;
             btnFilter.Location = new Point(156, 160);
             btnFilter.Name = "btnFilter";
             btnFilter.Size = new Size(130, 36);
             btnFilter.TabIndex = 3;
             btnFilter.Text = "Search";
-            btnFilter.UseVisualStyleBackColor = true;
+            btnFilter.UseVisualStyleBackColor = false;
             btnFilter.Click += btnFilter_Click;
             //
             // btnPrint
             //
+            btnPrint.BackColor = Color.White;
+            btnPrint.FlatAppearance.BorderColor = Color.Silver;
+            btnPrint.FlatStyle = FlatStyle.Flat;
             btnPrint.Location = new Point(16, 160);
             btnPrint.Name = "btnPrint";
             btnPrint.Size = new Size(130, 36);
             btnPrint.TabIndex = 2;
             btnPrint.Text = "Print";
-            btnPrint.UseVisualStyleBackColor = true;
+            btnPrint.UseVisualStyleBackColor = false;
             btnPrint.Click += btnPrint_Click;
             //
             // label2
@@ -126,6 +133,8 @@
             //
             dgvTickets.AllowUserToAddRows = false;
             dgvTickets.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            dgvTickets.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvTickets.BackgroundColor = Color.White;
             dgvTickets.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvTickets.Location = new Point(20, 70);
             dgvTickets.Name = "dgvTickets";
@@ -140,6 +149,7 @@
             dgvDetails.AllowUserToAddRows = false;
             dgvDetails.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvDetails.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvDetails.BackgroundColor = Color.White;
             dgvDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDetails.Location = new Point(420, 70);
             dgvDetails.Name = "dgvDetails";
@@ -151,6 +161,7 @@
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.WhiteSmoke;
             ClientSize = new Size(1280, 640);
             Controls.Add(dgvDetails);
             Controls.Add(dgvTickets);

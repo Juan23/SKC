@@ -8,17 +8,51 @@ using System.Threading.Tasks;
 
 namespace SKC_Bakery_Supplies
 {
+    // Raised when the server can't be reached at all - no connection, no route, or a timed-out
+    // request. Distinct from an HTTP error response (which means we DID reach the server): this is
+    // the "you're offline" case and its Message is safe to show verbatim. Nothing the caller had
+    // entered is touched - the screen just catches this and reports it.
+    public class OfflineException : Exception
+    {
+        public OfflineException(Exception inner)
+            : base("Can't reach the server - this device looks offline. Nothing you entered was lost; "
+                 + "check the connection and try again.", inner) { }
+    }
+
+    // Translates transport failures (connection refused, DNS/route failure) and request timeouts
+    // into one friendly OfflineException, so every endpoint method reports the same clean message
+    // instead of a raw HttpRequestException/TaskCanceledException. No caller passes a cancellation
+    // token, so a cancellation observed here is always the HttpClient timeout elapsing.
+    internal class OfflineTranslatingHandler : DelegatingHandler
+    {
+        public OfflineTranslatingHandler(HttpMessageHandler inner) : base(inner) { }
+
+        protected override async Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await base.SendAsync(request, cancellationToken);
+            }
+            catch (HttpRequestException ex) { throw new OfflineException(ex); }
+            catch (OperationCanceledException ex) { throw new OfflineException(ex); }
+        }
+    }
+
     public static class CentralApiClient
     {
         private static readonly string ApiBaseUrl = "http://100.84.79.35:7290"; // droplet
         // private static readonly string ApiBaseUrl = "http://localhost:53755";
 
-        private static readonly HttpClient client = new HttpClient(new HttpClientHandler
+        // Wrapped in OfflineTranslatingHandler so a connection failure or a 10s timeout surfaces as
+        // a friendly OfflineException instead of a raw exception. 10s (down from 30) because the
+        // payloads are tiny - if we can't reach the droplet we know almost immediately.
+        private static readonly HttpClient client = new HttpClient(new OfflineTranslatingHandler(new HttpClientHandler
         {
             ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-        })
+        }))
         {
-            Timeout = TimeSpan.FromSeconds(30)
+            Timeout = TimeSpan.FromSeconds(10)
         };
 
         private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
