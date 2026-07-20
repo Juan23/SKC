@@ -32,10 +32,19 @@ namespace SKC_Bakery_Supplies
             masterList = await CentralApiClient.GetAllProductsAsync();
             dgvProducts.DataSource = masterList;
 
-            // Clean up the visuals
-            if (dgvProducts.Columns["IsActive"] != null) dgvProducts.Columns["IsActive"].Visible = false;
-            if (dgvProducts.Columns["SearchDisplay"] != null) dgvProducts.Columns["SearchDisplay"].Visible = false; // remove search display
+            ApplyGridDisplay();
             dgvProducts.ClearSelection();
+        }
+
+        // Must be re-applied after EVERY DataSource assignment, not just the initial load:
+        // rebinding regenerates the auto-generated columns, so hidden columns reappear and any
+        // cell format is dropped. PackMultiplier is deliberately left unformatted - it's a unit
+        // conversion factor, not money, and its precision is meaningful.
+        private void ApplyGridDisplay()
+        {
+            if (dgvProducts.Columns["IsActive"] is { } isActiveColumn) isActiveColumn.Visible = false;
+            if (dgvProducts.Columns["SearchDisplay"] is { } searchColumn) searchColumn.Visible = false;
+            if (dgvProducts.Columns["Price"] is { } priceColumn) priceColumn.DefaultCellStyle.Format = "N2";
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
@@ -54,6 +63,8 @@ namespace SKC_Bakery_Supplies
 
                 dgvProducts.DataSource = filtered;
             }
+
+            ApplyGridDisplay();
         }
 
         private async void btnDelete_Click(object sender, EventArgs e)

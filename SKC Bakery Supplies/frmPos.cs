@@ -33,6 +33,11 @@ namespace SKC_Bakery_Supplies
             // CartLine property degrades to equal widths instead of crashing startup.
             if (dgvCart.Columns["Item"] is { } itemColumn) itemColumn.FillWeight = 300;
 
+            // N2 currency display - same format used across the app's money grids. Indexed by
+            // property name, not the [DisplayName] header ("Amount" is LineTotal's header).
+            if (dgvCart.Columns["Price"] is { } priceColumn) priceColumn.DefaultCellStyle.Format = "N2";
+            if (dgvCart.Columns["LineTotal"] is { } lineTotalColumn) lineTotalColumn.DefaultCellStyle.Format = "N2";
+
             FormClosing += frmPos_FormClosing;
         }
 

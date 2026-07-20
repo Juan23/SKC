@@ -59,6 +59,7 @@ namespace SKC_Bakery_Supplies
                 }).ToList();
 
                 if (dgvSales.Columns["ClientSaleId"] != null) dgvSales.Columns["ClientSaleId"].Visible = false;
+                if (dgvSales.Columns["Total"] is { } totalColumn) totalColumn.DefaultCellStyle.Format = "N2";
                 HighlightRows();
                 dgvSales.ClearSelection();
                 dgvLines.DataSource = null;
@@ -115,6 +116,10 @@ namespace SKC_Bakery_Supplies
                     Amount = l.LineTotal,
                     Short = l.ShortfallQty > 0 ? l.ShortfallQty.ToString() : ""
                 }).ToList();
+
+                if (dgvLines.Columns["Price"] is { } priceColumn) priceColumn.DefaultCellStyle.Format = "N2";
+                if (dgvLines.Columns["Amount"] is { } amountColumn) amountColumn.DefaultCellStyle.Format = "N2";
+
                 dgvLines.ClearSelection();
             }
             catch (Exception ex)

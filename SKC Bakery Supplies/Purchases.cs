@@ -36,6 +36,16 @@ namespace SKC_Bakery_Supplies
             InitializeComponent();
             txtTotalCost.TextChanged += CalculateUnitCostFromTotal;
             dgvPurchaseItems.DataSource = draftItems;
+
+            // N2 currency display. UnitCost can carry a long decimal tail when it comes from a
+            // division (cost-per-pack / PackMultiplier, or total / qty in CalculateUnitCostFromTotal),
+            // and Total multiplies that back up - without a format the grid renders all 28 digits.
+            // The underlying decimal keeps its precision; only the display is rounded.
+            if (dgvPurchaseItems.Columns["UnitCost"] is { } unitCostColumn)
+                unitCostColumn.DefaultCellStyle.Format = "N2";
+            if (dgvPurchaseItems.Columns["Total"] is { } totalColumn)
+                totalColumn.DefaultCellStyle.Format = "N2";
+
             draftItems.ListChanged += (s, e) => UpdateRunningTotal();
         }
 

@@ -62,6 +62,8 @@ namespace SKC_Bakery_Supplies
         {
             var tickets = await CentralApiClient.GetDeliveryTicketsAsync(dtpStart.Value, dtpEnd.Value);
             dgvTickets.DataSource = tickets;
+            if (dgvTickets.Columns["TotalCost"] is { } totalCostColumn)
+                totalCostColumn.DefaultCellStyle.Format = "N2";
             dgvTickets.ClearSelection();
         }
 

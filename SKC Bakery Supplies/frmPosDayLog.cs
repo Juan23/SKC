@@ -45,6 +45,7 @@ namespace SKC_Bakery_Supplies
             }).ToList();
 
             if (dgvSales.Columns["ClientSaleId"] != null) dgvSales.Columns["ClientSaleId"].Visible = false;
+            if (dgvSales.Columns["Total"] is { } totalColumn) totalColumn.DefaultCellStyle.Format = "N2";
             dgvSales.ClearSelection();
 
             // Rejected sales never counted server-side and voided sales were reversed, so both

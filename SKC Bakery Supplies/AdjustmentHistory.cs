@@ -27,6 +27,9 @@ namespace SKC_Bakery_Supplies
             try
             {
                 dgvAdjustments.DataSource = await CentralApiClient.GetInventoryAdjustmentsAsync(dtpStart.Value.Date, dtpEnd.Value.Date);
+
+                if (dgvAdjustments.Columns["UnitCost"] is { } unitCostColumn)
+                    unitCostColumn.DefaultCellStyle.Format = "N2";
             }
             catch (Exception ex)
             {

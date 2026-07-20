@@ -37,6 +37,8 @@ namespace SKC_Bakery_Supplies
 
                 if (dgvStock.Columns["IsActive"] != null) dgvStock.Columns["IsActive"].Visible = false;
                 if (dgvStock.Columns["SearchDisplay"] != null) dgvStock.Columns["SearchDisplay"].Visible = false;
+                if (dgvStock.Columns["Price"] is { } priceColumn)
+                    priceColumn.DefaultCellStyle.Format = "N2";
                 dgvStock.ClearSelection();
             }
             catch (Exception ex)
