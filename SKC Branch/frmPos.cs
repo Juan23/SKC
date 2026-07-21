@@ -33,6 +33,17 @@ namespace SKC_Branch
             // CartLine property degrades to equal widths instead of crashing startup.
             if (dgvCart.Columns["Item"] is { } itemColumn) itemColumn.FillWeight = 300;
 
+            // N2 currency display - same format used across the office app's money grids. Indexed by
+            // property name, not the [DisplayName] header ("Amount" is LineTotal's header).
+            if (dgvCart.Columns["Price"] is { } priceColumn) priceColumn.DefaultCellStyle.Format = "N2";
+            if (dgvCart.Columns["LineTotal"] is { } lineTotalColumn) lineTotalColumn.DefaultCellStyle.Format = "N2";
+
+            // The grid is editable (dgvCart.ReadOnly = false in the Designer) only so the cashier can
+            // fix a quantity in place instead of removing and re-adding a line. Lock every other
+            // column - price, item and the computed amount are not hand-editable.
+            foreach (System.Windows.Forms.DataGridViewColumn column in dgvCart.Columns)
+                column.ReadOnly = column.Name != "Qty";
+
             FormClosing += frmPos_FormClosing;
         }
 
@@ -41,6 +52,10 @@ namespace SKC_Branch
         // queued rather than assuming everything already reached the office.
         private void frmPos_FormClosing(object? sender, FormClosingEventArgs e)
         {
+            // Stop the 60s auto-sync so no new tick fires while we're tearing down. An already
+            // in-flight sync is still guarded by the IsDisposed check in RunSyncAsync.
+            syncTimer.Stop();
+
             int pending = PosLocalStore.PendingCount();
             if (pending == 0) return;
 
@@ -50,7 +65,11 @@ namespace SKC_Branch
                 "(or press Sync Now first). Close anyway?",
                 "Unsynced Sales", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
-            if (proceed != DialogResult.Yes) e.Cancel = true;
+            if (proceed != DialogResult.Yes)
+            {
+                e.Cancel = true;
+                syncTimer.Start(); // close aborted - resume auto-sync
+            }
         }
 
         private void btnGoDeliveries_Click(object? sender, EventArgs e)
@@ -251,6 +270,66 @@ namespace SKC_Branch
             }
         }
 
+        // ---- inline quantity edit ----
+        // Only the Qty column is editable (see the constructor). A discount line has a fixed
+        // qty of 1 and no SKU, so its quantity is meaningless - block editing it. The edited
+        // value is validated as a whole number in [1, 1,000,000] (the same bounds numQty uses),
+        // then the line's Amount is recomputed and the running total refreshed.
+
+        private void dgvCart_CellBeginEdit(object? sender, DataGridViewCellCancelEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= cart.Count) return;
+            if (cart[e.RowIndex].SKU == null) e.Cancel = true; // discount line
+        }
+
+        private void dgvCart_CellValidating(object? sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= cart.Count) return;
+            if (dgvCart.Columns[e.ColumnIndex].Name != "Qty") return;
+
+            string text = (e.FormattedValue?.ToString() ?? string.Empty).Trim();
+            if (!int.TryParse(text, out int qty) || qty < 1 || qty > 1000000)
+            {
+                MessageBox.Show("Quantity must be a whole number between 1 and 1,000,000.",
+                    "Invalid Quantity", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                e.Cancel = true; // keeps focus in the cell so the original value is restored on Esc
+            }
+        }
+
+        private void dgvCart_CellEndEdit(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= cart.Count) return;
+            if (dgvCart.Columns[e.ColumnIndex].Name != "Qty") return;
+
+            var line = cart[e.RowIndex];
+            line.LineTotal = line.Qty * line.Price;
+            cart.ResetItem(e.RowIndex); // CartLine isn't INotifyPropertyChanged, so refresh the Amount cell
+            RefreshTotals();
+
+            // Same warn-but-allow oversell check the search-add path uses, in case the new qty
+            // now exceeds cached stock. Warning only - the sale is never hard-blocked.
+            if (line.SKU != null)
+            {
+                var product = catalog.FirstOrDefault(p => p.SKU == line.SKU);
+                int qtyForSku = cart.Where(c => c.SKU == line.SKU).Sum(c => c.Qty);
+                if (product != null && qtyForSku > product.Stock)
+                {
+                    MessageBox.Show(
+                        $"Stock shows only {product.Stock} of \"{product.Display}\", but the cart now has {qtyForSku}.\n\n" +
+                        "If this was baked/decorated today, it may not be recorded yet - the sale will be " +
+                        "flagged for the office.",
+                        "Low Stock", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
+
+        private void dgvCart_DataError(object? sender, DataGridViewDataErrorEventArgs e)
+        {
+            // CellValidating already guards the qty value; never surface the grid's default
+            // red-icon error dialog for a stray keystroke that slips through type conversion.
+            e.ThrowException = false;
+        }
+
         // ---- totals / cash ----
 
         private void RefreshTotals()
@@ -300,8 +379,10 @@ namespace SKC_Branch
                 return;
             }
 
+            // Default to No so a reflexive Enter (the search box uses Enter to add items) can't
+            // blow through the confirm and complete a sale the cashier hadn't finished.
             var confirm = MessageBox.Show($"Complete this sale for {total:N2}?", "Confirm Sale",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
             if (confirm != DialogResult.Yes) return;
 
             var sale = new PosSaleDto
@@ -360,6 +441,10 @@ namespace SKC_Branch
         {
             var outcome = await PosSyncEngine.SyncAsync(branchName);
 
+            // A slow sync can still be awaiting when the form closes (timer tick or post-sale
+            // sync); touching controls on a disposed form throws. Bail before any UI update.
+            if (IsDisposed || Disposing) return;
+
             if (outcome.CatalogRefreshed) ReloadCatalogFromCache();
             UpdateStatusLabel();
 
@@ -374,13 +459,40 @@ namespace SKC_Branch
                     "\n\nSee Today's Sales for details.",
                     "Sales Rejected", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            // The server was reached but rejected the whole batch at the HTTP layer (e.g. a 403
+            // IP-gate rejection or a 400) - NOT an offline condition. The status bar shows SYNC
+            // ERROR (below); alert once per distinct error so the 60s timer doesn't nag, and
+            // reset when a later sync clears it so a recurrence re-alerts.
+            if (outcome.HttpError != null)
+            {
+                if (outcome.HttpError != lastShownSyncError)
+                {
+                    lastShownSyncError = outcome.HttpError;
+                    MessageBox.Show(
+                        "The server rejected the sync - this is NOT an offline problem:\n\n" + outcome.HttpError +
+                        "\n\nYour sales are still saved and will keep retrying. If this keeps happening, tell the " +
+                        "office - this device may not be recognised by the server.",
+                        "Sync Problem", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                lastShownSyncError = null;
+            }
         }
+
+        // Tracks the last SYNC ERROR message already shown, so repeated identical failures across
+        // timer ticks don't stack modals; cleared on any clean sync so a fresh error re-alerts.
+        private string? lastShownSyncError;
 
         private void UpdateStatusLabel()
         {
             int pending = PosLocalStore.PendingCount();
-            string state = PosSyncEngine.LastSyncOnline ? "ONLINE" : "OFFLINE";
             string last = PosSyncEngine.LastSyncAt?.ToString("HH:mm:ss") ?? "never";
+            string state = PosSyncEngine.LastSyncError != null
+                ? $"SYNC ERROR ({PosSyncEngine.LastSyncError})"
+                : (PosSyncEngine.LastSyncOnline ? "ONLINE" : "OFFLINE");
             lblSyncStatus.Text = $"{state}   |   unsynced sales: {pending}   |   last sync: {last}";
         }
 

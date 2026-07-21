@@ -189,14 +189,19 @@ namespace SKC_Branch
             dgvCart.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             dgvCart.BackgroundColor = System.Drawing.Color.White;
             dgvCart.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvCart.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystrokeOrF2;
             dgvCart.Font = new System.Drawing.Font("Segoe UI", 12F);
             dgvCart.Location = new System.Drawing.Point(20, 115);
             dgvCart.Name = "dgvCart";
-            dgvCart.ReadOnly = true;
+            dgvCart.ReadOnly = false;
             dgvCart.RowHeadersVisible = false;
             dgvCart.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             dgvCart.Size = new System.Drawing.Size(900, 490);
             dgvCart.TabIndex = 9;
+            dgvCart.CellBeginEdit += dgvCart_CellBeginEdit;
+            dgvCart.CellValidating += dgvCart_CellValidating;
+            dgvCart.CellEndEdit += dgvCart_CellEndEdit;
+            dgvCart.DataError += dgvCart_DataError;
             //
             // btnDiscount
             //

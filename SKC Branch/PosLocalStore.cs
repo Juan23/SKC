@@ -114,9 +114,12 @@ namespace SKC_Branch
 
         public static List<CachedProduct> GetSellableCatalog()
         {
+            // Price is a TEXT column (see Initialize); CAST to REAL so the > 0 test is numeric,
+            // not a string comparison that would mis-sort values like ".50". COALESCE guards a
+            // NULL category (a malformed pull) from silently dropping an otherwise-sellable item.
             using var connection = new SqliteConnection(connectionString);
             return connection.Query<CachedProduct>(
-                "SELECT SKU, Brand, BaseName, Price, Category, Stock FROM catalog_cache WHERE Price > 0 AND Category != 'RawMaterial' ORDER BY BaseName").ToList();
+                "SELECT SKU, Brand, BaseName, Price, Category, Stock FROM catalog_cache WHERE CAST(Price AS REAL) > 0 AND COALESCE(Category, '') != 'RawMaterial' ORDER BY BaseName").ToList();
         }
 
         public static bool HasCatalog()
@@ -130,8 +133,11 @@ namespace SKC_Branch
         // the server's authoritative figure.
         public static void DecrementCachedStock(string sku, int qty)
         {
+            // Floor at 0 - an offline oversell would otherwise drive cached Stock negative and
+            // show "(stock: -N)" in search results until the next authoritative pull. The
+            // oversell warning still fires at 0, so nothing is hidden.
             using var connection = new SqliteConnection(connectionString);
-            connection.Execute("UPDATE catalog_cache SET Stock = Stock - @qty WHERE SKU = @sku", new { sku, qty });
+            connection.Execute("UPDATE catalog_cache SET Stock = MAX(Stock - @qty, 0) WHERE SKU = @sku", new { sku, qty });
         }
 
         // ---- pending queue ----

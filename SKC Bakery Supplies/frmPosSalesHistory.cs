@@ -19,6 +19,10 @@ namespace SKC_Bakery_Supplies
         // selection (both fire SelectionChanged), so the detail pane doesn't populate for a row the
         // user never selected, and so a stray load can't race a real click.
         private bool suppressSelectionLoad;
+        // Monotonic token for the async detail load. Fast arrow-keying fires overlapping fetches;
+        // out-of-order completion would show one row's lines under a different selected row. Each
+        // load captures the current token and discards its result if a newer selection superseded it.
+        private int selectionLoadToken;
 
         public frmPosSalesHistory(string branchName)
         {
@@ -105,9 +109,12 @@ namespace SKC_Bakery_Supplies
             if (suppressSelectionLoad) return;
             if (dgvSales.CurrentRow?.DataBoundItem is not SaleSummaryDisplay selected) return;
 
+            int token = ++selectionLoadToken;
             try
             {
                 var lines = await CentralApiClient.GetBranchSaleLinesAsync(branchName, selected.ClientSaleId);
+                if (token != selectionLoadToken) return; // a newer selection superseded this fetch
+
                 dgvLines.DataSource = lines.Select(l => new SaleLineDisplay
                 {
                     Item = l.Description,
@@ -124,6 +131,7 @@ namespace SKC_Bakery_Supplies
             }
             catch (Exception ex)
             {
+                if (token != selectionLoadToken) return; // stale failure for an abandoned row - don't nag
                 MessageBox.Show($"Could not load sale detail.\n\n{ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

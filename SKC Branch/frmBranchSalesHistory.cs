@@ -18,6 +18,10 @@ namespace SKC_Branch
         // selection (both fire SelectionChanged), so the detail pane doesn't populate for a row the
         // user never selected, and so a stray load can't race a real click.
         private bool suppressSelectionLoad;
+        // Monotonic token for the async detail load. Fast arrow-keying fires overlapping fetches;
+        // out-of-order completion would show one row's lines under a different selected row. Each
+        // load captures the current token and discards its result if a newer selection superseded it.
+        private int selectionLoadToken;
 
         public frmBranchSalesHistory(string branchName)
         {
@@ -58,6 +62,7 @@ namespace SKC_Branch
                 }).ToList();
 
                 if (dgvSales.Columns["ClientSaleId"] != null) dgvSales.Columns["ClientSaleId"].Visible = false;
+                if (dgvSales.Columns["Total"] is { } totalColumn) totalColumn.DefaultCellStyle.Format = "N2";
                 HighlightRows();
                 dgvSales.ClearSelection();
                 dgvLines.DataSource = null;
@@ -103,9 +108,12 @@ namespace SKC_Branch
             if (suppressSelectionLoad) return;
             if (dgvSales.CurrentRow?.DataBoundItem is not SaleSummaryDisplay selected) return;
 
+            int token = ++selectionLoadToken;
             try
             {
                 var lines = await BranchApiClient.GetBranchSaleLinesAsync(branchName, selected.ClientSaleId);
+                if (token != selectionLoadToken) return; // a newer selection superseded this fetch
+
                 dgvLines.DataSource = lines.Select(l => new SaleLineDisplay
                 {
                     Item = l.Description,
@@ -114,10 +122,15 @@ namespace SKC_Branch
                     Amount = l.LineTotal,
                     Short = l.ShortfallQty > 0 ? l.ShortfallQty.ToString() : ""
                 }).ToList();
+
+                if (dgvLines.Columns["Price"] is { } priceColumn) priceColumn.DefaultCellStyle.Format = "N2";
+                if (dgvLines.Columns["Amount"] is { } amountColumn) amountColumn.DefaultCellStyle.Format = "N2";
+
                 dgvLines.ClearSelection();
             }
             catch (Exception ex)
             {
+                if (token != selectionLoadToken) return; // stale failure for an abandoned row - don't nag
                 MessageBox.Show($"Could not load sale detail.\n\n{ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

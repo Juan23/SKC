@@ -19,6 +19,25 @@ namespace SKC_Bakery_Supplies
                  + "check the connection and try again.", inner) { }
     }
 
+    // Thrown when the server WAS reached but returned a non-success HTTP status for a POS sync
+    // push (e.g. a 403 IP-gate rejection or a 400 malformed batch). Distinct from OfflineException
+    // (a transport failure): the sync engine must NOT treat this as "offline, retry silently" -
+    // it surfaces the status so a persistent gate/rejection can't masquerade as a stuck OFFLINE
+    // badge while sales pile up unsent. See PosSyncEngine / frmPos status handling.
+    public class PosSyncHttpException : Exception
+    {
+        public System.Net.HttpStatusCode StatusCode { get; }
+        // A short one-liner safe for the status bar, e.g. "HTTP 403 Forbidden".
+        public string ShortMessage { get; }
+
+        public PosSyncHttpException(System.Net.HttpStatusCode statusCode, string body)
+            : base($"Server returned {(int)statusCode} {statusCode}. {body}")
+        {
+            StatusCode = statusCode;
+            ShortMessage = $"HTTP {(int)statusCode} {statusCode}";
+        }
+    }
+
     // Translates transport failures (connection refused, DNS/route failure) and request timeouts
     // into one friendly OfflineException, so every endpoint method reports the same clean message
     // instead of a raw HttpRequestException/TaskCanceledException. No caller passes a cancellation
@@ -134,8 +153,11 @@ namespace SKC_Bakery_Supplies
 
             if (!response.IsSuccessStatusCode)
             {
+                // A reached-but-rejected batch (403/400/500) is NOT the offline case - throw the
+                // typed exception so PosSyncEngine can flag it distinctly instead of retrying
+                // forever under an OFFLINE badge.
                 string errorDetails = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Failed to push sales. Code: {response.StatusCode}\nDetails: {errorDetails}");
+                throw new PosSyncHttpException(response.StatusCode, errorDetails);
             }
 
             string content = await response.Content.ReadAsStringAsync();
