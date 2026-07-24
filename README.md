@@ -1,5 +1,12 @@
 # SKC Desktop Apps
 
+> **Archived 2026-07-24.** Development froze 2026-07-23 and this repo was removed from the
+> active workspace; all feature work lives in [Juan23/skc-api](https://github.com/Juan23/skc-api)
+> (API + webapp). The built exes remain installed and running until the webapp rollout replaces
+> them, and the `SKC Admin CLI` remains the owner's live bulk-Excel admin tool (clone this repo
+> to run it). WinForms-era workspace documentation is preserved in
+> [`ARCHIVED-WORKSPACE-NOTES.md`](ARCHIVED-WORKSPACE-NOTES.md).
+
 Windows desktop (WinForms) clients for the SKC bakery-supplies operations platform — the
 office, branch, and owner apps that staff use day to day. Part of a larger system; the
 central API, web app, and full overview live in
